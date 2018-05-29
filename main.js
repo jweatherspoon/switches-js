@@ -10,11 +10,20 @@ function CreateWindow() {
 
     win.loadFile('index.html');
 
+    win.on('closed', () => {
+        win = null;
+    });
 }
 
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') {
         app.quit();
+    }
+})
+
+app.on('activate', () => {
+    if(win === null) {
+        CreateWindow();
     }
 })
 
