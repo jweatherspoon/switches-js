@@ -1,0 +1,23 @@
+{
+  "name": "switches-js",
+  "version": "1.0.0",
+  "description": "JavaScript / Electron port for UNR netops switch configuration software",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jweatherspoon/switches-js.git"
+  },
+  "author": "Jon Weatherspoon, Noah Rotroff",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jweatherspoon/switches-js/issues"
+  },
+  "homepage": "https://github.com/jweatherspoon/switches-js#readme",
+  "dependencies": {
+    "electron": "^2.0.2"
+  }
+}
