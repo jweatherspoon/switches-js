@@ -1,9 +1,26 @@
 <html>
     <head>
+        <link rel = "stylesheet"
+        type="text/css"
+        href = "Styles.css" />
+
+        <script>src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"</script>
+        <script>
+            $(document).ready(function(){
+                $("button").click(function(){
+                    $("#innerdiv").fadeOut();
+                });
+            });
+        </script>
         <title></title>
     </head>
-    <body>
-
+    <body id = "switchstart">
+        <div id = "outerdiv">
+            <div id = "innerdiv">
+                <h1>Trying to configure a switch huh?</h1>
+                <button id = "button">Good Times</button>
+            </div>
+        </div>
         <footer>
             <script src="index.js"></script>
         </footer>
