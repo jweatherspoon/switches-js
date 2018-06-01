@@ -1,5 +1,7 @@
 'use strict';
 
+const $ = require('jquery');
+
 const SerialPort = require('serialport');
 const Parsers = SerialPort.parsers;
 
@@ -40,4 +42,8 @@ function OpenPort(portname, baudRate) {
     return new SerialPort(portname, {
         baudRate: baudRate
     });
+}
+
+function test() {
+    return $("#switchstart");
 }
