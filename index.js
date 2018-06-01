@@ -5,7 +5,7 @@ const $ = require('jquery');
 const SerialPort = require('serialport');
 const Parsers = SerialPort.parsers;
 
-const parser = new Parsers({
+const parser = new Parsers.Readline({
     delimeter: '\n'
 });
 
