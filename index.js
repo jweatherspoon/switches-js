@@ -47,3 +47,9 @@ function OpenPort(portname, baudRate) {
 function test() {
     return $("#switchstart");
 }
+
+$(document).ready(function(){
+    $("fader").click(function(){
+        $("#innerdiv").fadeOut();
+    });
+});
