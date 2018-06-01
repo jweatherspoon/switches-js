@@ -2,7 +2,9 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 
 let win;
 
-// Create a GUI window for the application
+/**
+ * Create a GUI window and store its handle
+ */
 function CreateWindow() {
     win = new BrowserWindow({
         height: 800,
@@ -16,7 +18,10 @@ function CreateWindow() {
     });
 }
 
-// Quit app when all windows are closed unless on a Mac
+/**
+ * Quit the application when all windows are closed 
+ * unless the user is on a Mac
+ */
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') {
         app.quit();
