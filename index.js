@@ -48,8 +48,8 @@ function test() {
     return $("#switchstart");
 }
 
-function fadetime(){
-    $("#fader").click(function(){
-        $("#innerdiv").fadeOut();
+$("#fader").click(function(){
+    $("#innerdiv").fadeOut();
+    $("#innerdiv").text('Nice').next().fadein(slow);  
     });
-};
+
