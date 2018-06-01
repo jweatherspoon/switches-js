@@ -11,6 +11,8 @@ function CreateWindow() {
         width: 1000,
     });
 
+    win.setMenu(null);
+
     win.loadFile('index.html');
 
     win.on('closed', () => {
