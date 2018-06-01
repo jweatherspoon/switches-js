@@ -21,7 +21,7 @@ function GetPorts() {
     var devices = [];
     SerialPort.list((err, ports) => {
         ports.forEach(port => {
-            if(port.pnpId) {
+            if (port.pnpId) {
                 devices.push({
                     name: port.comName,
                     id: port.pnpId
@@ -37,19 +37,15 @@ function GetPorts() {
  * @param {string} portname - The COM port of the serial device
  * @param {number} baudRate - The baud rate used to communicate with the device
  * @returns {SerialPort} Connection to the specified serial device
- */   
+ */
 function OpenPort(portname, baudRate) {
     return new SerialPort(portname, {
         baudRate: baudRate
     });
 }
 
-function test() {
-    return $("#switchstart");
-}
-
-$("#fader").click(function(){
+$("#fader").click(function () {
     $("#innerdiv").fadeOut();
-    $("#innerdiv").text('Nice').next().fadein(slow);  
-    });
+    $("#innerdiv").text('Nice').next().fadein(slow);
+});
 
