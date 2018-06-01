@@ -48,8 +48,8 @@ function test() {
     return $("#switchstart");
 }
 
-$(document).ready(function(){
-    $("fader").click(function(){
+function fadetime(){
+    $("#fader").click(function(){
         $("#innerdiv").fadeOut();
     });
-});
+};
