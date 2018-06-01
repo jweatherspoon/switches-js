@@ -19,6 +19,7 @@
   "homepage": "https://github.com/jweatherspoon/switches-js#readme",
   "dependencies": {
     "electron": "^2.0.2",
+    "jquery": "^3.3.1",
     "serialport": "^6.2.0"
   }
 }
