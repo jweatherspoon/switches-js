@@ -1,4 +1,6 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, webContents } = require('electron');
+
+const { port, GetPorts, OpenPort } = require('./serial');
 
 let win;
 
@@ -36,3 +38,9 @@ app.on('activate', () => {
 })
 
 app.on('ready', CreateWindow);
+
+ipcMain.on('serial:getports', (event, arg) => {
+    let devs = GetPorts();
+    console.log(JSON.stringify(devs));
+    event.returnValue(devs);
+});
