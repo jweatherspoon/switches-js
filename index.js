@@ -1,7 +1,5 @@
 'use strict';
 
-const { ipcRenderer } = require('electron');
-
 const $ = require('jquery');
 
 var indexdropdown = `<h1>What kind of switch you have?</h1>

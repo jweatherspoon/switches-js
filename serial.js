@@ -10,20 +10,15 @@ exports.parser = new Parsers.Readline({
  * @returns {object[]} Active serial ports
  */
 exports.GetPorts = async () => {
-    var devices = [];
-    await SerialPort.list((err, ports) => {
-        ports.forEach(port => {
-            if (port.pnpId) {
-                console.log(port.pnpId);
-                devices.push({
-                    name: port.comName,
-                    id: port.pnpId
-                });
-            }
-        });
+    let ports = await SerialPort.list();
+
+    let activePorts = [];
+    ports.forEach(port => {
+        if(port.pnpId) {
+            activePorts.push(port);
+        }
     });
-    console.log(devices);
-    return devices;
+    return activePorts;
 }
 
 /**

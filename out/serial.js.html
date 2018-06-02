@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: main.js</title>
+    <title>JSDoc: Source: serial.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: main.js</h1>
+    <h1 class="page-title">Source: serial.js</h1>
 
     
 
@@ -26,56 +26,40 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const { app, BrowserWindow, ipcMain, webContents } = require('electron');
+            <pre class="prettyprint source linenums"><code>const SerialPort = require('serialport');
+const Parsers = SerialPort.parsers;
 
-const { port, GetPorts, OpenPort } = require('./serial');
-
-let win;
+exports.parser = new Parsers.Readline({
+    delimeter: '\n'
+});
 
 /**
- * Create a GUI window and store its handle
+ * Get a list of active serial ports. Each port contains a COM name and id
+ * @returns {object[]} Active serial ports
  */
-function CreateWindow() {
-    win = new BrowserWindow({
-        height: 800,
-        width: 1000,
-    });
+exports.GetPorts = async () => {
+    let ports = await SerialPort.list();
 
-    win.loadFile('index.html');
-
-    win.on('closed', () => {
-        win = null;
+    let activePorts = [];
+    ports.forEach(port => {
+        if(port.pnpId) {
+            activePorts.push(port);
+        }
     });
+    return activePorts;
 }
 
 /**
- * Quit the application when all windows are closed unless the user is on a Mac
+ * Open a serial connection given a port and baudrate
+ * @param {string} portname - The COM port of the serial device
+ * @param {number} baudRate - The baud rate used to communicate with the device
+ * @returns {SerialPort} Connection to the specified serial device
  */
-app.on('window-all-closed', () => {
-    if(process.platform !== 'darwin') {
-        app.quit();
-    }
-})
-
-/**
- * Re-create the window if the user is on a Mac
- */
-app.on('activate', () => {
-    if(win === null) {
-        CreateWindow();
-    }
-})
-
-app.on('ready', CreateWindow);
-
-
-// EVENTS 
-
-ipcMain.on('serial:getports', (event, arg) => {
-    GetPorts().then(data => {
-        event.sender.send('serial:getports:reply', data);
-    })
-});</code></pre>
+exports.OpenPort = (portname, baudRate) => {
+    return new SerialPort(portname, {
+        baudRate: baudRate
+    });
+}</code></pre>
         </article>
     </section>
 

@@ -21,8 +21,7 @@ function CreateWindow() {
 }
 
 /**
- * Quit the application when all windows are closed 
- * unless the user is on a Mac
+ * Quit the application when all windows are closed unless the user is on a Mac
  */
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') {
@@ -30,7 +29,9 @@ app.on('window-all-closed', () => {
     }
 })
 
-// Create a new window if there isn't one on Macs
+/**
+ * Re-create the window if the user is on a Mac
+ */
 app.on('activate', () => {
     if(win === null) {
         CreateWindow();
@@ -39,8 +40,11 @@ app.on('activate', () => {
 
 app.on('ready', CreateWindow);
 
+
+// EVENTS 
+
 ipcMain.on('serial:getports', (event, arg) => {
-    let devs = GetPorts();
-    console.log(JSON.stringify(devs));
-    event.returnValue(devs);
+    GetPorts().then(data => {
+        event.sender.send('serial:getports:reply', data);
+    })
 });
