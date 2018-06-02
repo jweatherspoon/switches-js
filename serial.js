@@ -11,14 +11,8 @@ exports.parser = new Parsers.Readline({
  */
 exports.GetPorts = async () => {
     let ports = await SerialPort.list();
-
-    let activePorts = [];
-    ports.forEach(port => {
-        if(port.pnpId) {
-            activePorts.push(port);
-        }
-    });
-    return activePorts;
+    ports = ports.filter(port => port.pnpId);
+    return ports;
 }
 
 /**
