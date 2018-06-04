@@ -2,7 +2,7 @@
 
 const $ = require('jquery');
 
-var indexdropdown = `<h1>What kind of switch you have?</h1>
+var indexdropdown = `<h1>What kind of switch do you have?</h1>
 <select>
 <option value="FWS">FWS</option>
 <option value="ICX6450">ICX6450</option>
