@@ -1,0 +1,3 @@
+if(!$) {
+    const $ = require('jquery');
+}

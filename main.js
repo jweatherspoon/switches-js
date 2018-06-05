@@ -13,7 +13,7 @@ function CreateWindow() {
         width: 1000,
     });
 
-    win.loadFile('index.html');
+    win.loadFile('./renderer-assets/html/index.html');
 
     win.on('closed', () => {
         win = null;
@@ -48,8 +48,3 @@ ipcMain.on('serial:getports', (event, arg) => {
         event.sender.send('serial:getports:reply', data);
     })
 });
-
-ipcMain.on('loadpage',(event, arg) => {
-    win.loadFile(arg);
-    console.log(arg);
-}) 
