@@ -5,5 +5,5 @@ const $ = require('jquery');
 $("#fader").click(function(){
     $(".innerdiv").fadeOut();
     $(".innerdiv").text('Nice');
-    setTimeout(function() {ipcRenderer.send('loadpage','SwitchSelect.html')},500);
+    setTimeout(function() {$(document.body).load('./SwitchSelect.html')},500);
     });
