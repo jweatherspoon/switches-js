@@ -48,3 +48,8 @@ ipcMain.on('serial:getports', (event, arg) => {
         event.sender.send('serial:getports:reply', data);
     })
 });
+
+ipcMain.on('loadpage',(event, arg) => {
+    win.loadFile(arg);
+    console.log(arg);
+}) 
