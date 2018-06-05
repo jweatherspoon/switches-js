@@ -2,6 +2,10 @@ const SerialPort = require('serialport');
 const Parsers = SerialPort.parsers;
 const cheerio = require('cheerio');
 
+const URLS = {
+    ruckus: 'https://support.ruckuswireless.com/product_families/21-ruckus-icx-switches',
+};
+
 exports.parser = new Parsers.Readline({
     delimeter: '\n'
 });
@@ -14,7 +18,7 @@ exports.GetPorts = async () => {
     let ports = await SerialPort.list();
     ports = ports.filter(port => port.pnpId);
     return ports;
-}
+};
 
 /**
  * Open a serial connection given a port and baudrate
@@ -26,7 +30,7 @@ exports.OpenPort = (portname, baudRate) => {
     return new SerialPort(portname, {
         baudRate: baudRate
     });
-}
+};
 
 /**
  * Get the recommended firmware version for a switch 
@@ -40,7 +44,50 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
     let $ = cheerio.load(html);
 
     // Search for the model name 
-    let link = $('a').filter(i => this.text === model);
+    let link = $('a').filter(function(index) {
+        if($(this).text() === model) {
+            return this;
+        }
+    });
 
-    return link;
+    // Make sure a link was retrieved. If not return null
+    if(link.length < 1) return null;
+    // Get the href from the parsed element
+    link = link[0].attribs.href;
+
+    // Follow the parsed link and fetch the HTML
+    html = await fetch(link).then(resp => resp.text());
+    $ = cheerio.load(html);
+
+    // Search for the recommended firmware software 
+    // download link
+    link = $('dt').filter(function(index) {
+        if($(this).text() === 'Recommended Firmware:') {
+            return this;
+        }
+    });
+
+    // Make sure a link was retrieved 
+    if(link.length < 1) return null;
+
+    // try to get the link to the firmware version
+    try {
+        let href = link[0].next.next.firstChild.attribs.href;
+        
+        // Now that we have the link, find the code version
+        let re = /\d+-\d+-\d+\w*/;
+        let ver = re.exec(href);
+
+        let data = {
+            href: href,
+        };
+
+        if(ver) { // Code version successfully found
+            data.version = ver[0].replace(/-/g, '');
+        }
+
+        return data;
+    } catch (ex) {
+        return null; // Could not get the firmware version
+    }
 }
