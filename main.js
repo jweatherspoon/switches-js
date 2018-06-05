@@ -1,6 +1,14 @@
-const { app, BrowserWindow, ipcMain, webContents } = require('electron');
+const { 
+    app, 
+    BrowserWindow, 
+    ipcMain, 
+    webContents, 
+    Menu,
+} = require('electron');
 
 const { port, GetPorts, OpenPort } = require('./serial');
+
+const { template } = require('./models/MenuTemplate');
 
 let win;
 
@@ -24,7 +32,7 @@ function CreateWindow() {
  * Quit the application when all windows are closed unless the user is on a Mac
  */
 app.on('window-all-closed', () => {
-    if(process.platform !== 'darwin') {
+    if (process.platform !== 'darwin') {
         app.quit();
     }
 })
@@ -33,12 +41,17 @@ app.on('window-all-closed', () => {
  * Re-create the window if the user is on a Mac
  */
 app.on('activate', () => {
-    if(win === null) {
+    if (win === null) {
         CreateWindow();
     }
 })
 
-app.on('ready', CreateWindow);
+app.on('ready', () => {
+    CreateWindow();
+    Menu.setApplicationMenu(
+        Menu.buildFromTemplate(template)
+    );
+});
 
 
 // EVENTS 
