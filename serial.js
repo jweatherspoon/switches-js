@@ -40,15 +40,13 @@ exports.OpenPort = (portname, baudRate) => {
  * code version and a link to the file 
  */
 exports.GetRecommendedCodeVersion = async (model, url) => {
-    let html = await fetch(url).then(resp => resp.text());
-    let $ = cheerio.load(html);
+    // let html = await fetch(url).then(resp => resp.text());
+    // let $ = cheerio.load(html);
+
+    let $ = await FetchHtmlAndLoad(url);
 
     // Search for the model name 
-    let link = $('a').filter(function(index) {
-        if($(this).text() === model) {
-            return this;
-        }
-    });
+    let link = FindElementsByText($, 'a', model);
 
     // Make sure a link was retrieved. If not return null
     if(link.length < 1) return null;
@@ -56,16 +54,8 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
     link = link[0].attribs.href;
 
     // Follow the parsed link and fetch the HTML
-    html = await fetch(link).then(resp => resp.text());
-    $ = cheerio.load(html);
-
-    // Search for the recommended firmware software 
-    // download link
-    link = $('dt').filter(function(index) {
-        if($(this).text() === 'Recommended Firmware:') {
-            return this;
-        }
-    });
+    $ = await FetchHtmlAndLoad(link);
+    link = FindElementsByText($, 'dt', 'Recommended Firmware:');
 
     // Make sure a link was retrieved 
     if(link.length < 1) return null;
@@ -90,4 +80,32 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
     } catch (ex) {
         return null; // Could not get the firmware version
     }
+}
+
+/**
+ * Fetch some html and load it into the cheerio parser
+ * @param {string} url - The URL to fetch HTML from 
+ * @returns {Cheerio} A cheerio parser with the HTML loaded
+ */
+FetchHtmlAndLoad = async (url) => {
+    let html = await fetch(url).then(resp => resp.text());
+    return cheerio.load(html);
+}
+
+/**
+ * Use cheerio to find HTML tags given their inner text
+ * @param {Cheerio} $ - A cheerio parser with the HTML loaded
+ * @param {string} tag - The type of tag to search for 
+ * @param {string} text - The inner text to match against
+ * @returns {string[]} A list of elements that matched the 
+ * given parameters
+ */
+FindElementsByText = ($, tag, text) => {
+    let elements = $(tag).filter(function(index) {
+        if($(this).text() === text) {
+            return text;
+        }
+    });
+
+    return elements;
 }

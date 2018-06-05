@@ -2,6 +2,8 @@
 
 const $ = require('jquery');
 
+const { GetRecommendedCodeVersion } = require('./serial');
+
 var indexdropdown = `<h1>What kind of switch do you have?</h1>
 <select>
 <option value="FWS">FWS</option>
