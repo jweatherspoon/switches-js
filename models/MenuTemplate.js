@@ -3,7 +3,7 @@ let template = [
         label: 'Configure',
         submenu: [
             {
-                label: 'Set TFTP Server',
+                label: 'Fucka you monkey',
                 click: () => {
                     // TODO
                 }
