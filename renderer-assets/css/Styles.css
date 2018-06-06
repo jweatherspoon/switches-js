@@ -9,7 +9,6 @@ html, body {
 label {
     float: left;
     margin-top: 2;
-    padding-left: 30%
 }
 
 .switchback {
@@ -28,6 +27,10 @@ label {
     position: relative;
     z-index: 1;
     margin: 0 auto;
+}
+
+.vlaninput {
+    width: 100px;
 }
 
 .LoadSpin {
