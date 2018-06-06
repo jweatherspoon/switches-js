@@ -11,18 +11,14 @@ let template = [
                 type: 'separator'
             }, 
         ]
-    }
-];
-
-// Add dev tools support for development environments
-if(process.env.ELECTRON_ENV === 'development') {
-    template.push({
+    },
+    {
         label: 'Developer Tools',
         submenu: [
-            {role: 'toggledevtools'},
+            { role: 'toggledevtools' },
         ]
-    })
-}
+    }
+];
 
 console.log(JSON.stringify(template));
 
