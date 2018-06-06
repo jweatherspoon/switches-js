@@ -10,7 +10,7 @@ const { port, GetPorts, OpenPort } = require('./serial');
 
 const { template } = require('./models/MenuTemplate');
 
-let win;
+let win, config;
 
 /**
  * Create a GUI window and store its handle
@@ -19,6 +19,7 @@ function CreateWindow() {
     win = new BrowserWindow({
         height: 800,
         width: 1000,
+        title: "Switch Configuration",
     });
 
     win.loadFile('./renderer-assets/html/index.html');

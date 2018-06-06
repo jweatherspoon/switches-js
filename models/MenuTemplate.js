@@ -1,12 +1,14 @@
+const { ConfigurationWindow } = require('../models/ConfigurationMenu');
+
+const config = new ConfigurationWindow();
+
 let template = [
     {
         label: 'Configure',
         submenu: [
             {
-                label: 'Fucka you monkey',
-                click: () => {
-                    // TODO
-                }
+                label: 'Show Configuration Menu',
+                click: () => config.openWindow(),
             }, {
                 type: 'separator'
             }, 
@@ -16,10 +18,9 @@ let template = [
         label: 'Developer Tools',
         submenu: [
             { role: 'toggledevtools' },
+            { role: 'reload' }
         ]
     }
 ];
-
-console.log(JSON.stringify(template));
 
 exports.template = template;
