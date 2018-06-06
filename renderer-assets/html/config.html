@@ -2,19 +2,22 @@
 
 <head>
     <title>Configuration Menu</title>
+    <link href="../css/flex.css" rel="stylesheet" />
     <link href="../css/config.css" rel="stylesheet" />
 </head>
 
 <body>
 
     <div class="flex flex-align-center">
-        <div class="flex flex-justify-left">
-            <span class="config-label">
+        <div class="flex flex-justify-start">
+            <span class="config-text">
                 TFTP Directory:
             </span>
         </div>
-        <div class="flex flex-justify-right">
-
+        <div class="flex flex-justify-end flex-align-end">
+            <input type="button" value="Choose Directory" id="tftp-dir-btn" />
+            <span class="config-text" id="tftp-dir-text"></span>
+            <input type="file" webkitdirectory id="tftp-dir" />
         </div>
     </div>
 
