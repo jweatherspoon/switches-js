@@ -6,6 +6,12 @@ html, body {
     margin: 0;
 }
 
+label {
+    float: left;
+    margin-top: 2;
+    padding-left: 30%
+}
+
 .switchback {
     text-align: center;
     background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%);
@@ -18,10 +24,8 @@ html, body {
 }
 
 .innerdiv {
-    align-content: center;
     text-align: center;
-    width: 50%;
-    position: absolute;
+    position: relative;
     z-index: 1;
     margin: 0 auto;
 }
