@@ -19,6 +19,8 @@ class ConfigurationWindow {
             // this.config.setMenu(null);
 
             this.config.on('close', () => this.config = null);
+        } else {
+            this.config.focus();
         }
     }
 }

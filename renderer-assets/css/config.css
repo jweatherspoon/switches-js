@@ -2,6 +2,14 @@
     padding: 0px 2px 0px 2px;
 }
 
+.config-input {
+    flex-grow: 1.5;
+}
+
+.config-label {
+    flex-grow: 1;
+}
+
 #tftp-dir {
     display: none;
 }

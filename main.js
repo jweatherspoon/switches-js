@@ -26,6 +26,9 @@ function CreateWindow() {
 
     win.on('closed', () => {
         win = null;
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
     });
 }
 
