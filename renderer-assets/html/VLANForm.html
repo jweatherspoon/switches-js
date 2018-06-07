@@ -1,18 +1,14 @@
 <html>
     <head>
-            <link rel="stylesheet" type="text/css" href="../css/Styles.css" />
+            <link rel="stylesheet" type="text/css" href="../css/flex.css" />
     </head>
-    <body class="switchback">
-        <div class="outerdiv" style="padding-top: 10px">
-            <div class="innerdiv">
-                <h1>What are your VLANS?</h1>
-                <p>Feel free to fill out as many as needed.</p>
-                <input type="checkbox" value="dualmoded">Dualmoded?
-                <div style="padding-top: 20px; width: 400px; margin-left: auto">
-                        <label for="VOIP">VOIP VLAN</label>
-                        <input class="vlaninput" type="number" id="VOIP" name="VOIP" placeholder="E.g. 301">
-                </div>
-            </div>
+    <body class="flex-container">
+        <div class="flex"><h1>What are your VLANS?</h1></div>
+        <div class="flex"><p>Feel free to fill out as many as needed.</p></div>
+        <div class="flex"><input type="checkbox" value="dualmoded">Dualmoded?</div>
+        <div class="flex">
+                <label for="VOIP">VOIP VLAN</label>
+                <input class="vlaninput" type="number" id="VOIP" name="VOIP" placeholder="E.g. 301">
         </div>
     </body>
     <footer>
