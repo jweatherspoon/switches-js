@@ -32,3 +32,11 @@
 .flex-justify-end {
     justify-content: flex-end;
 }
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-column {
+    flex-direction: column;
+}

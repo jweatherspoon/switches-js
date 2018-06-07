@@ -8,15 +8,19 @@
 
 <body>
 
-    <div class="flex-container flex-align-start">
-        <div class="flex flex-align-center">
-                <span class="config-text config-label">
-                    TFTP Directory:
-                </span>
-            <div class="flex-justify-end flex-align-end config-input">
-                <input type="button" value="Choose Directory" id="tftp-dir-btn" />
+    <div class="flex-container flex-align-start flex-column">
+        <div class="config-settings-row">
+            <div class="flex flex-align-center">
+                    <span class="config-text config-label">
+                        TFTP Directory:
+                    </span>
+                <div class="flex-justify-end flex-align-end">
+                    <input type="button" value="Choose Directory" id="tftp-dir-btn" />
+                    <input type="file" webkitdirectory id="tftp-dir" />
+                </div>
+            </div>
+            <div class="flex flex-align-center flex-justify-end">
                 <span class="config-text" id="tftp-dir-text">Select a directory...</span>
-                <input type="file" webkitdirectory id="tftp-dir" />
             </div>
         </div>
     </div>

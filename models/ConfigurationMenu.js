@@ -11,7 +11,7 @@ class ConfigurationWindow {
             this.config = new BrowserWindow({
                 height: 500,
                 width: 500,
-                title: "Configuration Menu"
+                title: "Configuration Menu",
             });
 
             this.config.loadFile(this.configGUI);
