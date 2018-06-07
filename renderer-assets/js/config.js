@@ -1,12 +1,14 @@
 const $ = require('jquery');
 const storage = require('electron-json-storage');
 
-let settings = {};
-
 const keys = [
     {
         key: "tftp-directory",
         contentID: "#tftp-dir-text"
+    },
+    {
+        key: "management-vlan",
+        contentID: "#management-vlan"
     }
 ];
 
@@ -22,6 +24,7 @@ function LoadSettings() {
             let val = data[key.key];
             if(Object.keys(val).length !== 0) {
                 $(key.contentID).text(val);
+                $(key.contentID).val(val);
             }       
         })
     })
@@ -38,8 +41,10 @@ async function SetSetting(key, val) {
 
 /**
  * Save all settings that the user changed 
+ * @param {object} settings - A JavaScript object that 
+ * contains setting keys and values
  */
-async function SaveSettings() {
+async function SaveSettings(settings) {
     let count = 0;
     
     for(let key in settings) {
@@ -78,29 +83,42 @@ function SetContent(key, contentVal, defaultVal) {
     }
 }
 
+function GetContent(contentID) {
+    let val = $(contentID).val();
+    if(!val) {
+        val = $(contentID).text();
+    }
+
+    return val;
+}
+
 $("#tftp-dir-btn").click(() => {
     $("#tftp-dir").click()
 });
 
-$("#tftp-dir").change(() => {
+$("#tftp-dir").change(e => {
     let dir;
     try {
         dir = $("#tftp-dir")[0].files[0].path;
     } catch (ex) { }
-    
-    console.log(dir);
-
     let key = "tftp-directory";
-    
-    settings[key] = dir;
-
     SetContent(key, dir, "Select directory...");
     
 })
 
 $("#config-save").click(e => {
+    let settings = {};
+    keys.forEach(keyObj => {
+        let val = GetContent(keyObj.contentID);
+        if(val) {
+            settings[keyObj.key] = val;
+        }
+    });
+
+    console.log(settings);
+
     // Save each setting to persistent storage
-    SaveSettings().then(count => {
+    SaveSettings(settings).then(count => {
         if(count == Object.keys(settings).length) {
             window.close();
         }
