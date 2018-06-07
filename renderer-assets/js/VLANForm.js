@@ -20,6 +20,16 @@ $('#btnCustomVLAN').click(function(){
     }
 })
 
-$('$btnVLANSubmit').click(function(){
-    $('#divVLANForm')
+captioncounter = 0;
+captionarray = [];
+
+$('#btnVLANSubmit').click(function(){
+    $('#divVLANForm').find('input').each(function(){
+        if (this.value != '') {
+            captionarray.push(captioncounter);
+            captionarray.push(this.value);
+        };
+        captioncounter ++;
+    });
+    alert(captionarray);
 })
