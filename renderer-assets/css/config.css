@@ -1,5 +1,6 @@
 body {
     background: #ddd;
+    margin: 0;
 }
 
 .config-text {
@@ -17,12 +18,21 @@ body {
 .config-settings-row {
     border-bottom: 2px solid #ccc;
     width: 100%;
-    padding: 2px;
     background-color: #eee;
 }
 
 #tftp-dir {
     display: none;
+}
+
+#config-save {
+    position: absolute;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30px;
 }
 
 input[type="button"] {
