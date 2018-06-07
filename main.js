@@ -6,6 +6,8 @@ const {
     Menu,
 } = require('electron');
 
+const path = require('path');
+
 const { port, GetPorts, OpenPort } = require('./serial');
 
 const { template } = require('./models/MenuTemplate');
@@ -20,6 +22,7 @@ function CreateWindow() {
         height: 800,
         width: 1000,
         title: "Switch Configuration",
+        icon: path.join(__dirname, 'renderer-assets/icons/png/icon.png')
     });
 
     win.loadFile('./renderer-assets/html/index.html');
