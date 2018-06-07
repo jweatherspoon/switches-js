@@ -1,0 +1,54 @@
+<style>
+
+.owo {
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.eye {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    border: 2px solid black;
+    position: relative;
+    transform: rotate(-30deg);
+}
+
+.eye:after {
+    content: " ";
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    position: absolute;
+    background: #000;
+    top: 1px;
+    left: 20px;
+}
+
+.chat-bubble {
+    height: 200px;
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/7f/Speech_bubble.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    text-align: center;
+}
+</style>
+
+<div class="owo">
+    <div class="eye"></div>
+    <span style="font-size: 2em; font-family: Helvetica">w</span>
+    <div class="eye"></div>
+    <div class="chat-bubble">
+        <span>
+            <strong>*notices configure button*</strong>
+            <br>
+            <span>What's this???</span>
+        </span>
+    </div>
+</div>
