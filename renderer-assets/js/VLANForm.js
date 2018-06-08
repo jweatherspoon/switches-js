@@ -21,15 +21,34 @@ $('#btnCustomVLAN').click(function(){
 })
 
 captioncounter = 0;
-captionarray = [];
+captiongrab = 0;
+vlandict = [];
+errorarray = [];
+var inputkey;
+var flag = false;
 
 $('#btnVLANSubmit').click(function(){
+    vlandict = [];
+    captioncounter = 0;
+    flag = false;
     $('#divVLANForm').find('input').each(function(){
         if (this.value != '') {
-            captionarray.push(captioncounter);
-            captionarray.push(this.value);
+            if (this.value <= 4096 && this.value >= 0) {
+                inputkey = $(`#divVLANForm input:eq(${captioncounter})`).attr('id');
+            vlandict.push({
+                key: inputkey,
+                value: this.value
+            });
+            } else {
+                flag = true;
+                errorarray.push($(`#divVLANForm label:eq(${captioncounter})`).text().slice(0,-1));
+            }
         };
         captioncounter ++;
     });
-    alert(captionarray);
+    if (flag == false) {
+        alert(JSON.stringify(vlandict));
+    } else {
+        alert("Please fix the following: " + errorarray);
+    }
 })
