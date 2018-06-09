@@ -2,6 +2,10 @@ const SerialPort = require('serialport');
 const Parsers = SerialPort.parsers;
 const cheerio = require('cheerio');
 
+const {
+    GetTFTPDirectoryContents    
+} = require('./filesys');
+
 const URLS = {
     ruckus: 'https://support.ruckuswireless.com/product_families/21-ruckus-icx-switches',
 };
@@ -83,6 +87,23 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
 }
 
 /**
+ * Check the machine's TFTP directory for a code version 
+ * @param {string} ver - The code version to check for
+ * @throws {Error} If there is no configured TFTP directory
+ * @returns {boolean} True if the version is found in the folder
+ */
+exports.CheckTFTPDirForCodeVersion = async (ver) => {
+    let files = await GetTFTPDirectoryContents();
+    
+    let found = false;
+    for(let file of files) {
+        console.log(file);
+    }
+
+    return found;
+}
+
+/**
  * Fetch some html and load it into the cheerio parser
  * @param {string} url - The URL to fetch HTML from 
  * @returns {Cheerio} A cheerio parser with the HTML loaded
@@ -109,3 +130,4 @@ FindElementsByText = ($, tag, text) => {
 
     return elements;
 }
+

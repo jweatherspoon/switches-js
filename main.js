@@ -8,7 +8,7 @@ const {
 
 const path = require('path');
 
-const { port, GetPorts, OpenPort } = require('./serial');
+const { port, GetPorts, OpenPort } = require('./models/helpers/serial');
 
 const { template } = require('./models/MenuTemplate');
 
