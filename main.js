@@ -34,12 +34,11 @@ function CreateWindow(href) {
         icon: path.join(__dirname, 'renderer-assets/icons/png/icon.png')
     });
 
-    if(href.startsWith('http')) {
-        win.loadURL(href);
+    if(!href) {
+        win.loadFile("./renderer-assets/html/index.html");
     } else {
-        win.loadFile(href);
+        win.loadURL(href);
     }
-
 
     return win
 }
