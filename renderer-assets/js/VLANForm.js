@@ -4,10 +4,10 @@ if(!$) {
 
 customtxtincr = 0;
 
-var newvlan = `<div style="padding: 10">
-<input type="text" id="txtCustomVLAN${customtxtincr}" name="txtCustomVLAN" placeholder="Name of VLAN" style="padding-right: 10; width: 150;">
-<input class="vlaninput" type="number" id="txtVLAN" name="txtVLAN" style="margin-left: 10" placeholder="VLAN">
-<button type="button" id="btnVLANDelete${customtxtincr}">&times;</button>
+var newvlan = `<div style="padding: 10" id="divCustomVLAN${customtxtincr}">
+<input type="text" id="txtCustomVLAN${customtxtincr}" name="txtCustomVLAN" placeholder="Name of VLAN" style="margin-right: 10; width: 150;">
+<input class="vlaninput" type="number" id="txtVLAN" name="txtVLAN" style="margin-left: 10; width: 98" placeholder="VLAN">
+<button type="button" onclick="deletieboi("divCustomVLAN${customtxtincr}")" id="btnVLANDelete${customtxtincr}">&times;</button>
 </div>`
 
 customvlancount = 4;
@@ -23,6 +23,10 @@ $('#btnCustomVLAN').click(function(){
     }
     customtxtincr ++;
 })
+
+function deletieboi(divid) {
+    $(`#${divid}`).remove();
+}
 
 captioncounter = 0;
 captiongrab = 0;
