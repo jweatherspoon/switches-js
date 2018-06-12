@@ -19,3 +19,19 @@ exports.GetTFTPDirectoryContents = async (search, callback) => {
         callback(search, files);
     });
 }
+
+/**
+ * Get a list of directories in a base path 
+ * @param {string} basepath - The directory to search
+ * @param {function} callback - Callback function that is
+ * passed a list of directories found in basepath
+ */
+exports.GetDirs = async (basepath, callback) => {
+    fs.readdir(basepath, (err, files) => {
+        // Filter the directories
+        let dirs = files.filter(file => {
+            return fs.statSync(path.join(basepath, file)).isDirectory();
+        })
+        callback(dirs);
+    })
+}

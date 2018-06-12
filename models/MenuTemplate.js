@@ -1,6 +1,4 @@
-const { ConfigurationWindow } = require('../models/ConfigurationMenu');
-
-const config = new ConfigurationWindow();
+const { ConfigurationWindow } = require('./ConfigurationMenu');
 
 let template = [
     {
@@ -8,7 +6,9 @@ let template = [
         submenu: [
             {
                 label: 'Show Configuration Menu',
-                click: () => config.openWindow(),
+                click: () => {
+                    ConfigurationWindow.openWindow()
+                },
             }, {
                 type: 'separator'
             }, 

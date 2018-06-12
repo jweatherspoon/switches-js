@@ -13,13 +13,11 @@ const {
     GetRecommendedCodeVersion,
     CheckTFTPDirForCodeVersion,
     URLS,   
-} = require('./models/helpers/serial');
-
-const { GetTFTPDirectoryContents } = require('./models/helpers/filesys');
+} = require('./helpers/serial');
+const { GetTFTPDirectoryContents } = require('./helpers/filesys');
+const { template } = require('./models/MenuTemplate');
 
 const path = require('path');
-
-const { template } = require('./models/MenuTemplate');
 
 let win, config, browser;
 
@@ -75,7 +73,6 @@ app.on('ready', () => {
         Menu.buildFromTemplate(template)
     );
 });
-
 
 // EVENTS 
 

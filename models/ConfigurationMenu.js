@@ -28,11 +28,27 @@ class ConfigurationWindow {
 
             // this.config.setMenu(null);
 
-            this.config.on('close', () => this.config = null);
+            this.config.on('closed', () => this.config = null);
         } else {
             this.config.focus();
         }
     }
+
+    /**
+     * Add an event handler to the configuration menu to 
+     * run one time
+     * @param {string} event - The event to add to
+     * @param {function} callback - A callback function with 
+     * no arguments 
+     */
+    addHandler(event, callback) {
+        if(event !== 'closed') {
+            this.config.addListener(event, callback);
+            this.config.addListener(event, () => {
+                this.config.removeListener(event, callback);
+            })
+        }
+    }
 }
 
-exports.ConfigurationWindow = ConfigurationWindow;
+exports.ConfigurationWindow = new ConfigurationWindow();
