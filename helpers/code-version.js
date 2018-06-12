@@ -116,6 +116,12 @@ const GetRecommendedCodeVersion = async (model, url) => {
     }
 }
 
+/**
+ * Check that the code in a directory matches a version for a given switch model
+ * @param {string} tftpDirectory - Path to the TFTP directory on the system
+ * @param {string} model - The model name of the switch
+ * @param {string} version - The code version to match against
+ */
 const CheckCodeExists = async (tftpDirectory, model, version) => {
     return new Promise((resolve, reject) => {
         // Read TFTP directory
@@ -125,6 +131,11 @@ const CheckCodeExists = async (tftpDirectory, model, version) => {
     })
 }
 
+/**
+ * Update the code stored in the user's TFTP directory
+ * @param {string} model - The model name of the switch
+ * @param {string} supportSiteKey - The key for the support site dictionary
+ */
 const UpdateCodeVersion = async (model, supportSiteKey) => {
     let codeUpdated;
     let versionData;
@@ -164,6 +175,11 @@ const UploadDefaultConfig = async (model) => {
 
 }
 
+/**
+ * Update and upload default flash / boot / PoE (optional) to a switch
+ * @param {string} model - The model name of the switch
+ * @param {string} supportSiteKey - The key for the support site dictionary
+ */
 exports.SwitchDefaultConfig = async (model, supportSiteKey) => {
     let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
     if(codeUpdated) {
