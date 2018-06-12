@@ -1,13 +1,16 @@
 const SerialPort = require('serialport');
 const Parsers = SerialPort.parsers;
 const cheerio = require('cheerio');
+const fetch = require('node-fetch');
+
+const { CodeVersionUrl } = require('../CodeVersionUrl');
 
 const {
     GetTFTPDirectoryContents    
 } = require('./filesys');
 
-const URLS = {
-    ruckus: 'https://support.ruckuswireless.com/product_families/21-ruckus-icx-switches',
+exports.URLS = {
+    ruckus: new CodeVersionUrl('https://support.ruckuswireless.com', 'product_families/21-ruckus-icx-switches'),
 };
 
 exports.parser = new Parsers.Readline({
@@ -52,10 +55,13 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
     // Search for the model name 
     let link = FindElementsByText($, 'a', model);
 
+    console.log("First Link:", link.length);
+    
     // Make sure a link was retrieved. If not return null
     if(link.length < 1) return null;
     // Get the href from the parsed element
     link = link[0].attribs.href;
+
 
     // Follow the parsed link and fetch the HTML
     $ = await FetchHtmlAndLoad(link);
@@ -68,6 +74,8 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
     try {
         let href = link[0].next.next.firstChild.attribs.href;
         
+        console.log("Second link:", JSON.stringify(href));
+
         // Now that we have the link, find the code version
         let re = /\d+-\d+-\d+\w*/;
         let ver = re.exec(href);
@@ -77,7 +85,7 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
         };
 
         if(ver) { // Code version successfully found
-            data.version = ver[0].replace(/-/g, '');
+            data.version = ver[0].replace(/\.|-/g, '');
         }
 
         return data;
@@ -92,12 +100,15 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
  * @throws {Error} If there is no configured TFTP directory
  * @returns {boolean} True if the version is found in the folder
  */
-exports.CheckTFTPDirForCodeVersion = async (ver) => {
-    let files = await GetTFTPDirectoryContents();
-    
+exports.CheckTFTPDirForCodeVersion = async (ver, files) => {
+    let re = /\.|-/g;
     let found = false;
     for(let file of files) {
-        console.log(file);
+        file = file.replace(re, ''); // Remove dashes and dots
+        if(file.includes(ver)) {
+            found = true;
+            break;
+        }
     }
 
     return found;

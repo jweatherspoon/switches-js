@@ -1,13 +1,14 @@
 const $ = require('jquery');
 const storage = require('electron-json-storage');
+const { settingKeys } = require('../../models/helpers/user-settings');
 
 const keys = [
     {
-        key: "tftp-directory",
+        key: settingKeys.tftp,
         contentID: "#tftp-dir-text"
     },
     {
-        key: "management-vlan",
+        key: settingKeys.managementVlan,
         contentID: "#management-vlan"
     }
 ];
@@ -84,8 +85,10 @@ function SetContent(key, contentVal, defaultVal) {
 }
 
 function GetContent(contentID) {
-    let val = $(contentID).val();
-    if(!val) {
+    let val;
+    if($(contentID)[0].tagName === "INPUT") {
+        val = $(contentID).val();
+    } else {
         val = $(contentID).text();
     }
 

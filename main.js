@@ -6,33 +6,42 @@ const {
     Menu,
 } = require('electron');
 
-const path = require('path');
+const { 
+    port,
+    GetPorts, 
+    OpenPort,
+    GetRecommendedCodeVersion,
+    CheckTFTPDirForCodeVersion,
+    URLS,   
+} = require('./models/helpers/serial');
 
-const { port, GetPorts, OpenPort } = require('./models/helpers/serial');
+const { GetTFTPDirectoryContents } = require('./models/helpers/filesys');
+
+const path = require('path');
 
 const { template } = require('./models/MenuTemplate');
 
-let win, config;
+let win, config, browser;
 
 /**
  * Create a GUI window and store its handle
  */
-function CreateWindow() {
-    win = new BrowserWindow({
+function CreateWindow(href) {
+    let win = new BrowserWindow({
         height: 800,
         width: 1000,
         title: "Switch Configuration",
         icon: path.join(__dirname, 'renderer-assets/icons/png/icon.png')
     });
 
-    win.loadFile('./renderer-assets/html/index.html');
+    if(href.startsWith('http')) {
+        win.loadURL(href);
+    } else {
+        win.loadFile(href);
+    }
 
-    win.on('closed', () => {
-        win = null;
-        if (process.platform !== 'darwin') {
-            app.quit();
-        }
-    });
+
+    return win
 }
 
 /**
@@ -54,7 +63,15 @@ app.on('activate', () => {
 })
 
 app.on('ready', () => {
-    CreateWindow();
+    win = CreateWindow('./renderer-assets/html/index.html');
+
+    win.on('closed', () => {
+        win = null;
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
+    });
+
     Menu.setApplicationMenu(
         Menu.buildFromTemplate(template)
     );
@@ -68,3 +85,24 @@ ipcMain.on('serial:getports', (event, arg) => {
         event.sender.send('serial:getports:reply', data);
     })
 });
+
+ipcMain.on('filesys:checkver', (event, arg) => {
+    GetRecommendedCodeVersion(arg.model, URLS[arg.site].url).then(data => {
+        console.log(data);
+        if(data) {
+            let url = `${URLS[arg.site].base}${data.href}`;
+            GetTFTPDirectoryContents(data.version, (ver, files) => {
+                CheckTFTPDirForCodeVersion(ver, files).then(found => {
+                    console.log(found);
+                    if(!found) {
+                        console.log(url);
+                        browser = CreateWindow(url);
+                        browser.webContents.executeJavaScript(
+                            'alert("The recommended code version for this switch was not found on your system. Please download it from this page and extract it to your configured TFTP directory.");'
+                        )
+                    }
+                });
+            });
+        }
+    })
+})
