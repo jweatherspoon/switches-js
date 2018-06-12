@@ -84,6 +84,11 @@ function SetContent(key, contentVal, defaultVal) {
     }
 }
 
+/**
+ * Get the content in an element with a given ID
+ * @param {string} contentID - Get the content stored in contentID
+ * @returns {string} The content associated with the given ID
+ */
 function GetContent(contentID) {
     let val;
     if($(contentID)[0].tagName === "INPUT") {
@@ -128,6 +133,7 @@ $("#config-save").click(e => {
     })
 });
 
+// Load user settings on page load
 $(document).ready(() => {
     LoadSettings();
 });
