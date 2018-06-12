@@ -2,9 +2,12 @@ if(!$) {
     const $ = require('jquery');
 }
 
+customtxtincr = 0;
+
 var newvlan = `<div style="padding: 10">
-<input type="text" id="txtCustomVLAN" name="txtCustomVLAN" placeholder="Name of VLAN" style="padding-right: 10; width: 150;">
-<input class="vlaninput" type="number" id="VOIPVLAN" name="VOIPVLAN" style="margin-left: 10" placeholder="VLAN">
+<input type="text" id="txtCustomVLAN${customtxtincr}" name="txtCustomVLAN" placeholder="Name of VLAN" style="padding-right: 10; width: 150;">
+<input class="vlaninput" type="number" id="txtVLAN" name="txtVLAN" style="margin-left: 10" placeholder="VLAN">
+<button type="button" id="btnVLANDelete${customtxtincr}">&times;</button>
 </div>`
 
 customvlancount = 4;
@@ -18,6 +21,7 @@ $('#btnCustomVLAN').click(function(){
         $(newvlan).insertBefore('#divbtnCustomVLAN');
         $('#btnCustomVLAN').hide();
     }
+    customtxtincr ++;
 })
 
 captioncounter = 0;
@@ -43,7 +47,10 @@ $('#btnVLANSubmit').click(function(){
                 flag = true;
                 errorarray.push($(`#divVLANForm label:eq(${captioncounter})`).text().slice(0,-1));
             }
-        };
+        }
+        if (customvlancount < 4) {
+            
+        }
         captioncounter ++;
     });
     if (flag == false) {
