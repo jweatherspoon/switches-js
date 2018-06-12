@@ -62,7 +62,7 @@ app.on('activate', () => {
 })
 
 app.on('ready', () => {
-    win = CreateWindow('./renderer-assets/html/index.html');
+    win = CreateWindow();
 
     win.on('closed', () => {
         win = null;
