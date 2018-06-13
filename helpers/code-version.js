@@ -132,6 +132,23 @@ const CheckCodeExists = async (tftpDirectory, model, version) => {
 }
 
 /**
+ * Create the folder hierarchy for a switch in the TFTP directory
+ * @param {string} model - The model name of the switch
+ */
+const CreateTFTPStructure = async (model) => {
+
+}
+
+/**
+ * Guide the user through downloading the new code / adding it
+ * to their TFTP directory
+ * @param {string} codeURL - The URL for the download link of the new code
+ */
+const GetNewCode = async (codeURL) => {
+
+}
+
+/**
  * Update the code stored in the user's TFTP directory
  * @param {string} model - The model name of the switch
  * @param {string} supportSiteKey - The key for the support site dictionary
