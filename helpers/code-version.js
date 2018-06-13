@@ -3,6 +3,7 @@ const fs = require('fs');
 const storage = require('electron-json-storage');
 const cheerio = require('cheerio');
 const { settingKeys } = require('./user-settings');
+const { CreateDirectory } = require('./filesys');
 const { dialog } = require('electron');
 const { ConfigurationMenu } = require('../models/ConfigurationMenu');
 
@@ -117,6 +118,52 @@ const GetRecommendedCodeVersion = async (model, url) => {
 }
 
 /**
+ * Check the boot folder in a given directory for a code version
+ * @param {string} modelDirectory - The path to the model directory
+ * @param {string} version - The string that stores the version data
+ */
+const CheckBootFolder = async (modelDirectory, version) => {
+    return new Promise((resolve, reject) => {
+        // Find a binary file inside the BOOT directory
+        fs.readdir(path.join(modelDirectory, "BOOT"), (err, files) => {
+            if (err || !files || files.length === 0) {
+                reject(false);
+            }
+            // Find a file that matches the version number
+            let found = files.find(file => file.includes(version));
+            if (!found) {
+                reject(false);
+            } else {
+                resolve(true);
+            }
+        })
+    })
+}
+
+/**
+ * Check the flash folder in a given directory for a code version
+ * @param {string} modelDirectory - The path to the model directory
+ * @param {string} version - The string that stores the version data
+ */
+const CheckFlashFolder = async (modelDirectory, version) => {
+    return new Promise((resolve, reject) => {
+        // Find a binary file inside the FLASH directory
+        fs.readdir(path.join(modelDirectory, "FLASH"), (err, files) => {
+            if (err || !files || files.length === 0) {
+                reject(false);
+            }
+            // Find a file that matches the version number
+            let found = files.find(file => file.includes(version));
+            if (!found) {
+                reject(false);
+            } else {
+                resolve(true);
+            }
+        })
+    })
+}
+
+/**
  * Check that the code in a directory matches a version for a given switch model
  * @param {string} tftpDirectory - Path to the TFTP directory on the system
  * @param {string} model - The model name of the switch
@@ -125,18 +172,55 @@ const GetRecommendedCodeVersion = async (model, url) => {
 const CheckCodeExists = async (tftpDirectory, model, version) => {
     return new Promise((resolve, reject) => {
         // Read TFTP directory
-        let files = await 
+        fs.readdir(tftpDirectory, (err, files) => {
+            // Find a list of directories in tftpDir
+            let dirs = files.filter(file => {
+                fs.statSync(path.join(tftpDirectory, file)).isDirectory();
+            })
 
-        // Check BOOT / FLASH for version
+            let modelDirExists = dirs.find(dir => dir === model);
+
+            // Check BOOT / FLASH for version
+            if(modelDirExists) {
+                let modelDir = path.join(tftpDirectory, model);
+
+                let bootCheck = await CheckBootFolder(modelDir, version);
+                let flashCheck = await CheckFlashFolder(modelDir, version);
+
+                if(bootCheck && flashCheck) {
+                    resolve(true);
+                } else {
+                    reject(false);
+                }
+            }
+        })
+
+        // Code was not found in the folder
+        reject(false);
+
     })
 }
 
+
 /**
  * Create the folder hierarchy for a switch in the TFTP directory
+ * @param {string} tftpDirectory - The path to the configured TFTP directory
  * @param {string} model - The model name of the switch
  */
-const CreateTFTPStructure = async (model) => {
+exports.CreateTFTPStructure = async (tftpDirectory, model) => {
+    return new Promise((resolve, reject) => {
+        let bootPath = path.join(tftpDirectory, model, "BOOT");
+        let flashPath = path.join(tftpDirectory, model, "FLASH");
+        let poePath = path.join(tftpDirectory, model, "POE");
 
+        CreateDirectory(bootPath).then(() => {
+            CreateDirectory(flashPath).then(() => {
+                CreateDirectory(poePath).then(() => {
+                    resolve();
+                }).catch(err => reject());
+            }).catch(err => reject());
+        }).catch(err => reject());
+    });
 }
 
 /**
@@ -145,7 +229,7 @@ const CreateTFTPStructure = async (model) => {
  * @param {string} codeURL - The URL for the download link of the new code
  */
 const GetNewCode = async (codeURL) => {
-
+    console.log("browser boiiii");
 }
 
 /**
@@ -174,14 +258,13 @@ const UpdateCodeVersion = async (model, supportSiteKey) => {
                 let codeInTFTP = await CheckCodeExists(tftpDir, model, versionData.version);
                 
                 if(!codeInTFTP) {
-                    CreateTFTPStructure(model);
-                    GetNewCode(supportSiteKeys[supportSiteKey]);
+                    CreateTFTPStructure(model).then(() => {
+                        GetNewCode(supportSiteKeys[supportSiteKey]);
+                    }).catch();
                 } else {
                     codeUpdated = true;
                 }
             }
-
-    
         })
     }
 

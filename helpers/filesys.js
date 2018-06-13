@@ -35,3 +35,19 @@ exports.GetDirs = async (basepath, callback) => {
         callback(dirs);
     })
 }
+
+/**
+ * Try to create a new directory
+ * @param {string} dirPath - Path to the new directory
+ */
+exports.CreateDirectory = async (dirPath) => {
+    return new Promise((resolve, reject) => {
+        fs.mkdir(dirPath, (err) => {
+            if(err) {
+                reject(false);
+            } else {
+                resolve(true);
+            }
+        })
+    })
+}
