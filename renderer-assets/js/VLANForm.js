@@ -8,14 +8,15 @@ customtxtincr = 0;
 
 // Creates VLAN fields for CustomVLAN button
 function VLANCreator (vlannumber) {
-    var newvlan = `<div style="padding: 10" class='divCustomVLAN' id="divCustomVLAN${vlannumber}">
-<input type="text" id="txtCustomVLAN${vlannumber}" onfocusout="CVLANAgainst(${vlannumber})" class="CVSelector1" name="txtCustomVLAN" placeholder="Name of VLAN" style="margin-right: 10; width: 150;">
-<input class="vlaninput CVSelector2" type="number" id="txtVLAN${vlannumber}" onchange='VLANCheck(this)' onfocusout="CVLANAgainst(${vlannumber})" name="txtVLAN" style="margin-left: 10; width: 98" placeholder="VLAN">
+    var newvlan = `<div style="padding: 10" class='divCustomVLAN' id="divCustomVLAN${vlannumber}" onkeyup="CVLANAgainst(${vlannumber})">
+<input type="text" id="txtCustomVLAN${vlannumber}" class="CVSelector1" name="txtCustomVLAN" placeholder="Name of VLAN" style="margin-right: 10; width: 150;">
+<input class="vlaninput CVSelector2" type="number" id="txtVLAN${vlannumber}" onkeyup='VLANCheck(this)' name="txtVLAN" style="margin-left: 10; width: 98" placeholder="VLAN">
 <button type="button" onclick="deletieboi('divCustomVLAN${vlannumber}')" id="btnVLANDelete${vlannumber}">&times;</button>
 </div>`
     return newvlan;
 }
 
+// Error checker to make sure if one custom input has characters the other custom input also has characters.
 function CVLANAgainst(vlannum) {
     tvlanname = $(`#txtCustomVLAN${vlannum}`);
     tvlannum = $(`#txtVLAN${vlannum}`);
@@ -29,6 +30,7 @@ function CVLANAgainst(vlannum) {
     }
 }
 
+// Error checker to make sure VLAN is in desired range
 function VLANCheck(i) {
     x = i.value;
     if (x < 0 || x > 4096) {
@@ -67,57 +69,60 @@ function deletieboi(divid) {
     $('#btnCustomVLAN').text('Add Custom VLAN (' + customvlancount + ')');
 }
 
-captioncounter = 0;
-captiongrab = 0;
-vlandict = [];
-errorarray = [];
-var inputkey;
-var flag = false;
-
+// Submit button functions
 $('#btnVLANSubmit').click(function(){
     inputcount = $('#divVLANForm').find('input').length;
     if (inputcount == 8) {
         vlandictionary();
     } else {
-        //vlandictionary();
+        vlandictionary();
         CVLANDictionary();
     }
+    $('#divVLANForm').find('input').each(function (){
+        if (this.style.backgroundColor == 'red') {
+            alert("Please check any red input boxes for errors.");
+            return false;
+        } else {
+            if ($('#dualmodedcheck').is(':checked') && $('#VOIPVLAN').val() == '') {
+                alert('Please enter a VOIP VLAN or uncheck the dualmoded checkbox.');
+                return false;
+            } else {
+                // Next page
+            }
+        }
+    })
+    alert(JSON.stringify(vlandict));
 })
 
+captioncounter = 0;
+vlandict = [];
+errorarray = [];
+var inputkey;
+var flag = false;
+
+// Dictionary creator for prefilled in VLANS
 function vlandictionary() {
     vlandict = [];
     captioncounter = 0;
-    flag = false;
-    $('#divVLANForm').find('.OCVLAN').each(function(){
+    $('#divVLANForm').find('.OCVLAN').each(function() {
         if (this.value != '') {
-            if (this.value <= 4096 && this.value >= 0) {
-                inputkey = $(`#divVLANForm input:eq(${captioncounter})`).attr('id');
-                vlandict.push({
-                    key: inputkey,
-                    value: this.value
-            });
-            } else {
-                flag = true;
-                errorarray.push($(`#divVLANForm label:eq(${captioncounter})`).text().slice(0,-1));
-            }
-        }
+            inputkey = $(`#divVLANForm input:eq(${captioncounter})`).attr('id');
+            vlandict.push({
+                key: inputkey,
+                value: this.value
+            })
+        };
         captioncounter ++;
     });
-    if (flag == false) {
-        alert(JSON.stringify(vlandict));
-    } else {
-        alert("Please fix the following: " + errorarray);
-    }
 }
 
-tempvlandict = [];
-
+// Dictionary creator for custom VLANs
 function CVLANDictionary() {
     $('#divVLANForm').find('.divCustomVLAN').each(function() {
         tempkey = $(this).find('.CVSelector1').val();
         tempval = $(this).find('.CVSelector2').val();
         if (tempkey != '' && tempval != '') {
-            tempvlandict.push({
+            vlandict.push({
                 key: tempkey,
                 value: tempval
             });
@@ -127,5 +132,4 @@ function CVLANDictionary() {
             }
         }
     });
-    alert(JSON.stringify(tempvlandict));
 }
