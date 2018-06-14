@@ -3,7 +3,7 @@ if(!$) {
 }
 
 const {
-    dialog, Tray
+    dialog
 } = require('electron').remote
 
 // Number for unique IDs in VLANCreator
