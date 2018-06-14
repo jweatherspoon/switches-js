@@ -7,6 +7,7 @@ const { CreateDirectory } = require('./filesys');
 const { dialog } = require('electron').remote;
 const { ipcRenderer } = require('electron');
 const { ConfigurationWindow } = require('electron').remote.require('./models/ConfigurationMenu');
+const { CodeVersionBrowser } = require('electron').remote.require('./models/CodeVersionBrowser');
 
 /**
  * Guide the user through configuring a TFTP directory
@@ -116,6 +117,8 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
  * @param {string} modelDirectory - The path to the model folder in the TFTP directory
  * @param {string} childDirectory - The path to the child folder in the model directory
  * @param {string} version - String that stores the version data
+ * @returns {Promise} Resolves if a given code version is found in the folder.
+ * Rejects if it is not found.
  */
 exports.CheckFolder = (modelDirectory, childDirectory, version) => {
     return new Promise((resolve, reject) => {
@@ -141,6 +144,8 @@ exports.CheckFolder = (modelDirectory, childDirectory, version) => {
  * @param {string} tftpDirectory - Path to the TFTP directory on the system
  * @param {string} model - The model name of the switch
  * @param {string} version - The code version to match against
+ * @returns {Promise} Resolves if boot and flash code exist. Rejects if 
+ * one or both do not exist.
  */
 exports.CheckCodeExists = async (tftpDirectory, model, version) => {
     return new Promise((resolve, reject) => {
@@ -184,6 +189,8 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
  * Create the folder hierarchy for a switch in the TFTP directory
  * @param {string} tftpDirectory - The path to the configured TFTP directory
  * @param {string} model - The model name of the switch
+ * @returns {Promise} Resolves if all directories are created /
+ * if they exist. Rejects if it cannot make any of the directories.
  */
 exports.CreateTFTPStructure = async (tftpDirectory, model) => {
     return new Promise(async (resolve, reject) => {
@@ -197,6 +204,7 @@ exports.CreateTFTPStructure = async (tftpDirectory, model) => {
             await CreateDirectory(bootPath);
             await CreateDirectory(flashPath);
             await CreateDirectory(poePath);
+            resolve(true);
         } catch(err) {
             reject("Failed to create directory structure!");
         }
@@ -207,9 +215,32 @@ exports.CreateTFTPStructure = async (tftpDirectory, model) => {
  * Guide the user through downloading the new code / adding it
  * to their TFTP directory
  * @param {string} codeURL - The URL for the download link of the new code
+ * @returns {Promise} Resolves when the browser is closed.
  */
-exports.GetNewCode = async (codeURL) => {
-    console.log("browser boiiii");
+exports.GetNewCode = async (codeURL, model, ver) => {
+    return new Promise((resolve, reject) => {
+        dialog.showMessageBox({
+            title: "Switch Code not Found",
+            type: "error",
+            message: `
+                Switch code version ${ver} was not found in 
+                your TFTP directory. Click the OK button to open
+                the support site. Please download the recommended
+                firmware version and extract it to the BOOT, 
+                FLASH, and POE folders in the ${model} folder 
+                in your TFTP directory. 
+            `,
+            buttons: [
+                "OK",
+            ],
+        }, () => {
+            CodeVersionBrowser.openWindow(codeURL, {
+                'close': () => {
+                    resolve(true);
+                }
+            });
+        })
+    });
 }
 
 /**
@@ -263,7 +294,7 @@ const UploadDefaultConfig = async (model) => {
 exports.SwitchDefaultConfig = async (model, supportSiteKey) => {
     let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
     if(codeUpdated) {
-        await UpdateCodeVersion(model);
+        await UploadDefaultConfig(model);
     }
 }
 

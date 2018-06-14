@@ -15,6 +15,8 @@ class ConfigurationWindow {
 
     /**
      * Create the configuration window or focus it if it exists
+     * @param {object} handlers (optional) - Object that contains event 
+     * handler names and functions.
      */
     openWindow(handlers) {
         if(!this.config) {

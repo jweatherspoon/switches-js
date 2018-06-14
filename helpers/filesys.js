@@ -37,8 +37,11 @@ exports.GetDirs = async (basepath, callback) => {
 }
 
 /**
- * Try to create a new directory
+ * Try to create a new directory. 
  * @param {string} dirPath - Path to the new directory
+ * @returns {Promise} Resolves on successful creation or 
+ * if the directory exists. Rejects if the directory cannot
+ * be created.
  */
 exports.CreateDirectory = async (dirPath) => {
     return new Promise((resolve, reject) => {

@@ -170,8 +170,9 @@ const TestCreateTFTPStructure = async (tftpDir, model) => {
     console.log(val);
 }
 
-const TestGetNewCode = async (codeURL) => {
-    GetNewCode(codeURL);
+const TestGetNewCode = async (codeURL, model, ver) => {
+    let val = await GetNewCode(codeURL, model, ver);
+    console.log(val);
 }
 
 const TestUpdateCodeVersion = async (model, supportSiteKey) => {
