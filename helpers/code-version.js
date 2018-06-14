@@ -112,39 +112,18 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
 }
 
 /**
- * Check the boot folder in a given directory for a code version
- * @param {string} modelDirectory - The path to the model directory
- * @param {string} version - The string that stores the version data
+ * Check if a code version exists in a folder
+ * @param {string} modelDirectory - The path to the model folder in the TFTP directory
+ * @param {string} childDirectory - The path to the child folder in the model directory
+ * @param {string} version - String that stores the version data
  */
-exports.CheckBootFolder = (modelDirectory, version) => {
-    return new Promise((resolve, reject) => {
-        // Find a binary file inside the BOOT directory
-        fs.readdir(path.join(modelDirectory, "BOOT"), (err, files) => {
-            if (err || !files || files.length === 0) {
-                reject(false);
-            }
-            // Find a file that matches the version number
-            let found = files.find(file => file.includes(version));
-            if (!found) {
-                reject(false);
-            } else {
-                resolve(true);
-            }
-        })
-    })
-}
-
-/**
- * Check the flash folder in a given directory for a code version
- * @param {string} modelDirectory - The path to the model directory
- * @param {string} version - The string that stores the version data
- */
-exports.CheckFlashFolder = (modelDirectory, version) => {
+exports.CheckFolder = (modelDirectory, childDirectory, version) => {
     return new Promise((resolve, reject) => {
         // Find a binary file inside the FLASH directory
-        fs.readdir(path.join(modelDirectory, "FLASH"), (err, files) => {
+        fs.readdir(path.join(modelDirectory, childDirectory), (err, files) => {
             if (err || !files || files.length === 0) {
                 reject(false);
+                return;
             }
             // Find a file that matches the version number
             let found = files.find(file => file.includes(version));
@@ -167,6 +146,11 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
     return new Promise((resolve, reject) => {
         // Read TFTP directory
         fs.readdir(tftpDirectory, async (err, files) => {
+            if(err) {
+                reject(false);
+                return;
+            }
+
             // Find a list of directories in tftpDir
             let dirs = files.filter(file => {
                 fs.statSync(path.join(tftpDirectory, file)).isDirectory();
@@ -178,8 +162,8 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
             if(modelDirExists) {
                 let modelDir = path.join(tftpDirectory, model);
 
-                let bootCheck = await CheckBootFolder(modelDir, version);
-                let flashCheck = await CheckFlashFolder(modelDir, version);
+                let bootCheck = await CheckFolder(modelDir, "BOOT", version);
+                let flashCheck = await CheckFolder(modelDir, "FLASH", version);
 
                 if(bootCheck && flashCheck) {
                     resolve(true);
@@ -202,18 +186,20 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
  * @param {string} model - The model name of the switch
  */
 exports.CreateTFTPStructure = async (tftpDirectory, model) => {
-    return new Promise((resolve, reject) => {
-        let bootPath = path.join(tftpDirectory, model, "BOOT");
-        let flashPath = path.join(tftpDirectory, model, "FLASH");
-        let poePath = path.join(tftpDirectory, model, "POE");
+    return new Promise(async (resolve, reject) => {
+        let modelPath = path.join(tftpDirectory, model);
+        let bootPath = path.join(modelPath, "BOOT");
+        let flashPath = path.join(modelPath, "FLASH");
+        let poePath = path.join(modelPath, "POE");
 
-        CreateDirectory(bootPath).then(() => {
-            CreateDirectory(flashPath).then(() => {
-                CreateDirectory(poePath).then(() => {
-                    resolve();
-                }).catch(err => reject());
-            }).catch(err => reject());
-        }).catch(err => reject());
+        try {
+            await CreateDirectory(modelPath);
+            await CreateDirectory(bootPath);
+            await CreateDirectory(flashPath);
+            await CreateDirectory(poePath);
+        } catch(err) {
+            reject("Failed to create directory structure!");
+        }
     });
 }
 

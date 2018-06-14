@@ -42,12 +42,18 @@ exports.GetDirs = async (basepath, callback) => {
  */
 exports.CreateDirectory = async (dirPath) => {
     return new Promise((resolve, reject) => {
-        fs.mkdir(dirPath, (err) => {
-            if(err) {
-                reject(false);
-            } else {
-                resolve(true);
-            }
-        })
+        // Check if the directory exists
+        let exists = fs.existsSync(dirPath);
+        if(exists) {
+            resolve(true);
+        } else {
+            fs.mkdir(dirPath, (err) => {
+                if(err) {
+                    reject(false);
+                } else {
+                    resolve(true);
+                }
+            })
+        }
     })
 }

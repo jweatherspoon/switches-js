@@ -14,8 +14,7 @@ const {
     FetchHtmlAndLoad,
     FindElementsByText,
     GetRecommendedCodeVersion,
-    CheckBootFolder,
-    CheckFlashFolder,
+    CheckFolder,
     CheckCodeExists,
     CreateTFTPStructure,
     GetNewCode,
@@ -59,7 +58,7 @@ const functionTests = [
         ],
     },
     {
-        function: CheckBootFolder,
+        function: CheckFolder,
         name: "CheckBootFolder",
         args: [
             modelDir, 
@@ -67,7 +66,7 @@ const functionTests = [
         ],
     },
     {
-        function: CheckFlashFolder,
+        function: CheckFolder,
         name: "CheckFlashFolder",
         args: [
             modelDir,
@@ -132,7 +131,6 @@ const TestFindElementsByText = async ($, tag, text) => {
     let cheerio = await FetchHtmlAndLoad("http://google.com");
     let ele = await FindElementsByText(cheerio, 'a', 'About');
     console.log(ele);
-    console.log(ele.attribs);
 }
 
 const TestGetRecommendedCodeVersion = async (model, url) => {
@@ -141,31 +139,47 @@ const TestGetRecommendedCodeVersion = async (model, url) => {
 }
 
 const TestCheckBootFolder = async (modelDir, ver) => {
-
-}
+    try {
+        let found = await CheckFolder(modelDir, "BOOT", ver);
+        console.log(found);
+    } catch(err) {
+        console.log(err);
+    }
+} 
 
 const TestCheckFlashFolder = async (modelDir, ver) => {
-
+    try {
+        let found = await CheckFolder(modelDir, "FLASH", ver);
+        console.log(found);
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 const TestCheckCodeExists = async (tftpDir, model, ver) => {
-
+    try {
+        let exists = await CheckCodeExists(tftpDir, model, ver);
+        console.log(exists);
+    } catch(err) {
+        console.log(err);
+    }
 }
 
 const TestCreateTFTPStructure = async (tftpDir, model) => {
-
+    let val = await CreateTFTPStructure(tftpDir, model);
+    console.log(val);
 }
 
 const TestGetNewCode = async (codeURL) => {
-
+    GetNewCode(codeURL);
 }
 
 const TestUpdateCodeVersion = async (model, supportSiteKey) => {
-
+    UpdateCodeVersion(model, supportSiteKey);
 }
 
 const TestSwitchDefaultConfig = async (model, supportSiteKey) => {
-
+    SwitchDefaultConfig(model, supportSiteKey);
 }
 //#endregion
 
