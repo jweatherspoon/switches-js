@@ -142,7 +142,7 @@ const TestGetRecommendedCodeVersion = async (model, url) => {
 
 const TestCheckBootFolder = async (modelDir, ver) => {
     try {
-        let found = await CheckFolder(modelDir, "BOOT", ver);
+        let found = await CheckFolder(modelDir, ver, "Boot");
         console.log(found);
     } catch(err) {
         console.log(err);
@@ -151,7 +151,7 @@ const TestCheckBootFolder = async (modelDir, ver) => {
 
 const TestCheckFlashFolder = async (modelDir, ver) => {
     try {
-        let found = await CheckFolder(modelDir, "FLASH", ver);
+        let found = await CheckFolder(modelDir, ver, "Flash");
         console.log(found);
     } catch (err) {
         console.log(err);
@@ -178,7 +178,12 @@ const TestGetNewCode = async (codeURL, model, ver) => {
 }
 
 const TestUpdateCodeVersion = async (model, supportSiteKey) => {
-    UpdateCodeVersion(model, supportSiteKey);
+    try {
+        let val = await UpdateCodeVersion(model, supportSiteKey);
+        console.log(val);
+    } catch(err) {
+        console.log(err);
+    }
 }
 
 const TestSwitchDefaultConfig = async (model, supportSiteKey) => {

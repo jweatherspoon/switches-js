@@ -89,8 +89,6 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
     // Get the href from the parsed element
     link = link[0].attribs.href;
 
-    console.log(link);
-
     // Follow the parsed link and fetch the HTML
     $ = await FetchHtmlAndLoad(link);
     link = FindElementsByText($, 'dt', 'Recommended Firmware:');
@@ -123,21 +121,21 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
 /**
  * Check if a code version exists in a folder
  * @param {string} modelDirectory - The path to the model folder in the TFTP directory
- * @param {string} childDirectory - The path to the child folder in the model directory
- * @param {string} version - String that stores the version data
+ * @param {string} versionDirectory - Path to the version directory in the model directory
+ * @param {string} childDirectory - The path to the child folder in the version directory
  * @returns {Promise} Resolves if a given code version is found in the folder.
  * Rejects if it is not found.
  */
-exports.CheckFolder = (modelDirectory, childDirectory, version) => {
+exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
     return new Promise((resolve, reject) => {
-        // Find a binary file inside the FLASH directory
-        fs.readdir(path.join(modelDirectory, childDirectory), (err, files) => {
+        // Find a binary file inside the Flash directory
+        fs.readdir(path.join(modelDirectory, versionDirectory, childDirectory), (err, files) => {
             if (err || !files || files.length === 0) {
-                reject(false);
+                reject(err);
                 return;
             }
             // Find a file that matches the version number
-            let found = files.find(file => file.includes(version));
+            let found = files.find(file => file.includes(".bin"));
             if (!found) {
                 reject(false);
             } else {
@@ -156,39 +154,21 @@ exports.CheckFolder = (modelDirectory, childDirectory, version) => {
  * one or both do not exist.
  */
 exports.CheckCodeExists = async (tftpDirectory, model, version) => {
-    return new Promise((resolve, reject) => {
-        // Read TFTP directory
-        fs.readdir(tftpDirectory, async (err, files) => {
-            if (err) {
-                reject(false);
-                return;
+    return new Promise(async (resolve, reject) => {
+        let modelDir = path.join(tftpDirectory, model);
+        
+        try {
+            let bootCheck = await CheckFolder(modelDir, version, "Boot");
+            let flashCheck = await CheckFolder(modelDir, version, "Flash");
+    
+            if (bootCheck && flashCheck) {
+                return resolve(true);
+            } else {
+                return reject(false);
             }
-
-            // Find a list of directories in tftpDir
-            let dirs = files.filter(file => {
-                fs.statSync(path.join(tftpDirectory, file)).isDirectory();
-            })
-
-            let modelDirExists = dirs.find(dir => dir === model);
-
-            // Check BOOT / FLASH for version
-            if (modelDirExists) {
-                let modelDir = path.join(tftpDirectory, model);
-
-                let bootCheck = await CheckFolder(modelDir, "BOOT", version);
-                let flashCheck = await CheckFolder(modelDir, "FLASH", version);
-
-                if (bootCheck && flashCheck) {
-                    resolve(true);
-                } else {
-                    reject(false);
-                }
-            }
-        })
-
-        // Code was not found in the folder
-        reject(false);
-
+        } catch(err) { 
+            reject(false);
+        }
     })
 }
 
@@ -200,15 +180,17 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
  * @returns {Promise} Resolves if all directories are created /
  * if they exist. Rejects if it cannot make any of the directories.
  */
-exports.CreateTFTPStructure = async (tftpDirectory, model) => {
+exports.CreateTFTPStructure = async (tftpDirectory, model, ver) => {
     return new Promise(async (resolve, reject) => {
         let modelPath = path.join(tftpDirectory, model);
-        let bootPath = path.join(modelPath, "BOOT");
-        let flashPath = path.join(modelPath, "FLASH");
-        let poePath = path.join(modelPath, "POE");
+        let versionPath = path.join(modelPath, version);
+        let bootPath = path.join(versionPath, "Boot");
+        let flashPath = path.join(versionPath, "Flash");
+        let poePath = path.join(versionPath, "Firmware");
 
         try {
             await CreateDirectory(modelPath);
+            await CreateDirectory(versionPath);
             await CreateDirectory(bootPath);
             await CreateDirectory(flashPath);
             await CreateDirectory(poePath);
@@ -234,8 +216,8 @@ exports.GetNewCode = async (codeURL, model, ver) => {
                 Switch code version ${ver} was not found in 
                 your TFTP directory. Click the OK button to open
                 the support site. Please download the recommended
-                firmware version and extract it to the BOOT, 
-                FLASH, and POE folders in the ${model} folder 
+                firmware version and extract it to the Boot, 
+                Flash, and Firmware folders in the ${model} folder 
                 in your TFTP directory. 
             `,
             buttons: [
@@ -262,8 +244,7 @@ exports.GetNewCode = async (codeURL, model, ver) => {
 exports.UpdateCodeVersion = async (model, supportSiteKey) => {
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftp, async (err, tftpDir) => {
-            console.log(tftpDir);
-            if (err || !tftpDir) {
+            if (err || Object.keys(tftpDir).length === 0) {
                 try {
                     await ConfigureTFTPDirectory();
                     return resolve(false);
@@ -307,9 +288,15 @@ const UploadDefaultConfig = async (model) => {
  * @param {string} supportSiteKey - The key for the support site dictionary
  */
 exports.SwitchDefaultConfig = async (model, supportSiteKey) => {
-    let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
-    if (codeUpdated) {
-        await UploadDefaultConfig(model);
+
+    try {
+        let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
+        if (codeUpdated) {
+            await UploadDefaultConfig(model);
+        } else {
+            SwitchDefaultConfig(model, supportSiteKey);
+        }
+    } catch(err) {
     }
 }
 
