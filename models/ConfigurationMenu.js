@@ -16,7 +16,7 @@ class ConfigurationWindow {
     /**
      * Create the configuration window or focus it if it exists
      */
-    openWindow() {
+    openWindow(handlers) {
         if(!this.config) {
             this.config = new BrowserWindow({
                 height: 500,
@@ -29,6 +29,12 @@ class ConfigurationWindow {
             // this.config.setMenu(null);
 
             this.config.on('closed', () => this.config = null);
+
+            if(handlers) {
+                for(let key in handlers) {
+                    this.config.on(key, handlers[key]);
+                }
+            }
         } else {
             this.config.focus();
         }

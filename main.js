@@ -16,6 +16,7 @@ const {
 } = require('./helpers/serial');
 const { GetTFTPDirectoryContents } = require('./helpers/filesys');
 const { template } = require('./models/MenuTemplate');
+const { ConfigurationWindow } = require('./models/ConfigurationMenu');
 
 const path = require('path');
 
@@ -102,3 +103,10 @@ ipcMain.on('filesys:checkver', (event, arg) => {
         }
     })
 })
+
+// Testing
+
+ipcMain.on("config:open", (event, arg) => {
+    ConfigurationWindow.openWindow();
+    event.returnValue = ConfigurationWindow;
+});

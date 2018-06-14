@@ -1,18 +1,19 @@
-const fetch = require('fetch');
+const fetch = require('node-fetch');
 const fs = require('fs');
 const storage = require('electron-json-storage');
 const cheerio = require('cheerio');
 const { settingKeys } = require('./user-settings');
 const { CreateDirectory } = require('./filesys');
-const { dialog } = require('electron');
-const { ConfigurationMenu } = require('../models/ConfigurationMenu');
+const { dialog } = require('electron').remote;
+const { ipcRenderer } = require('electron');
+const { ConfigurationWindow } = require('electron').remote.require('./models/ConfigurationMenu');
 
 /**
  * Guide the user through configuring a TFTP directory
  * @returns {Promise} Resolves once the user has closed 
  * the configuration menu
  */
-const ConfigureTFTPDirectory = async () => {
+exports.ConfigureTFTPDirectory = async () => {
     return new Promise((resolve, reject) => {
         // Tell the user they need to configure TFTP
         dialog.showMessageBox({
@@ -22,13 +23,13 @@ const ConfigureTFTPDirectory = async () => {
             type: "error",
             buttons: [
                 "OK",
-            ]
+            ],
         }, () => {
-            // Open the configuration menu and resolve when closed
-            ConfigurationMenu.openWindow();
-            ConfigurationMenu.addHandler('closed', () => {
-                resolve(true);
-            })
+            ConfigurationWindow.openWindow({
+                'closed': () => {
+                    resolve(true)
+                }
+            });
         })
     });
 }
@@ -38,7 +39,7 @@ const ConfigureTFTPDirectory = async () => {
  * @param {string} url - The URL to fetch HTML from 
  * @returns {Cheerio} A cheerio parser with the HTML loaded
  */
-FetchHtmlAndLoad = async (url) => {
+exports.FetchHtmlAndLoad = async (url) => {
     let html = await fetch(url).then(resp => resp.text());
     return cheerio.load(html);
 }
@@ -51,7 +52,7 @@ FetchHtmlAndLoad = async (url) => {
  * @returns {string[]} A list of elements that matched the 
  * given parameters
  */
-FindElementsByText = ($, tag, text) => {
+exports.FindElementsByText = ($, tag, text) => {
     let elements = $(tag).filter(function (index) {
         if ($(this).text() === text) {
             return text;
@@ -69,16 +70,11 @@ FindElementsByText = ($, tag, text) => {
  * @returns {object} - An object containing the recommended
  * code version and a link to the file 
  */
-const GetRecommendedCodeVersion = async (model, url) => {
-    // let html = await fetch(url).then(resp => resp.text());
-    // let $ = cheerio.load(html);
-
+exports.GetRecommendedCodeVersion = async (model, url) => {
     let $ = await FetchHtmlAndLoad(url);
 
     // Search for the model name 
     let link = FindElementsByText($, 'a', model);
-
-    console.log("First Link:", link.length);
 
     // Make sure a link was retrieved. If not return null
     if (link.length < 1) return null;
@@ -96,8 +92,6 @@ const GetRecommendedCodeVersion = async (model, url) => {
     // try to get the link to the firmware version
     try {
         let href = link[0].next.next.firstChild.attribs.href;
-
-        console.log("Second link:", JSON.stringify(href));
 
         // Now that we have the link, find the code version
         let re = /\d+-\d+-\d+\w*/;
@@ -122,7 +116,7 @@ const GetRecommendedCodeVersion = async (model, url) => {
  * @param {string} modelDirectory - The path to the model directory
  * @param {string} version - The string that stores the version data
  */
-const CheckBootFolder = async (modelDirectory, version) => {
+exports.CheckBootFolder = (modelDirectory, version) => {
     return new Promise((resolve, reject) => {
         // Find a binary file inside the BOOT directory
         fs.readdir(path.join(modelDirectory, "BOOT"), (err, files) => {
@@ -145,7 +139,7 @@ const CheckBootFolder = async (modelDirectory, version) => {
  * @param {string} modelDirectory - The path to the model directory
  * @param {string} version - The string that stores the version data
  */
-const CheckFlashFolder = async (modelDirectory, version) => {
+exports.CheckFlashFolder = (modelDirectory, version) => {
     return new Promise((resolve, reject) => {
         // Find a binary file inside the FLASH directory
         fs.readdir(path.join(modelDirectory, "FLASH"), (err, files) => {
@@ -169,10 +163,10 @@ const CheckFlashFolder = async (modelDirectory, version) => {
  * @param {string} model - The model name of the switch
  * @param {string} version - The code version to match against
  */
-const CheckCodeExists = async (tftpDirectory, model, version) => {
+exports.CheckCodeExists = async (tftpDirectory, model, version) => {
     return new Promise((resolve, reject) => {
         // Read TFTP directory
-        fs.readdir(tftpDirectory, (err, files) => {
+        fs.readdir(tftpDirectory, async (err, files) => {
             // Find a list of directories in tftpDir
             let dirs = files.filter(file => {
                 fs.statSync(path.join(tftpDirectory, file)).isDirectory();
@@ -228,7 +222,7 @@ exports.CreateTFTPStructure = async (tftpDirectory, model) => {
  * to their TFTP directory
  * @param {string} codeURL - The URL for the download link of the new code
  */
-const GetNewCode = async (codeURL) => {
+exports.GetNewCode = async (codeURL) => {
     console.log("browser boiiii");
 }
 
@@ -237,12 +231,12 @@ const GetNewCode = async (codeURL) => {
  * @param {string} model - The model name of the switch
  * @param {string} supportSiteKey - The key for the support site dictionary
  */
-const UpdateCodeVersion = async (model, supportSiteKey) => {
+exports.UpdateCodeVersion = async (model, supportSiteKey) => {
     let codeUpdated;
     let versionData;
 
     while(!codeUpdated) {
-        storage.get(settingKeys.tftp, (err, tftpDir) => {
+        storage.get(settingKeys.tftp, async (err, tftpDir) => {
             if(err || !tftpDir) {
                 await ConfigureTFTPDirectory();
             } else {
