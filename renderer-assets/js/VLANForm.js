@@ -2,6 +2,10 @@ if(!$) {
     const $ = require('jquery');
 }
 
+const {
+    dialog, Tray
+} = require('electron').remote
+
 // Number for unique IDs in VLANCreator
 customtxtincr = 0;
 
@@ -71,27 +75,32 @@ function deletieboi(divid) {
 
 // Submit button functions
 $('#btnVLANSubmit').click(function(){
-    inputcount = $('#divVLANForm').find('input').length;
-    if (inputcount == 8) {
-        vlandictionary();
-    } else {
-        vlandictionary();
-        CVLANDictionary();
-    }
+    flaggy = true;
     $('#divVLANForm').find('input').each(function (){
         if (this.style.backgroundColor == 'red') {
             alert("Please check any red input boxes for errors.");
+            flaggy = false;
             return false;
         } else {
             if ($('#dualmodedcheck').is(':checked') && $('#VOIPVLAN').val() == '') {
                 alert('Please enter a VOIP VLAN or uncheck the dualmoded checkbox.');
+                flaggy = false;
                 return false;
-            } else {
-                // Next page
             }
         }
+
     })
-    alert(JSON.stringify(vlandict));
+    if (flaggy == true) {
+        inputcount = $('#divVLANForm').find('input').length;
+        if (inputcount == 8) {
+            vlandictionary();
+        } else {
+            vlandictionary();
+            CVLANDictionary();
+        }
+        alert(JSON.stringify(vlandict));
+        VLANDialog();
+    }
 })
 
 captioncounter = 0;
@@ -133,3 +142,36 @@ function CVLANDictionary() {
         }
     });
 }
+
+
+// Creates VLANDialog so the user can confirm the VLANs
+function VLANDialog () {
+    var VLANString = '';
+    vlandict.forEach((K, index) => {
+        vkey = JSON.stringify(K.key)
+        vval = JSON.stringify(K.value)
+        VLANString += vkey + ': ' + vval + '\n' ;
+    });
+    dialog.showMessageBox(
+        options = {
+        type: 'info',
+        title: 'Your VLANs',
+        buttons: ['Looks good!', 'Whoops I messed up.'],
+        message: VLANString,
+        }, (index) => {
+            if (index == 0) {
+                portpickerhtml();
+            } else {
+                return false;
+            }
+        }
+    )
+}
+
+function portpickerhtml() {
+        $("#VLANFlexContainer").fadeOut();
+        $("#VLANFlexContainer").html(memeteam)
+        setTimeout(function () { $(document.body).load('./PortPicker.html') }, 500);
+}
+
+var memeteam = `<p style='font-size: 30;'>Wowzers</p>`
