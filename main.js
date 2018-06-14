@@ -22,6 +22,10 @@ const path = require('path');
 
 let win, config, browser;
 
+let switchConfigSettings = {
+
+};
+
 /**
  * Create a GUI window and store its handle
  */
@@ -104,9 +108,7 @@ ipcMain.on('filesys:checkver', (event, arg) => {
     })
 })
 
-// Testing
-
-ipcMain.on("config:open", (event, arg) => {
-    ConfigurationWindow.openWindow();
-    event.returnValue = ConfigurationWindow;
-});
+// Add to switchConfigSettings object here
+// ipcMain.on('event-name', (event, arg) => {
+//     switchConfigSettings.<something> = <something-else>;
+// });
