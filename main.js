@@ -88,6 +88,10 @@ ipcMain.on('serial:getports', (event, arg) => {
     })
 });
 
+ipcMain.on("configmenu:show", (event, arg) => {
+    ConfigurationWindow.openWindow();
+});
+
 ipcMain.on('filesys:checkver', (event, arg) => {
     GetRecommendedCodeVersion(arg.model, URLS[arg.site].url).then(data => {
         console.log(data);
