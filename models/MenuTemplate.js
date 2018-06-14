@@ -1,26 +1,24 @@
-const { ConfigurationWindow } = require('./ConfigurationMenu');
-
-let template = [
-    {
-        label: 'Configure',
-        submenu: [
-            {
-                label: 'Show Configuration Menu',
-                click: () => {
-                    ConfigurationWindow.openWindow()
+exports.GenerateTemplate = (configWindow) => {
+    return [
+        {
+            label: 'Configure',
+            submenu: [
+                {
+                    label: 'Show Configuration Menu',
+                    click: () => {
+                        configWindow.openWindow()
+                    },
+                }, {
+                    type: 'separator'
                 },
-            }, {
-                type: 'separator'
-            }, 
-        ]
-    },
-    {
-        label: 'Developer Tools',
-        submenu: [
-            { role: 'toggledevtools' },
-            { role: 'reload' }
-        ]
-    }
-];
-
-exports.template = template;
+            ]
+        },
+        {
+            label: 'Developer Tools',
+            submenu: [
+                { role: 'toggledevtools' },
+                { role: 'reload' }
+            ]
+        }
+    ];
+}

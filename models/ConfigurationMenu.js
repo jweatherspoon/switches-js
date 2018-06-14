@@ -1,4 +1,6 @@
-const { BrowserWindow } = require('electron');
+const { BrowserWindow, Menu, dialog } = require('electron');
+const storage = require('electron-json-storage');
+const { GenerateTemplate } = require('./MenuTemplate');
 
 /**
  * Models the application configuration window
@@ -11,6 +13,19 @@ class ConfigurationWindow {
     constructor() {
         this.config = null;
         this.configGUI = `${__dirname}/../renderer-assets/html/config.html`;
+    
+        this.menuTemplate = GenerateTemplate(this);
+        this.menuTemplate.push({
+            label: "Clear Settings",
+            submenu: [
+                {
+                    label: "Clear All Settings",
+                    click: () => {
+                        this.clearSettingsProcess();
+                    }
+                }
+            ]
+        });
     }
 
     /**
@@ -28,7 +43,9 @@ class ConfigurationWindow {
 
             this.config.loadFile(this.configGUI);
 
-            // this.config.setMenu(null);
+            this.config.setMenu(
+                Menu.buildFromTemplate(this.menuTemplate)
+            );
 
             this.config.on('closed', () => this.config = null);
 
@@ -56,6 +73,29 @@ class ConfigurationWindow {
                 this.config.removeListener(event, callback);
             })
         }
+    }
+
+    clearSettingsProcess() {
+        let buttons = [
+            "I DONT NEED NO SETTINGS",
+            "Get me outta here!!!",
+        ];
+        dialog.showMessageBox({
+            title: "Are You Sure?",
+            message: `
+            This will clear ALL user settings and 
+            show you the configuration menu on your next 
+            startup. This action is IRREVERSIBLE. 
+            Are you sure you want to do this?
+        `,
+            buttons: buttons,
+            type: "warning",
+        }, (index) => {
+            if (index === 0) {
+                storage.clear();
+                this.config.close();
+            }
+        })
     }
 }
 

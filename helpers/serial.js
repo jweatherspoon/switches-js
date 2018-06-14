@@ -7,10 +7,6 @@ const {
     GetTFTPDirectoryContents    
 } = require('./filesys');
 
-exports.supportSites = {
-    ruckus: new CodeVersionUrl('https://support.ruckuswireless.com', 'product_families/21-ruckus-icx-switches'),
-};
-
 exports.parser = new Parsers.Readline({
     delimeter: '\n'
 });

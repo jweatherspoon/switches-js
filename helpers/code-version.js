@@ -2,12 +2,19 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const storage = require('electron-json-storage');
 const cheerio = require('cheerio');
+
 const { settingKeys } = require('./user-settings');
 const { CreateDirectory } = require('./filesys');
+
+const { CodeVersionUrl } = require('../models/CodeVersionUrl');
+
 const { dialog } = require('electron').remote;
-const { ipcRenderer } = require('electron');
 const { ConfigurationWindow } = require('electron').remote.require('./models/ConfigurationMenu');
 const { CodeVersionBrowser } = require('electron').remote.require('./models/CodeVersionBrowser');
+
+exports.supportSites = {
+    ruckus: new CodeVersionUrl('https://support.ruckuswireless.com', 'product_families/21-ruckus-icx-switches'),
+};
 
 /**
  * Guide the user through configuring a TFTP directory
@@ -82,6 +89,7 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
     // Get the href from the parsed element
     link = link[0].attribs.href;
 
+    console.log(link);
 
     // Follow the parsed link and fetch the HTML
     $ = await FetchHtmlAndLoad(link);
@@ -151,7 +159,7 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
     return new Promise((resolve, reject) => {
         // Read TFTP directory
         fs.readdir(tftpDirectory, async (err, files) => {
-            if(err) {
+            if (err) {
                 reject(false);
                 return;
             }
@@ -164,13 +172,13 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
             let modelDirExists = dirs.find(dir => dir === model);
 
             // Check BOOT / FLASH for version
-            if(modelDirExists) {
+            if (modelDirExists) {
                 let modelDir = path.join(tftpDirectory, model);
 
                 let bootCheck = await CheckFolder(modelDir, "BOOT", version);
                 let flashCheck = await CheckFolder(modelDir, "FLASH", version);
 
-                if(bootCheck && flashCheck) {
+                if (bootCheck && flashCheck) {
                     resolve(true);
                 } else {
                     reject(false);
@@ -205,7 +213,7 @@ exports.CreateTFTPStructure = async (tftpDirectory, model) => {
             await CreateDirectory(flashPath);
             await CreateDirectory(poePath);
             resolve(true);
-        } catch(err) {
+        } catch (err) {
             reject("Failed to create directory structure!");
         }
     });
@@ -235,51 +243,58 @@ exports.GetNewCode = async (codeURL, model, ver) => {
             ],
         }, () => {
             CodeVersionBrowser.openWindow(codeURL, {
-                'close': () => {
-                    resolve(true);
+                'closed': () => {
+                    return resolve(true);
                 }
             });
         })
     });
+
 }
 
 /**
  * Update the code stored in the user's TFTP directory
  * @param {string} model - The model name of the switch
  * @param {string} supportSiteKey - The key for the support site dictionary
+ * @returns {Promise} Resolves to true when the code is ready to be uploaded.
+ * Resolves to false if a step fails. Rejects if a crash occurs.
  */
 exports.UpdateCodeVersion = async (model, supportSiteKey) => {
-    let codeUpdated;
-    let versionData;
-
-    while(!codeUpdated) {
+    return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftp, async (err, tftpDir) => {
-            if(err || !tftpDir) {
-                await ConfigureTFTPDirectory();
-            } else {
-                versionData = versionData || await GetCodeVersion(model, supportSiteKeys[supportSiteKey]);
-        
-                if (!versionData) {
-                    throw new Error(
-                        `Failed to retrive data from ${supportSiteKeys[supportSiteKey].url}!`
-                    )
+            console.log(tftpDir);
+            if (err || !tftpDir) {
+                try {
+                    await ConfigureTFTPDirectory();
+                    return resolve(false);
+                } catch (err) {
+                    return reject("Failed to configure TFTP directory");
                 }
-        
-                // Check if the updated code exists in the TFTP directory
-                let codeInTFTP = await CheckCodeExists(tftpDir, model, versionData.version);
-                
-                if(!codeInTFTP) {
-                    CreateTFTPStructure(model).then(() => {
-                        GetNewCode(supportSiteKeys[supportSiteKey]);
-                    }).catch();
-                } else {
-                    codeUpdated = true;
+            } else {
+                try {
+                    versionData = await GetRecommendedCodeVersion(model, supportSites[supportSiteKey].url);
+                } catch (err) {
+                    return reject(`Failed to fetch data from ${supportSites[supportSiteKey].url}`);
+                }
+
+                try {
+                    // Check if the updated code exists in the TFTP directory
+                    let codeInTFTP = await CheckCodeExists(tftpDir, model, versionData.version);
+                    return resolve(true);
+                } catch (err) {
+                    CreateTFTPStructure(tftpDir, model).then(() => {
+                        GetNewCode(supportSites[supportSiteKey].url, model, versionData.version).then(() => {
+                            return resolve(false)
+                        }).catch(() => {
+                            return reject("Failed to get new code")
+                        });
+                    }).catch((err) => {
+                        return reject(err);
+                    })
                 }
             }
         })
-    }
-
-    return codeUpdated;
+    })
 }
 
 const UploadDefaultConfig = async (model) => {
@@ -293,7 +308,7 @@ const UploadDefaultConfig = async (model) => {
  */
 exports.SwitchDefaultConfig = async (model, supportSiteKey) => {
     let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
-    if(codeUpdated) {
+    if (codeUpdated) {
         await UploadDefaultConfig(model);
     }
 }

@@ -15,7 +15,7 @@ const {
     URLS,   
 } = require('./helpers/serial');
 const { GetTFTPDirectoryContents } = require('./helpers/filesys');
-const { template } = require('./models/MenuTemplate');
+const { GenerateTemplate } = require('./models/MenuTemplate');
 const { ConfigurationWindow } = require('./models/ConfigurationMenu');
 
 const path = require('path');
@@ -74,6 +74,7 @@ app.on('ready', () => {
         }
     });
 
+    let template = GenerateTemplate(ConfigurationWindow);
     Menu.setApplicationMenu(
         Menu.buildFromTemplate(template)
     );

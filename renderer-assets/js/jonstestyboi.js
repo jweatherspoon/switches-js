@@ -7,7 +7,7 @@ const {
 } = require('electron');
 
 
-const { supportSites } = require('../../helpers/serial');
+const { supportSites } = require('../../helpers/code-version');
 
 const {
     ConfigureTFTPDirectory,
@@ -94,7 +94,9 @@ const functionTests = [
         function: GetNewCode,
         name: "GetNewCode",
         args: [
-            supportSites.ruckus,
+            supportSites.ruckus.url,
+            model,
+            version,
         ],
     },
     {

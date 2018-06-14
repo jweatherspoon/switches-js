@@ -12,16 +12,17 @@ class CodeVersionBrowser {
                 height: 800,
                 width: 1000,
                 title: "Switch Configuration",
-                icon: path.join(__dirname, '../renderer-assets/icons/png/icon.png'), 
-            }) 
+            });
 
             this.browser.loadURL(url);
 
-            this.browser.on('close', () => this.browser = null);
+            this.browser.on('closed', () => this.browser = null);
 
             for(let key in handlers) {
                 this.browser.on(key, handlers[key]);
             }
+        } else {
+            this.browser.focus();
         }
     }
 }

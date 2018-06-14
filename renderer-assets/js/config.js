@@ -1,6 +1,8 @@
 const $ = require('jquery');
 const storage = require('electron-json-storage');
-const { settingKeys } = require('../../models/helpers/user-settings');
+const { settingKeys } = require('../../helpers/user-settings');
+
+const { dialog } = require('electron').remote;
 
 const keys = [
     {
@@ -22,11 +24,13 @@ function LoadSettings() {
         if(err) console.log(err);
 
         keys.forEach(key => {
-            let val = data[key.key];
-            if(Object.keys(val).length !== 0) {
-                $(key.contentID).text(val);
-                $(key.contentID).val(val);
-            }       
+            try {
+                let val = data[key.key];
+                if(Object.keys(val).length !== 0) {
+                    $(key.contentID).text(val);
+                    $(key.contentID).val(val);
+                }       
+            } catch(err) { /* Skip this key */ }
         })
     })
 }
@@ -37,7 +41,15 @@ function LoadSettings() {
  * @param {string} val - The value of that key
  */
 async function SetSetting(key, val) {
-    return await storage.set(key, val);
+    return new Promise((resolve, reject) => {
+        storage.set(key, val, (err) => {
+            if(err) {
+                return reject(err);
+            } else {
+                return resolve(1);
+            }
+        })
+    })
 }
 
 /**
@@ -46,14 +58,15 @@ async function SetSetting(key, val) {
  * contains setting keys and values
  */
 async function SaveSettings(settings) {
-    let count = 0;
-    
-    for(let key in settings) {
-        await SetSetting(key, settings[key]);
-        count ++;
-    }
+    return new Promise(async (resolve, reject) => {
+        let count = 0;
 
-    return count;
+        for(let key in settings) {
+            count += await SetSetting(key, settings[key]);
+        }
+
+        return resolve(count);
+    })
 }
 
 /**
@@ -114,7 +127,7 @@ $("#tftp-dir").change(e => {
     
 })
 
-$("#config-save").click(e => {
+$("#config-save").click(async e => {
     let settings = {};
     keys.forEach(keyObj => {
         let val = GetContent(keyObj.contentID);
@@ -126,10 +139,8 @@ $("#config-save").click(e => {
     console.log(settings);
 
     // Save each setting to persistent storage
-    SaveSettings(settings).then(count => {
-        if(count == Object.keys(settings).length) {
-            window.close();
-        }
+    SaveSettings(settings).then(result => {
+        window.close();
     })
 });
 
