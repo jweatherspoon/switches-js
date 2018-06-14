@@ -5,8 +5,9 @@
     <body>
         <div class="switchback">
             <div class="outerdiv">
-                <div class="innerdiv">
+                <div class="innerdiv" style="width: fit-content">
                     <h1>What kind of switch do you have?</h1>
+                    <label for="switchselector" style="float: left; margin-right: -150">Switch Model:</label>
                     <select id="switchselector">
                             <option disabled selected value></option>
                             <option value="FWS">FWS</option>
@@ -15,7 +16,13 @@
                             <option value="ICX7150">ICX7250</option>
                             <option value="ICX7450">ICX7450</option>
                     </select>
-                    <button type="button" id="switchsubmit">That's the one.</button>
+                    <div style="padding-top: 10">
+                        <label for="NumberofSwitches" style="float: left; margin-right: -150">Number of Switches:</label>
+                        <input onkeyup='SwitchNumberCheck(this)' type="number" id="NumberofSwitches" style="width: 103;" name="NumberofSwitches" placeholder="1-10">
+                    </div>
+                    <div style="padding-top: 10;">
+                        <button type="button" id="switchsubmit">This information is probably correct.</button>
+                    </div>
                 </div>
             </div>
         </div>   

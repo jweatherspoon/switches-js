@@ -6,6 +6,6 @@ $("#switchsubmit").click(function(){
     if ($("#switchselector").val() !== null) {
         $(".innerdiv").fadeOut();
         $(".innerdiv").text('Good Job');
-        setTimeout(function() {$(document.body).load('./VLANForm.html')},500);
+        setTimeout(function() {$(document.body).load('./SwitchStack.html')},500);
     };
     });

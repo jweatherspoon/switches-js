@@ -109,6 +109,10 @@ ipcMain.on('filesys:checkver', (event, arg) => {
 })
 
 // Add to switchConfigSettings object here
-// ipcMain.on('event-name', (event, arg) => {
-//     switchConfigSettings.<something> = <something-else>;
-// });
+ ipcMain.on('switchConfig:set', (event, arg) => {
+     switchConfigSettings[arg.page] = arg.data;
+ });
+
+ ipcMain.on('switchConfig:get', (event, page) => {
+    event.sender.send('config:get:return', switchConfigSettings[page])
+ });
