@@ -5,15 +5,11 @@
  */
 
 const SerialPort = require('serialport');
-const Parsers = SerialPort.parsers;
-
-exports.parser = new Parsers.Readline({
-    delimeter: '\n'
-});
 
 /**
  * Get a list of active serial ports. Each port contains a COM name and id
- * @returns {Promise<object[]>} Active serial ports
+ * @async
+ * @returns {object[]} Active serial ports
  */
 exports.GetPorts = async () => {
     let ports = await SerialPort.list();

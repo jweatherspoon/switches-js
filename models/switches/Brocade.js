@@ -24,7 +24,7 @@ class Brocade {
 
     /**
      * Handle the boot sequence for a Brocade / Ruckus switch
-     * @returns {Promise} Resolves when the switch has booted
+     * @returns {boolean} Resolves when the switch has booted
      */
     async handleBoot() {
         // Enter the boot monitor 

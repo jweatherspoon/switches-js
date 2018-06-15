@@ -4,8 +4,6 @@
  * @module filesys
  */
 
-const storage = require('electron-json-storage');
-const {settingKeys} = require('./user-settings');
 const fs = require('fs');
 
 /**
@@ -15,7 +13,7 @@ const fs = require('fs');
  * if the directory exists. Rejects if the directory cannot
  * be created.
  */
-exports.CreateDirectory = async (dirPath) => {
+exports.CreateDirectory = (dirPath) => {
     return new Promise((resolve, reject) => {
         // Check if the directory exists
         let exists = fs.existsSync(dirPath);

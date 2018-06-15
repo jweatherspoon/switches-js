@@ -51,8 +51,9 @@ exports.ConfigureTFTPDirectory = () => {
 
 /**
  * Fetch some html and load it into the cheerio parser
+ * @async
  * @param {string} url - The URL to fetch HTML from 
- * @returns {Promise<Cheerio>} A cheerio parser with the HTML loaded
+ * @returns {Cheerio} A cheerio parser with the HTML loaded
  */
 exports.FetchHtmlAndLoad = async (url) => {
     let html = await fetch(url).then(resp => resp.text());
@@ -80,9 +81,10 @@ exports.FindElementsByText = ($, tag, text) => {
 
 /**
  * Get the recommended firmware version for a switch 
+ * @async
  * @param {string} model - The model name of the switch 
  * @param {string} url - The url to search
- * @returns {Promise<object>} - An object containing the recommended
+ * @returns {object} - An object containing the recommended
  * code version and a link to the file 
  */
 exports.GetRecommendedCodeVersion = async (model, url) => {
@@ -154,10 +156,11 @@ exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
 
 /**
  * Check that the code in a directory matches a version for a given switch model
+ * @async
  * @param {string} tftpDirectory - Path to the TFTP directory on the system
  * @param {string} model - The model name of the switch
  * @param {string} version - The code version to match against
- * @returns {Promise<boolean>} Resolves if boot and flash code exist. Rejects if 
+ * @returns {boolean} Resolves if boot and flash code exist. Rejects if 
  * one or both do not exist.
  */
 exports.CheckCodeExists = async (tftpDirectory, model, version) => {
@@ -176,9 +179,10 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
 
 /**
  * Create the folder hierarchy for a switch in the TFTP directory
+ * @async
  * @param {string} tftpDirectory - The path to the configured TFTP directory
  * @param {string} model - The model name of the switch
- * @returns {Promise<any>} Resolves if all directories are created /
+ * @returns {any} Resolves if all directories are created /
  * if they exist. Rejects if it cannot make any of the directories.
  */
 exports.CreateTFTPStructure = async (tftpDirectory, model, ver) => {
@@ -202,7 +206,7 @@ exports.CreateTFTPStructure = async (tftpDirectory, model, ver) => {
  * @param {string} codeURL - The URL for the download link of the new code
  * @returns {Promise<boolean>} Resolves when the browser is closed.
  */
-exports.GetNewCode = async (codeURL, model, ver) => {
+exports.GetNewCode = (codeURL, model, ver) => {
     return new Promise((resolve, reject) => {
         dialog.showMessageBox({
             title: "Switch Code not Found",
@@ -275,6 +279,7 @@ exports.UpdateCodeVersion = async (model, supportSiteKey) => {
 
 /**
  * Update and upload default flash / boot / PoE (optional) to a switch
+ * @async
  * @param {string} model - The model name of the switch
  * @param {string} supportSiteKey - The key for the support site dictionary
  */
