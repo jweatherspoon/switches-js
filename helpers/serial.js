@@ -1,12 +1,6 @@
 const SerialPort = require('serialport');
 const Parsers = SerialPort.parsers;
 
-const { CodeVersionUrl } = require('../models/CodeVersionUrl');
-
-const {
-    GetTFTPDirectoryContents    
-} = require('./filesys');
-
 exports.parser = new Parsers.Readline({
     delimeter: '\n'
 });
@@ -32,23 +26,3 @@ exports.OpenPort = (portname, baudRate) => {
         baudRate: baudRate
     });
 };
-
-/**
- * Check the machine's TFTP directory for a code version 
- * @param {string} ver - The code version to check for
- * @throws {Error} If there is no configured TFTP directory
- * @returns {boolean} True if the version is found in the folder
- */
-exports.CheckTFTPDirForCodeVersion = async (ver, files) => {
-    let re = /\.|-/g;
-    let found = false;
-    for(let file of files) {
-        file = file.replace(re, ''); // Remove dashes and dots
-        if(file.includes(ver)) {
-            found = true;
-            break;
-        }
-    }
-
-    return found;
-}

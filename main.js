@@ -14,7 +14,6 @@ const {
     CheckTFTPDirForCodeVersion,
     URLS,   
 } = require('./helpers/serial');
-const { GetTFTPDirectoryContents } = require('./helpers/filesys');
 const { GenerateTemplate } = require('./models/MenuTemplate');
 const { ConfigurationWindow } = require('./models/ConfigurationMenu');
 
@@ -91,27 +90,6 @@ ipcMain.on('serial:getports', (event, arg) => {
 ipcMain.on("configmenu:show", (event, arg) => {
     ConfigurationWindow.openWindow();
 });
-
-ipcMain.on('filesys:checkver', (event, arg) => {
-    GetRecommendedCodeVersion(arg.model, URLS[arg.site].url).then(data => {
-        console.log(data);
-        if(data) {
-            let url = `${URLS[arg.site].base}${data.href}`;
-            GetTFTPDirectoryContents(data.version, (ver, files) => {
-                CheckTFTPDirForCodeVersion(ver, files).then(found => {
-                    console.log(found);
-                    if(!found) {
-                        console.log(url);
-                        browser = CreateWindow(url);
-                        browser.webContents.executeJavaScript(
-                            'alert("The recommended code version for this switch was not found on your system. Please download it from this page and extract it to your configured TFTP directory.");'
-                        )
-                    }
-                });
-            });
-        }
-    })
-})
 
 // Add to switchConfigSettings object here
  ipcMain.on('switchConfig:set', (event, arg) => {

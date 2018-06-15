@@ -278,10 +278,6 @@ exports.UpdateCodeVersion = async (model, supportSiteKey) => {
     })
 }
 
-const UploadDefaultConfig = async (model) => {
-
-}
-
 /**
  * Update and upload default flash / boot / PoE (optional) to a switch
  * @param {string} model - The model name of the switch
@@ -292,7 +288,7 @@ exports.SwitchDefaultConfig = async (model, supportSiteKey) => {
     try {
         let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
         if (codeUpdated) {
-            await UploadDefaultConfig(model);
+            // await UploadDefaultConfig(model);
         } else {
             SwitchDefaultConfig(model, supportSiteKey);
         }
