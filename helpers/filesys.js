@@ -1,3 +1,8 @@
+/**
+ * @file Helper functions for dealing with the file system
+ * @author Jonathan Weatherspoon
+ */
+
 const storage = require('electron-json-storage');
 const {settingKeys} = require('./user-settings');
 const fs = require('fs');
@@ -5,7 +10,7 @@ const fs = require('fs');
 /**
  * Try to create a new directory. 
  * @param {string} dirPath - Path to the new directory
- * @returns {Promise} Resolves on successful creation or 
+ * @returns {Promise<boolean>} Resolves on successful creation or 
  * if the directory exists. Rejects if the directory cannot
  * be created.
  */

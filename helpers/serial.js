@@ -1,3 +1,8 @@
+/**
+ * @file Helper functions for dealing with serial communication
+ * @author Jonathan Weatherspoon
+ */
+
 const SerialPort = require('serialport');
 const Parsers = SerialPort.parsers;
 

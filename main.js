@@ -1,20 +1,20 @@
-const { 
-    app, 
-    BrowserWindow, 
-    ipcMain, 
-    webContents, 
+const {
+    app,
+    BrowserWindow,
+    ipcMain,
+    webContents,
     Menu,
 } = require('electron');
 
-const { 
+const {
     port,
-    GetPorts, 
+    GetPorts,
     OpenPort,
     GetRecommendedCodeVersion,
     CheckTFTPDirForCodeVersion,
-    URLS,   
+    URLS,
 } = require('./helpers/serial');
-const { GenerateTemplate } = require('./models/MenuTemplate');
+const { GenerateTemplate } = require('./helpers/menu-template');
 const { ConfigurationWindow } = require('./models/ConfigurationMenu');
 
 const path = require('path');
@@ -27,6 +27,7 @@ let switchConfigSettings = {
 
 /**
  * Create a GUI window and store its handle
+ * @returns {BrowserWindow} A handle to the created window
  */
 function CreateWindow(href) {
     let win = new BrowserWindow({
@@ -36,7 +37,7 @@ function CreateWindow(href) {
         icon: path.join(__dirname, 'renderer-assets/icons/png/icon.png')
     });
 
-    if(!href) {
+    if (!href) {
         win.loadFile("./renderer-assets/html/index.html");
     } else {
         win.loadURL(href);
@@ -63,6 +64,10 @@ app.on('activate', () => {
     }
 })
 
+/**
+ * Create the main window, set its event handlers, and 
+ * build out the application menu
+ */
 app.on('ready', () => {
     win = CreateWindow();
 
@@ -81,21 +86,35 @@ app.on('ready', () => {
 
 // EVENTS 
 
+/**
+ * Get a list of active serial ports and return them to the 
+ * sender.
+ */
 ipcMain.on('serial:getports', (event, arg) => {
     GetPorts().then(data => {
         event.sender.send('serial:getports:reply', data);
     })
 });
 
+/**
+ * Show the configuration menu
+ */
 ipcMain.on("configmenu:show", (event, arg) => {
     ConfigurationWindow.openWindow();
 });
 
 // Add to switchConfigSettings object here
- ipcMain.on('switchConfig:set', (event, arg) => {
-     switchConfigSettings[arg.page] = arg.data;
- });
 
- ipcMain.on('switchConfig:get', (event, page) => {
+/**
+ * Set a property of the switchConfigSettings object
+ */
+ipcMain.on('switchConfig:set', (event, arg) => {
+    switchConfigSettings[arg.page] = arg.data;
+});
+
+/**
+ * Get a property of the switchConfigSettings object
+ */
+ipcMain.on('switchConfig:get', (event, page) => {
     event.sender.send('config:get:return', switchConfigSettings[page])
- });
+});

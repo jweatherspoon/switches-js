@@ -1,5 +1,13 @@
 /**
- * Model for storing information about code version URLs
+ * @file Model for storing support site URL data
+ * @author Jonathan Weatherspoon
+ */
+
+
+/**
+ * @class 
+ * @classdesc Allows for easy access and URL splitting of 
+ * a URL where switch code can be found
  */
 class CodeVersionUrl {
     /**
