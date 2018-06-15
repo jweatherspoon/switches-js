@@ -1,6 +1,7 @@
 /**
  * @file Stores the keys for all user settings
  * @author Jonathan Weatherspoon
+ * @module
  */
 
 exports.settingKeys = {

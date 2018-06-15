@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: helpers/filesys.js</title>
+    <title>JSDoc: Module: helpers/user-settings.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,51 +17,103 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: helpers/filesys.js</h1>
+    <h1 class="page-title">Module: helpers/user-settings.js</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @file Helper functions for dealing with the file system
- * @author Jonathan Weatherspoon
- * @module
- */
+</header>
 
-const storage = require('electron-json-storage');
-const {settingKeys} = require('./user-settings');
-const fs = require('fs');
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Stores the keys for all user settings</div>
+        
 
-/**
- * Try to create a new directory. 
- * @param {string} dirPath - Path to the new directory
- * @returns {Promise&lt;any>} Resolves on successful creation or 
- * if the directory exists. Rejects if the directory cannot
- * be created.
- */
-exports.CreateDirectory = async (dirPath) => {
-    return new Promise((resolve, reject) => {
-        // Check if the directory exists
-        let exists = fs.existsSync(dirPath);
-        if(exists) {
-            resolve(true);
-        } else {
-            fs.mkdir(dirPath, (err) => {
-                if(err) {
-                    reject(`Failed to create directory ${dirPath}`);
-                } else {
-                    resolve(true);
-                }
-            })
-        }
-    })
-}</code></pre>
-        </article>
-    </section>
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Jonathan Weatherspoon</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helpers_user-settings.js.html">helpers/user-settings.js</a>, <a href="helpers_user-settings.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

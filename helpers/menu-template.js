@@ -2,6 +2,7 @@
  * @file Helper function for generating a template to build
  * out an application menu
  * @author Jonathan Weatherspoon
+ * @module
  */
 
 /**
