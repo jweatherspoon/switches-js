@@ -1,7 +1,7 @@
 /**
  * @file Helper functions for dealing with serial communication
  * @author Jonathan Weatherspoon
- * @module
+ * @module serial
  */
 
 const SerialPort = require('serialport');

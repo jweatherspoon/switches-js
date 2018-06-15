@@ -1,7 +1,7 @@
 /**
  * @file Helper functions for dealing with the file system
  * @author Jonathan Weatherspoon
- * @module
+ * @module filesys
  */
 
 const storage = require('electron-json-storage');

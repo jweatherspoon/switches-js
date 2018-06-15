@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: CodeVersionBrowser</title>
+    <title>JSDoc: Module: serial</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: CodeVersionBrowser</h1>
+    <h1 class="page-title">Module: serial</h1>
 
     
 
@@ -28,10 +28,8 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>CodeVersionBrowser<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Models the browser that opens when a user 
-must download switch code from a support site.</div>
+            
         
     
 </header>
@@ -40,13 +38,118 @@ must download switch code from a support site.</div>
     <div class="container-overview">
     
         
+            <div class="description">Helper functions for dealing with serial communication</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
 
     
-    <h2>Constructor</h2>
+
     
 
     
-    <h4 class="name" id="CodeVersionBrowser"><span class="type-signature"></span>new CodeVersionBrowser<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Jonathan Weatherspoon</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helpers_serial.js.html">helpers/serial.js</a>, <a href="helpers_serial.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".GetPorts"><span class="type-signature">(static) </span>GetPorts<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span></h4>
     
 
     
@@ -54,7 +157,7 @@ must download switch code from a support site.</div>
 
 
 <div class="description">
-    Create a new CodeVersionBrowser
+    Get a list of active serial ports. Each port contains a COM name and id
 </div>
 
 
@@ -98,7 +201,7 @@ must download switch code from a support site.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_CodeVersionBrowser.js.html">models/CodeVersionBrowser.js</a>, <a href="models_CodeVersionBrowser.js.html#line16">line 16</a>
+        <a href="helpers_serial.js.html">helpers/serial.js</a>, <a href="helpers_serial.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -121,30 +224,32 @@ must download switch code from a support site.</div>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Active serial ports
+</div>
 
 
 
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Array.&lt;object>></span>
 
+
+    </dd>
+</dl>
 
     
-    </div>
 
-    
 
-    
 
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
 
         
             
@@ -152,7 +257,7 @@ must download switch code from a support site.</div>
     
 
     
-    <h4 class="name" id="openWindow"><span class="type-signature"></span>openWindow<span class="signature">(url, handlers)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".OpenPort"><span class="type-signature">(static) </span>OpenPort<span class="signature">(portname, baudRate)</span><span class="type-signature"> &rarr; {SerialPort}</span></h4>
     
 
     
@@ -160,7 +265,7 @@ must download switch code from a support site.</div>
 
 
 <div class="description">
-    Open a browser to a support site for the user
+    Open a serial connection given a port and baudrate
 </div>
 
 
@@ -196,7 +301,7 @@ must download switch code from a support site.</div>
 
         <tr>
             
-                <td class="name"><code>url</code></td>
+                <td class="name"><code>portname</code></td>
             
 
             <td class="type">
@@ -212,20 +317,20 @@ must download switch code from a support site.</div>
 
             
 
-            <td class="description last">The URL to load on browser open</td>
+            <td class="description last">The COM port of the serial device</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>handlers</code></td>
+                <td class="name"><code>baudRate</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">number</span>
 
 
             
@@ -235,9 +340,7 @@ must download switch code from a support site.</div>
 
             
 
-            <td class="description last">An object where the keys 
-contain event names and the values are callback 
-functions to be executed.</td>
+            <td class="description last">The baud rate used to communicate with the device</td>
         </tr>
 
     
@@ -278,7 +381,7 @@ functions to be executed.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_CodeVersionBrowser.js.html">models/CodeVersionBrowser.js</a>, <a href="models_CodeVersionBrowser.js.html#line32">line 32</a>
+        <a href="helpers_serial.js.html">helpers/serial.js</a>, <a href="helpers_serial.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -301,6 +404,28 @@ functions to be executed.</td>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Connection to the specified serial device
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">SerialPort</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 

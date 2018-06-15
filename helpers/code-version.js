@@ -2,7 +2,7 @@
  * @file Functions for ensuring the installed code version on the 
  * machine is correct and up to date.
  * @author Jonathan Weatherspoon
- * @module
+ * @module code-version
  */
 
 const fetch = require('node-fetch');
