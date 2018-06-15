@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha \"./tests/*.test.js\"",
     "start": "electron .",
-    "docs": "jsdoc . && jsdoc -r ./helpers ./models"
+    "docs": "jsdoc -r main.js ./helpers ./models"
   },
   "repository": {
     "type": "git",

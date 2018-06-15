@@ -1,3 +1,9 @@
+/**
+ * @file Main process for the application
+ * @author Jonathan Weatherspoon
+ * @author Noah Rotroff
+ */
+
 const {
     app,
     BrowserWindow,
