@@ -23,6 +23,23 @@ class Brocade {
     }
 
     /**
+     * Handle the boot sequence for a Brocade / Ruckus switch
+     * @returns {Promise} Resolves when the switch has booted
+     */
+    async handleBoot() {
+        // Enter the boot monitor 
+        await this.switch.addListener("press b to stop");
+
+        // bypass the password and begin booting
+        await this.passwordBypass();
+
+        // Wait for the system to finish booting 
+        await this.switch.addListener("Initialization is done");
+
+        return true;
+    }
+
+    /**
      * Reset a Brocade switch to factory default
      */
     async wipe() {
@@ -33,7 +50,10 @@ class Brocade {
      * Bypass the Brocade / Ruckus enable password and boot
      */
     async passwordBypass() {
-
+        await this.switch.write("no password");
+        // Try to boot using the old method first
+        await this.switch.write("boot system flash primary");
+        await this.switch.write("boot");
     }
 
     /**

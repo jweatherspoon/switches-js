@@ -7,6 +7,10 @@
 const SerialPort = require('serialport');
 const Ready = SerialPort.parsers.Ready;
 
+const {
+    OpenPort
+} = require('../../helpers/serial');
+
 /**
  * @class 
  * @classdesc Models a generic switch that has serial 
@@ -25,18 +29,26 @@ class Switch {
         this.parser = null;
         
         // Connect to the switch
-        this.port = new SerialPort(this.portName, {
-            baudRate: this.baud
-        })
+        this.port = OpenPort(portName, baudRate);
     }
 
     /**
      * Write a command to a switch over serial      
      * @param {string} command - The command to send to the 
      * switch
+     * @returns {Promise<any>} Rejects with error message on failure.
+     * Resolves on successful write.
      */
     write(command) {
-        this.port.write(command);
+        return new Promise((resolve, reject) => {
+            this.port.write(command, err => {
+                if(err) {
+                    reject(`Failed to execute ${command}`);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
     }
 
     /**
@@ -47,7 +59,7 @@ class Switch {
      * @returns {Promise<any>} Resolves when the event text 
      * is read from the switch
      */
-    async addListener(eventText, resolveValue) {
+    addListener(eventText, resolveValue) {
         return new Promise((resolve, reject) => {
             this.parser = this.port.pipe(new Ready({
                 delimiter: eventText,

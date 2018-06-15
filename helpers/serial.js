@@ -12,7 +12,7 @@ exports.parser = new Parsers.Readline({
 
 /**
  * Get a list of active serial ports. Each port contains a COM name and id
- * @returns {object[]} Active serial ports
+ * @returns {Promise<object[]>} Active serial ports
  */
 exports.GetPorts = async () => {
     let ports = await SerialPort.list();

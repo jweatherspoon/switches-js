@@ -27,7 +27,7 @@ exports.supportSites = {
  * @returns {Promise<boolean>} Resolves once the user has closed 
  * the configuration menu
  */
-exports.ConfigureTFTPDirectory = async () => {
+exports.ConfigureTFTPDirectory = () => {
     return new Promise((resolve, reject) => {
         // Tell the user they need to configure TFTP
         dialog.showMessageBox({
@@ -51,7 +51,7 @@ exports.ConfigureTFTPDirectory = async () => {
 /**
  * Fetch some html and load it into the cheerio parser
  * @param {string} url - The URL to fetch HTML from 
- * @returns {Cheerio} A cheerio parser with the HTML loaded
+ * @returns {Promise<Cheerio>} A cheerio parser with the HTML loaded
  */
 exports.FetchHtmlAndLoad = async (url) => {
     let html = await fetch(url).then(resp => resp.text());
@@ -81,7 +81,7 @@ exports.FindElementsByText = ($, tag, text) => {
  * Get the recommended firmware version for a switch 
  * @param {string} model - The model name of the switch 
  * @param {string} url - The url to search
- * @returns {object} - An object containing the recommended
+ * @returns {Promise<object>} - An object containing the recommended
  * code version and a link to the file 
  */
 exports.GetRecommendedCodeVersion = async (model, url) => {
@@ -160,22 +160,16 @@ exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
  * one or both do not exist.
  */
 exports.CheckCodeExists = async (tftpDirectory, model, version) => {
-    return new Promise(async (resolve, reject) => {
-        let modelDir = path.join(tftpDirectory, model);
-        
-        try {
-            let bootCheck = await CheckFolder(modelDir, version, "Boot");
-            let flashCheck = await CheckFolder(modelDir, version, "Flash");
+    let modelDir = path.join(tftpDirectory, model);
     
-            if (bootCheck && flashCheck) {
-                return resolve(true);
-            } else {
-                return reject(false);
-            }
-        } catch(err) { 
-            reject(false);
-        }
-    })
+    try {
+        let bootCheck = await CheckFolder(modelDir, version, "Boot");
+        let flashCheck = await CheckFolder(modelDir, version, "Flash");
+
+        return bootCheck && flashCheck;
+    } catch(err) { 
+        throw new Error(false);
+    }
 }
 
 
@@ -187,24 +181,18 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
  * if they exist. Rejects if it cannot make any of the directories.
  */
 exports.CreateTFTPStructure = async (tftpDirectory, model, ver) => {
-    return new Promise(async (resolve, reject) => {
         let modelPath = path.join(tftpDirectory, model);
         let versionPath = path.join(modelPath, version);
         let bootPath = path.join(versionPath, "Boot");
         let flashPath = path.join(versionPath, "Flash");
         let poePath = path.join(versionPath, "Firmware");
 
-        try {
-            await CreateDirectory(modelPath);
-            await CreateDirectory(versionPath);
-            await CreateDirectory(bootPath);
-            await CreateDirectory(flashPath);
-            await CreateDirectory(poePath);
-            resolve(true);
-        } catch (err) {
-            reject("Failed to create directory structure!");
-        }
-    });
+        await CreateDirectory(modelPath);
+        await CreateDirectory(versionPath);
+        await CreateDirectory(bootPath);
+        await CreateDirectory(flashPath);
+        await CreateDirectory(poePath);
+        return true;
 }
 
 /**
