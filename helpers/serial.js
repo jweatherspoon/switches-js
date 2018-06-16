@@ -5,6 +5,7 @@
  */
 
 const SerialPort = require('serialport');
+const Ready = SerialPort.parsers.Ready;
 
 /**
  * Get a list of active serial ports. Each port contains a COM name and id
@@ -28,3 +29,16 @@ exports.OpenPort = (portname, baudRate) => {
         baudRate: baudRate
     });
 };
+
+/**
+ * Create a new Ready Parser
+ * @param {string} delimiter - The delimiter text for the
+ * parser
+ * @returns {ReadyParser} Serial parser that emits a ready
+ * event when it matches text against the delimiter
+ */
+exports.ReadyParser = (delimiter) => {
+    return new Ready({
+        delimiter: delimiter
+    });
+}

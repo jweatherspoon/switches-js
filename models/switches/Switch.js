@@ -4,11 +4,9 @@
  * @author Jonathan Weatherspoon
  */
 
-const SerialPort = require('serialport');
-const Ready = SerialPort.parsers.Ready;
-
 const {
-    OpenPort
+    OpenPort,
+    ReadyParser
 } = require('../../helpers/serial');
 
 /**
@@ -60,10 +58,10 @@ class Switch {
      * is read from the switch
      */
     addListener(eventText, resolveValue) {
-        return new Promise((resolve, reject) => {
-            this.parser = this.port.pipe(new Ready({
-                delimiter: eventText,
-            }));
+        return new Promise(resolve => {
+            this.parser = this.port.pipe(
+                ReadyParser(eventText)
+            );
 
             this.parser.on('ready', () => {
                 resolve(resolveValue)
