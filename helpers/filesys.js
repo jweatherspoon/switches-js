@@ -1,49 +1,19 @@
-const storage = require('electron-json-storage');
-const {settingKeys} = require('./user-settings');
+/**
+ * @file Helper functions for dealing with the file system
+ * @author Jonathan Weatherspoon
+ * @module filesys
+ */
+
 const fs = require('fs');
-
-/**
- * Get a list of files in the TFTP directory and perform a 
- * callback on the list returned
- * @param {string} search - A pattern to search for (can be regex)
- * @param {function} callback - Callback function that gets passed
- * search and a list of files in the directory
- */
-exports.GetTFTPDirectoryContents = async (search, callback) => {
-    storage.get(settingKeys.tftp, (err, dirname) => {
-        if(err || !dirname) {
-            throw new Error("No TFTP directory configured!");
-        }
-    
-        let files = fs.readdirSync(dirname);
-        callback(search, files);
-    });
-}
-
-/**
- * Get a list of directories in a base path 
- * @param {string} basepath - The directory to search
- * @param {function} callback - Callback function that is
- * passed a list of directories found in basepath
- */
-exports.GetDirs = async (basepath, callback) => {
-    fs.readdir(basepath, (err, files) => {
-        // Filter the directories
-        let dirs = files.filter(file => {
-            return fs.statSync(path.join(basepath, file)).isDirectory();
-        })
-        callback(dirs);
-    })
-}
 
 /**
  * Try to create a new directory. 
  * @param {string} dirPath - Path to the new directory
- * @returns {Promise} Resolves on successful creation or 
+ * @returns {Promise<any>} Resolves on successful creation or 
  * if the directory exists. Rejects if the directory cannot
  * be created.
  */
-exports.CreateDirectory = async (dirPath) => {
+exports.CreateDirectory = (dirPath) => {
     return new Promise((resolve, reject) => {
         // Check if the directory exists
         let exists = fs.existsSync(dirPath);
@@ -52,7 +22,7 @@ exports.CreateDirectory = async (dirPath) => {
         } else {
             fs.mkdir(dirPath, (err) => {
                 if(err) {
-                    reject(false);
+                    reject(`Failed to create directory ${dirPath}`);
                 } else {
                     resolve(true);
                 }

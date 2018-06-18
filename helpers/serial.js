@@ -1,18 +1,15 @@
+/**
+ * @file Helper functions for dealing with serial communication
+ * @author Jonathan Weatherspoon
+ * @module serial
+ */
+
 const SerialPort = require('serialport');
-const Parsers = SerialPort.parsers;
-
-const { CodeVersionUrl } = require('../models/CodeVersionUrl');
-
-const {
-    GetTFTPDirectoryContents    
-} = require('./filesys');
-
-exports.parser = new Parsers.Readline({
-    delimeter: '\n'
-});
+const Ready = SerialPort.parsers.Ready;
 
 /**
  * Get a list of active serial ports. Each port contains a COM name and id
+ * @async
  * @returns {object[]} Active serial ports
  */
 exports.GetPorts = async () => {
@@ -34,21 +31,14 @@ exports.OpenPort = (portname, baudRate) => {
 };
 
 /**
- * Check the machine's TFTP directory for a code version 
- * @param {string} ver - The code version to check for
- * @throws {Error} If there is no configured TFTP directory
- * @returns {boolean} True if the version is found in the folder
+ * Create a new Ready Parser
+ * @param {string} delimiter - The delimiter text for the
+ * parser
+ * @returns {ReadyParser} Serial parser that emits a ready
+ * event when it matches text against the delimiter
  */
-exports.CheckTFTPDirForCodeVersion = async (ver, files) => {
-    let re = /\.|-/g;
-    let found = false;
-    for(let file of files) {
-        file = file.replace(re, ''); // Remove dashes and dots
-        if(file.includes(ver)) {
-            found = true;
-            break;
-        }
-    }
-
-    return found;
+exports.ReadyParser = (delimiter) => {
+    return new Ready({
+        delimiter: delimiter
+    });
 }

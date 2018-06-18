@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Global</title>
+    <title>JSDoc: Source: helpers/serial.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,204 +17,61 @@
 
 <div id="main">
 
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">Source: helpers/serial.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2></h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="CreateWindow"><span class="type-signature"></span>CreateWindow<span class="signature">()</span><span class="type-signature"> &rarr; {BrowserWindow}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Create a GUI window and store its handle
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line38">line 38</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    A handle to the created window
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">BrowserWindow</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Helper functions for dealing with serial communication
+ * @author Jonathan Weatherspoon
+ * @module serial
+ */
+
+const SerialPort = require('serialport');
+const Ready = SerialPort.parsers.Ready;
+
+/**
+ * Get a list of active serial ports. Each port contains a COM name and id
+ * @async
+ * @returns {object[]} Active serial ports
+ */
+exports.GetPorts = async () => {
+    let ports = await SerialPort.list();
+    ports = ports.filter(port => port.pnpId);
+    return ports;
+};
+
+/**
+ * Open a serial connection given a port and baudrate
+ * @param {string} portname - The COM port of the serial device
+ * @param {number} baudRate - The baud rate used to communicate with the device
+ * @returns {SerialPort} Connection to the specified serial device
+ */
+exports.OpenPort = (portname, baudRate) => {
+    return new SerialPort(portname, {
+        baudRate: baudRate
+    });
+};
+
+/**
+ * Create a new Ready Parser
+ * @param {string} delimiter - The delimiter text for the
+ * parser
+ * @returns {ReadyParser} Serial parser that emits a ready
+ * event when it matches text against the delimiter
+ */
+exports.ReadyParser = (delimiter) => {
+    return new Ready({
+        delimiter: delimiter
+    });
+}</code></pre>
+        </article>
+    </section>
 
 
 
