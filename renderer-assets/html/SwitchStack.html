@@ -3,17 +3,20 @@
         <link rel="stylesheet" type="text/css" href="../css/flex.css" />
     </head>
     <body class="switchback flex-container flex-align-center">
-        <div class="flex-container flex-align-center" style="flex-flow: column; flex-direction: column">
+        <div class="flex-container flex-align-center" id="innerdiv" style="flex-flow: column; flex-direction: column">
             <div class="flex flex-align-center" style="flex-flow: column; width: fit-content">
                 <div class="flex flex-justify-center" style="width: fit-content"><h1>It's stacking time.</h1></div>
                 <div class="flex flex-justify-center" style="width: fit-content"><h2 id="switchidentifier">Plug in your master switch.</h2></div>
-                <div class="flex flex-justify-center" style="width: fit-content"><h2 id="switchidentifier">Press okay when you've plugged it in.</h2></div>
+                <div class="flex flex-justify-center" style="width: fit-content"><h2 id="instructions">Press okay when you've plugged it in.</h2></div>
                 <div class="flex flex-align-center" style="flex-flow: column; width: fit-content;" id="SwitchStatus">
                     <div id="switch0" class='flex flex-justify-center' style="padding-top: 15">
                         <label for="switch0okay" style="padding-right: 10">Switch 1</label>
-                        <button type="button" id="switch0okay" style="margin-left: 10">Okay</button>
+                        <button type="button" id="switch0okay" style="margin-left: 10" onclick="progressbartofifty(0); enableordisable(0)">Okay</button>
+                        <div id="progressbar0" style="width: 200; height: 18; margin-left: 10;margin-top: 2; outline: 2px solid black"><div id="progress0" style="background-color: green; width: 0; height: 18"></div></div>
                     </div>
-                    <div id="enddiv"></div>
+                    <div id="enddiv">
+                        <button type="button" id="btnSwitchStackSubmit" disabled='true' style="margin-top: 10">Stacked</button>
+                    </div>
                 </div>
             </div>
             <div id="progressbar" style="width: 200; height: 20"><div id="progress" style="background-color: green; width: 0; height: 20"></div></div>
