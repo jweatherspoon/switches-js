@@ -22,6 +22,7 @@ const {
 } = require('./helpers/serial');
 const { GenerateTemplate } = require('./helpers/menu-template');
 const { ConfigurationWindow } = require('./models/ConfigurationMenu');
+const { WipingModeWindow } = require('./models/WipingModeWindow');
 
 const path = require('path');
 
@@ -84,7 +85,7 @@ app.on('ready', () => {
         }
     });
 
-    let template = GenerateTemplate(ConfigurationWindow);
+    let template = GenerateTemplate(ConfigurationWindow, WipingModeWindow);
     Menu.setApplicationMenu(
         Menu.buildFromTemplate(template)
     );

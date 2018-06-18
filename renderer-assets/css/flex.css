@@ -33,6 +33,10 @@
     justify-content: flex-end;
 }
 
+.flex-justify-space-around {
+    justify-content: space-around;
+}
+
 .flex-row {
     flex-direction: row;
 }

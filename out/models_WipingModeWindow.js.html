@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Global</title>
+    <title>JSDoc: Source: models/WipingModeWindow.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,204 +17,61 @@
 
 <div id="main">
 
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">Source: models/WipingModeWindow.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2></h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="CreateWindow"><span class="type-signature"></span>CreateWindow<span class="signature">()</span><span class="type-signature"> &rarr; {BrowserWindow}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Create a GUI window and store its handle
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line39">line 39</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    A handle to the created window
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">BrowserWindow</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Models the window for wiping Brocade switches
+ * @author Jonathan Weatherspoon
+ */
+
+const { BrowserWindow } = require('electron');
+
+/**
+ * @class 
+ * @classdesc Models the GUI for wiping switches
+ */
+class WipingModeWindow {
+    /**
+     * Create a new Wiping Window 
+     * @constructor
+     */
+    constructor() {
+        this.window = null;
+        this.windowGUI = `${__dirname}/../renderer-assets/html/wipe.html`;
+    }
+
+    /**
+     * Open or focus the wiping window
+     */
+    openWindow() {
+        if(!this.window) {
+            this.window = new BrowserWindow({
+                height: 600,
+                width: 600,
+                title: "Switch Wiping Menu",
+            });
+
+            this.window.loadFile(this.windowGUI);
+
+            this.window.on('closed', () => {
+                this.window = null;
+            })
+        } else {
+            this.window.focus();
+        }
+    }
+}
+
+exports.WipingModeWindow = new WipingModeWindow();</code></pre>
+        </article>
+    </section>
 
 
 

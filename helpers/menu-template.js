@@ -10,9 +10,12 @@
  * @param {ConfigurationWindow} configWindow - A handle to the 
  * ConfigurationWindow that will be opened when the 
  * "Show Configuration Menu" button is pressed.
+ * @param {WipingModeWindow} wipeWindow - A handle to the 
+ * WipingModeWindow that will be opened when the 
+ * "Enter Wiping Mode" button is pressed.
  * @returns {object[]} Electron menu template
  */
-exports.GenerateTemplate = (configWindow) => {
+exports.GenerateTemplate = (configWindow, wipeWindow) => {
     return [
         {
             label: 'Configure',
@@ -25,6 +28,20 @@ exports.GenerateTemplate = (configWindow) => {
                 }, {
                     type: 'separator'
                 },
+            ]
+        },
+        {
+            label: 'Wipe',
+            submenu: [
+                {
+                    label: 'Enter Wiping Mode',
+                    click: () => {
+                        wipeWindow.openWindow();
+                    }
+                },
+                {
+                    type: 'separator',
+                }
             ]
         },
         {

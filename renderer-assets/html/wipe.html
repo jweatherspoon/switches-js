@@ -1,0 +1,25 @@
+<head>
+    <link href="../css/Styles.css" rel="stylesheet" />
+    <link href="../css/flex.css" rel="stylesheet" />
+</head>
+<body>
+    
+    <div class="flex-container flex-column flex-align-start flex-justify-center">
+        <div class="flex flex-align-center flex-justify-space-around">
+            <div>
+                <span>Choose a port:</span>
+                <select id="ports-list">
+                    <option>Loading ports...</option>
+                </select>
+            </div>
+            <button id="connect-btn">Connect</button>
+        </div>
+
+        <div class="flex-container flex-column flex-align-center flex-justify-center">
+            <h1 id="status">Connect to a Port</h1>
+            <button id="wipe-btn" disabled>Wipe</button>
+        </div>
+    </div>
+
+    <script src="../js/wipe.js"></script>
+</body>
