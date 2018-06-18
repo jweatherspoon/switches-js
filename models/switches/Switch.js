@@ -6,7 +6,7 @@
 
 const {
     OpenPort,
-    ReadyParser
+    ReadyParser,
 } = require('../../helpers/serial');
 
 /**
@@ -31,22 +31,43 @@ class Switch {
     }
 
     /**
+     * Wait for a given time
+     * @param {number} ms - The number of milliseconds to wait
+     */
+    wait(ms) {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(true), ms);
+        })
+    }
+
+    /**
      * Write a command to a switch over serial      
      * @param {string} command - The command to send to the 
      * switch
      * @returns {Promise<any>} Rejects with error message on failure.
      * Resolves on successful write.
      */
-    write(command) {
+    write(command, newline=true) {
+        if(newline) command += '\n';
         return new Promise((resolve, reject) => {
             this.port.write(command, err => {
                 if(err) {
                     reject(`Failed to execute ${command}`);
                 } else {
-                    resolve(true);
+                    setTimeout(() => resolve(true), 100);
                 }
             });
         });
+    }
+
+    /**
+     * Write a carriage return newline over the serial connection
+     * @param {number} numTimes - The number of times to press enter
+     */
+    async enter(numTimes=1) {
+        for(let i = 0; i < numTimes; i++) {
+            await this.write("\r\n");
+        }
     }
 
     /**
@@ -66,6 +87,7 @@ class Switch {
             this.parser.on('ready', () => {
                 resolve(resolveValue)
             });
+
         });
     }
 }
