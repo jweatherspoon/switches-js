@@ -9,9 +9,11 @@ ipcRenderer.on('config:get:return', (event,args) => {
     console.log(args)
     console.log(args.page)
     if (args.page === 'SwitchSelect') {
-        switchquantity = args.quantity;
-        switchmodel = args.model;
+        SelectArgs = args
+        switchquantity = SelectArgs.quantity;
+        switchmodel = SelectArgs.model;
     } else if (args.page === 'VLANForm') {
-        alert(JSON.stringify(args.VLANDictionary));
+        VLANArgs = args
+        alert(JSON.stringify(VLANArgs.VLANDictionary));
     }
 });

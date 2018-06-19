@@ -14,6 +14,7 @@ ipcRenderer.send('switchConfig:get', 'SwitchSelect');
 
 //Recieve function to retrieve switch model and quantity from SwitchSelect
 ipcRenderer.on('config:get:return', (event,args) => {
+    console.log("pls");
     switchquantity = args.quantity;
     switchmodel = args.model;
     for (let i = 1; i < switchquantity; i++) {
@@ -93,9 +94,14 @@ function enablethenext(numby) {
 }
 
 $('#btnSwitchStackSubmit').click(function () {
+    EventListenerRemoval();
     $("#innerdiv").fadeOut();
     $("#innerdiv").html(memedream);
     setTimeout(function() {$(document.body).load('./VLANForm.html')},500);
 })
 
 var memedream = `<p style='font-size: 30;'>Stacker Boy</p>`
+
+function EventListenerRemoval () {
+    ipcRenderer.removeAllListeners('config:get:return');
+  }
