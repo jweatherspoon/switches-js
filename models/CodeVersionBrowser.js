@@ -4,8 +4,8 @@
  * @author Jonathan Weatherspoon
  */
 
-const { BrowserWindow } = require('electron');
-const path = require('path');
+const { BrowserWindow, Menu, dialog } = require('electron');
+const { GenerateTemplate } = require('../helpers/menu-template');
 
 
 /**
@@ -17,9 +17,36 @@ class CodeVersionBrowser {
     /**
      * Create a new CodeVersionBrowser
      * @constructor 
+     * @param {string} model - The switch model used for showing the instructions dialog
+     * @param {string} version - The code version used for showing the instructions dialog
      */
-    constructor() {
+    constructor(model, version) {
         this.browser = null;
+        this.template = GenerateTemplate();
+        this.template.push({
+            label: 'Help',
+            submenu: [
+                {
+                    label: "Show Instructions",
+                    click: () => {
+                        dialog.showMessageBox({
+                            title: "Instructions for Downloading Code Version",
+                            type: "info",
+                            message: `
+Download the code version ${version} archive for your switch and 
+extract its contents to the Boot, Flash, and Firmware 
+folders in the ${model}/${version} folder in your TFTP 
+directory. Then, close out this window to continue the 
+process.
+                            `,
+                            buttons: [
+                                "OK",
+                            ],
+                        })
+                    }
+                }
+            ]
+        })
     }
 
     /**
@@ -37,6 +64,10 @@ class CodeVersionBrowser {
                 title: "Switch Configuration",
             });
 
+            this.browser.setMenu(
+                Menu.buildFromTemplate(this.template)
+            )
+
             this.browser.loadURL(url);
 
             this.browser.on('closed', () => this.browser = null);
@@ -50,4 +81,4 @@ class CodeVersionBrowser {
     }
 }
 
-exports.CodeVersionBrowser = new CodeVersionBrowser();
+exports.CodeVersionBrowser = CodeVersionBrowser;

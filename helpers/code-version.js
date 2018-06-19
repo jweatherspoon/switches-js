@@ -212,18 +212,19 @@ exports.GetNewCode = (codeURL, model, ver) => {
             title: "Switch Code not Found",
             type: "error",
             message: `
-                Switch code version ${ver} was not found in 
-                your TFTP directory. Click the OK button to open
-                the support site. Please download the recommended
-                firmware version and extract it to the Boot, 
-                Flash, and Firmware folders in the ${model} folder 
-                in your TFTP directory. 
+            Switch code version ${ver} was not found in 
+            your TFTP directory. Click the OK button to open
+            the support site. Please download the recommended
+            firmware version and extract it to the Boot, 
+            Flash, and Firmware folders in the ${model}/${ver} folder 
+            in your TFTP directory. 
             `,
             buttons: [
                 "OK",
             ],
         }, () => {
-            CodeVersionBrowser.openWindow(codeURL, {
+            let brow = new CodeVersionBrowser(model, ver);
+            brow.openWindow(codeURL, {
                 'closed': () => {
                     return resolve(true);
                 }
