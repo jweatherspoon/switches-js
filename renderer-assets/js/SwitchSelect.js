@@ -29,6 +29,8 @@ function SwitchSelectEC(i) {
 function SwitchSelectConfig(model, quantity) {
     ipcRenderer.send('switchConfig:set', {
         page: 'SwitchSelect',
-        data : {model: model,
-        quantity: quantity}});
+        data : {
+            page: 'SwitchSelect',
+            model: model,
+            quantity: quantity}});
 }
