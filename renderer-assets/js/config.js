@@ -39,6 +39,8 @@ function LoadSettings() {
  * Save a persistent user setting
  * @param {string} key - The key to save
  * @param {string} val - The value of that key
+ * @returns {Promise<any>} Resolves to 1 or rejects with 
+ * the error when trying to save the key
  */
 async function SetSetting(key, val) {
     return new Promise((resolve, reject) => {
@@ -56,6 +58,8 @@ async function SetSetting(key, val) {
  * Save all settings that the user changed 
  * @param {object} settings - A JavaScript object that 
  * contains setting keys and values
+ * @param {Promise<number>} Resolves with the number of 
+ * settings that were saved
  */
 async function SaveSettings(settings) {
     return new Promise(async (resolve, reject) => {
@@ -72,6 +76,7 @@ async function SaveSettings(settings) {
 /**
  * Get a persistent user setting
  * @param {string} key - The key to get
+ * @returns {object} Return the value of a key or undefined if not found
  */
 function GetKey(key) {
     let objs = keys.filter(obj => obj.key === key);
@@ -117,16 +122,21 @@ $("#tftp-dir-btn").click(() => {
     $("#tftp-dir").click()
 });
 
+/**
+ * Set the content to show the currently selected TFTP directory
+ */
 $("#tftp-dir").change(e => {
     let dir;
     try {
         dir = $("#tftp-dir")[0].files[0].path;
     } catch (ex) { }
-    let key = "tftp-directory";
-    SetContent(key, dir, "Select directory...");
+    SetContent(settingKeys.tftp, dir, "Select directory...");
     
 })
 
+/**
+ * Save all the settings that were changed and close out the window
+ */
 $("#config-save").click(async e => {
     let settings = {};
     keys.forEach(keyObj => {
@@ -135,8 +145,6 @@ $("#config-save").click(async e => {
             settings[keyObj.key] = val;
         }
     });
-
-    console.log(settings);
 
     // Save each setting to persistent storage
     SaveSettings(settings).then(result => {

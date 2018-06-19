@@ -2,6 +2,7 @@ if(!$) {
     const $ = require('jquery');
 }
 
+// Retrieve the data from the last two forms
 ipcRenderer.send('switchConfig:get', 'SwitchSelect');
 ipcRenderer.send('switchConfig:get', 'VLANForm');
 

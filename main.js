@@ -34,6 +34,7 @@ let switchConfigSettings = {
 
 /**
  * Create a GUI window and store its handle
+ * @param {string} href - The URL to open. Defaults to index.html if null.
  * @returns {BrowserWindow} A handle to the created window
  */
 function CreateWindow(href) {
