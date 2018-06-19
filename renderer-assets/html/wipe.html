@@ -6,7 +6,7 @@
         #console-output {
             background-color: black;
             color: lime;
-            font-family: "Courier New",Courier;
+            font-family: "Courier New", Courier;
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -14,25 +14,34 @@
         .console-text {
             padding: 5px;
         }
+
+        .space-top {
+            margin-top: 10px;
+        }
+
+        #wipe-btn {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
+
 <body>
-    
+
     <div class="flex-container flex-column flex-align-start flex-justify-center">
         <div class="flex flex-align-center flex-justify-space-around">
-            <div>
+            <div class="space-top">
                 <span>Choose a port:</span>
                 <select id="ports-list">
                     <option>Loading ports...</option>
                 </select>
             </div>
-            <button id="connect-btn">Connect</button>
+            <button id="connect-btn" class="space-top">Connect</button>
         </div>
 
         <div class="flex flex-column flex-align-center flex-justify-center">
             <h1 id="status">Connect to a Port</h1>
             <button id="wipe-btn" disabled>Wipe</button>
-            
+
             <div class="flex-container flex-column" id="console-output"></div>
         </div>
     </div>

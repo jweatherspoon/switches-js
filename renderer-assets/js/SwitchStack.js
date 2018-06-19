@@ -14,7 +14,6 @@ ipcRenderer.send('switchConfig:get', 'SwitchSelect');
 
 //Recieve function to retrieve switch model and quantity from SwitchSelect
 ipcRenderer.on('config:get:return', (event,args) => {
-    console.log("pls");
     switchquantity = args.quantity;
     switchmodel = args.model;
     for (let i = 1; i < switchquantity; i++) {

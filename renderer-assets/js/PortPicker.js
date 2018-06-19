@@ -6,8 +6,8 @@ ipcRenderer.send('switchConfig:get', 'SwitchSelect');
 ipcRenderer.send('switchConfig:get', 'VLANForm');
 
 ipcRenderer.on('config:get:return', (event,args) => {
-    console.log(args)
-    console.log(args.page)
+    console.log("Args:", args)
+    console.log("Page:", args.page)
     if (args.page === 'SwitchSelect') {
         SelectArgs = args
         switchquantity = SelectArgs.quantity;
