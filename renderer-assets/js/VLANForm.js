@@ -186,3 +186,10 @@ function portpickerhtml() {
 }
 
 var memeteam = `<p style='font-size: 30;'>Wowzers</p>`
+
+function VLANSwitchConfig () { 
+    ipcRenderer.send('switchConfig:set', {
+        page: 'VLANForm',
+        data : {VLANDictionary: vlandict,
+        }});
+ }
