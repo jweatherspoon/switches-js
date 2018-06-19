@@ -1,6 +1,20 @@
 <head>
     <link href="../css/Styles.css" rel="stylesheet" />
     <link href="../css/flex.css" rel="stylesheet" />
+
+    <style>
+        #console-output {
+            background-color: black;
+            color: lime;
+            font-family: "Courier New",Courier;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .console-text {
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
     
@@ -15,9 +29,11 @@
             <button id="connect-btn">Connect</button>
         </div>
 
-        <div class="flex-container flex-column flex-align-center flex-justify-center">
+        <div class="flex flex-column flex-align-center flex-justify-center">
             <h1 id="status">Connect to a Port</h1>
             <button id="wipe-btn" disabled>Wipe</button>
+            
+            <div class="flex-container flex-column" id="console-output"></div>
         </div>
     </div>
 

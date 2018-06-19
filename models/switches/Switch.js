@@ -7,6 +7,7 @@
 const {
     OpenPort,
     ReadyParser,
+    ReadLineParser
 } = require('../../helpers/serial');
 
 /**
@@ -21,13 +22,17 @@ class Switch {
      * to connect to
      * @param {number} baudRate - The desired baud rate
      */
-    constructor(portName, baudRate) {
+    constructor(portName, baudRate, logger) {
         this.portName = portName;
         this.baud = baudRate;
         this.parser = null;
+        this.logCallback = logger;
         
         // Connect to the switch
         this.port = OpenPort(portName, baudRate);
+        this.dataLogger = this.port.pipe(
+            ReadLineParser(logger)
+        );
     }
 
     /**
@@ -85,10 +90,21 @@ class Switch {
             );
 
             this.parser.on('ready', () => {
+                // this.parser = null;
+                // this.parser = this.port.pipe(ReadLineParser());
                 resolve(resolveValue)
             });
 
         });
+    }
+
+    /**
+     * Disconnect from an active serial connection
+     */
+    disconnect() {
+        if(this.port.isOpen) {
+            this.port.close();
+        }
     }
 }
 

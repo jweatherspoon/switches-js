@@ -6,6 +6,7 @@
 
 const SerialPort = require('serialport');
 const Ready = SerialPort.parsers.Ready;
+const ReadLine = SerialPort.parsers.Readline;
 
 /**
  * Get a list of active serial ports. Each port contains a COM name and id
@@ -41,4 +42,18 @@ exports.ReadyParser = (delimiter) => {
     return new Ready({
         delimiter: delimiter
     });
+}
+
+/**
+ * Create a new ReadLine parser
+ * @returns {ReadLine} Serial parser that emits data as 
+ * JavaScript strings
+ */
+exports.ReadLineParser = (logger) => {
+    if(!logger) {
+        logger = console.log
+    }
+    let parser = new ReadLine();
+    parser.on('data', logger);
+    return parser;
 }
