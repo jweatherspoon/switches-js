@@ -3,7 +3,7 @@ if(!$) {
 }
 
 const {
-    dialog, Tray
+    dialog
 } = require('electron').remote
 
 // Number for unique IDs in VLANCreator
@@ -76,6 +76,8 @@ function deletieboi(divid) {
 // Submit button functions
 $('#btnVLANSubmit').click(function(){
     flaggy = true;
+    nothingcount = 0;
+    inputcount = $('#divVLANForm').find('input').length;
     $('#divVLANForm').find('input').each(function (){
         if (this.style.backgroundColor == 'red') {
             alert("Please check any red input boxes for errors.");
@@ -88,10 +90,15 @@ $('#btnVLANSubmit').click(function(){
                 return false;
             }
         }
-
+        if (this.value === '') {
+            nothingcount ++
+        }
     })
+    if (nothingcount === inputcount) {
+        alert(`What are you doing? Don't you want at least one VLAN?`);
+        flaggy = false;
+    }
     if (flaggy == true) {
-        inputcount = $('#divVLANForm').find('input').length;
         if (inputcount == 8) {
             vlandictionary();
         } else {
@@ -168,6 +175,7 @@ function VLANDialog () {
     )
 }
 
+// Next page
 function portpickerhtml() {
         $("#VLANFlexContainer").fadeOut();
         $("#VLANFlexContainer").html(memeteam)
