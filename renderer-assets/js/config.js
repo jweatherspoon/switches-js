@@ -12,6 +12,14 @@ const keys = [
     {
         key: settingKeys.managementVlan,
         contentID: "#management-vlan"
+    },
+    {
+        key: settingKeys.tftpIp,
+        contentID: "#tftp-ip"
+    },
+    {
+        key: settingKeys.tftpNetmask,
+        contentID: "#tftp-netmask"
     }
 ];
 
@@ -58,18 +66,15 @@ async function SetSetting(key, val) {
  * Save all settings that the user changed 
  * @param {object} settings - A JavaScript object that 
  * contains setting keys and values
- * @param {Promise<number>} Resolves with the number of 
- * settings that were saved
+ * @param {Promise<boolean>} Resolves to true
  */
-async function SaveSettings(settings) {
-    return new Promise(async (resolve, reject) => {
-        let count = 0;
-
+function SaveSettings(settings) {
+    return new Promise(resolve => {
+        let saves = [];
         for(let key in settings) {
-            count += await SetSetting(key, settings[key]);
+            saves.push(SetSetting(key, settings[key]));
         }
-
-        return resolve(count);
+        Promise.all(saves).then(() => resolve(true));
     })
 }
 
@@ -118,6 +123,9 @@ function GetContent(contentID) {
     return val;
 }
 
+/**
+ * Open the directory picker dialog on button click
+ */
 $("#tftp-dir-btn").click(() => {
     $("#tftp-dir").click()
 });

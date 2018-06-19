@@ -6,5 +6,7 @@
 
 exports.settingKeys = {
     tftp: 'tftp-directory',
+    tftpIp: 'tftp-ip',
+    tftpNetmask: 'tftp-netmask',
     managementVlan: 'management-vlan',
 };

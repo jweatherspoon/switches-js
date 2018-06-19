@@ -27,10 +27,32 @@
         <div class="config-settings-row">
             <div class="flex flex-align-center">
                 <span class="config-text config-label">
+                    TFTP Server IP:
+                </span>
+                <div class="flex-justify-end flex-align-end">
+                    <input placeholder="(e.g) 192.168.1.2" id="tftp-ip" />
+                </div>
+            </div>
+        </div>
+
+        <div class="config-settings-row">
+            <div class="flex flex-align-center">
+                <span class="config-text config-label">
+                    TFTP Server Subnet Mask:
+                </span>
+                <div class="flex-justify-end flex-align-end">
+                    <input placeholder="(e.g) 255.255.255.0" id="tftp-netmask" />
+                </div>
+            </div>
+        </div>
+
+        <div class="config-settings-row">
+            <div class="flex flex-align-center">
+                <span class="config-text config-label">
                     Management VLAN:
                 </span>
                 <div class="flex-justify-end flex-align-end">
-                    <input type="number" id="management-vlan" />
+                    <input type="number" placeholder="1-4095" id="management-vlan" />
                 </div>
             </div>
         </div>
