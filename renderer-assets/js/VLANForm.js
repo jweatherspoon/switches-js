@@ -97,6 +97,9 @@ $('#btnVLANSubmit').click(function(){
     if (nothingcount === inputcount) {
         alert(`What are you doing? Don't you want at least one VLAN?`);
         flaggy = false;
+    } else if (nothingcount === (inputcount - 1) && $('#VOIPVLAN').val() != '' && $('#dualmodedcheck').is(':checked')) {
+        alert('Need at least two VLANs for dualmoded.');
+        flaggy = false;
     }
     if (flaggy == true) {
         if (inputcount == 8) {
@@ -178,7 +181,7 @@ function VLANDialog () {
 // Next page
 function portpickerhtml() {
         $("#VLANFlexContainer").fadeOut();
-        $("#VLANFlexContainer").html(memeteam)
+        $("#VLANFlexContainer").html(memeteam);
         setTimeout(function () { $(document.body).load('./PortPicker.html') }, 500);
 }
 
