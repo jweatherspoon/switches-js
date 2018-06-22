@@ -34,7 +34,8 @@ function CVLANAgainst(vlannum) {
     }
 }
 
-// Error checker to make sure VLAN is in desired range
+/* Error checker to make sure VLAN is in desired range.
+   Is used in onkeyup functions in VLAN inputs to change background to red.*/
 function VLANCheck(i) {
     x = i.value;
     if (x < 0 || x > 4096) {
@@ -47,7 +48,10 @@ function VLANCheck(i) {
 // Tracker for max amount of Custom Vlans
 customvlancount = 4;
 
-// Creates VLAN fields
+/* Creates Custom VLAN fields 
+   First if statement checks if there are any more custom available vlans.
+   If there are, makes a new one, if there is only one left it creates the new one then hides the button.
+   Uses customtxtincr variable to make unique IDs in VLANCreator*/
 $('#btnCustomVLAN').click(function(){
     if (customvlancount > 1) {
         cvlan = VLANCreator(customtxtincr);
@@ -79,10 +83,17 @@ $('#btnVLANSubmit').click(function(){
     nothingcount = 0;
     inputcount = $('#divVLANForm').find('input').length;
     $('#divVLANForm').find('input').each(function (){
+        
+        /* Checks validity based on VLANCheck function
+           Ends findeach loop if any boxes are red
+           ** Change this later to check for correct input and not background color** */
         if (this.style.backgroundColor == 'red') {
             alert("Please check any red input boxes for errors.");
             flaggy = false;
             return false;
+
+        /* Checks to see if dualmoded is checked and if it is, if a VOIP VLAN is entered.
+           Ends findeach loop if VLAN is not entered and dualmoded is checked.*/
         } else {
             if ($('#dualmodedcheck').is(':checked') && $('#VOIPVLAN').val() == '') {
                 alert('Please enter a VOIP VLAN or uncheck the dualmoded checkbox.');
@@ -90,17 +101,31 @@ $('#btnVLANSubmit').click(function(){
                 return false;
             }
         }
+
+        // Counter to check against blank form and to check if two VLANs are included for dualmoded
         if (this.value === '') {
             nothingcount ++
         }
     })
+
+    /* Checks against counter to make sure form isn't blank
+       flaggy is a flag that stops the submit button from continuing further.*/
     if (nothingcount === inputcount) {
         alert(`What are you doing? Don't you want at least one VLAN?`);
         flaggy = false;
+
+    /* Checks against nothingcount counter to see if more than one input is filled out.
+       If only one input is filled out but dualmoded is checked flaggy is set to false.*/
     } else if (nothingcount === (inputcount - 1) && $('#VOIPVLAN').val() != '' && $('#dualmodedcheck').is(':checked')) {
         alert('Need at least two VLANs for dualmoded.');
         flaggy = false;
     }
+
+    /* After all checks are completed, if flaggy is true the if statement checks to see how many inputs are on the form.
+       This is to check if the user created any custom VLAN inputs which have a seperate dictionary function.
+       If it is equal to the original 8 then it performs the original vlandictionary function, otherwise it does both
+       the original and the customvlandictionary, which both add to the object :vlandict.
+       **Remove alert ** */
     if (flaggy == true) {
         if (inputcount == 8) {
             vlandictionary();
@@ -113,13 +138,12 @@ $('#btnVLANSubmit').click(function(){
     }
 })
 
-captioncounter = 0;
+// Global variable vlandict is the VLAN dictionary that gets passed to the main process to be stored
 vlandict = [];
-errorarray = [];
-var inputkey;
-var flag = false;
 
-// Dictionary creator for prefilled in VLANS
+/* Dictionary creator for prefilled in VLANS 
+   Finds each input, checks to see if it isn't empty.
+   If it isn't empty it adds it to the global dictionary.*/
 function vlandictionary() {
     vlandict = [];
     captioncounter = 0;
@@ -180,7 +204,7 @@ function VLANDialog () {
 
 // Next page
 function portpickerhtml() {
-    VLANSwitchConfig();
+        VLANSwitchConfig();
         $("#VLANFlexContainer").fadeOut();
         $("#VLANFlexContainer").html(memeteam);
         setTimeout(function () { $(document.body).load('./PortPicker.html') }, 500);
