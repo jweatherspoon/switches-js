@@ -3,6 +3,15 @@
  * @author Jonathan Weatherspoon
  */
 
+const path = require('path');
+const storage = require('electron-json-storage');
+
+const { 
+    settingKeys,
+    GetTFTPSettings,
+} = require('../../helpers/user-settings');
+const { CheckCodeExists } = require('../../helpers/code-version');
+
 const { Switch } = require('./Switch');
 
 /**
@@ -17,9 +26,13 @@ class Brocade extends Switch {
      * @param {string} portName - The name of the serial port 
      * to connect to
      * @param {number} baudRate - The desired baud rate
+     * @param {string} model - The model switch this is
+     * @param {function} logger - Callback function for 
+     * logging received serial data
      */
-    constructor(portName, baudRate, logger) {
+    constructor(portName, baudRate, model, logger) {
         super(portName, baudRate, logger);
+        this.model = model;
     }
 
     /**
@@ -95,14 +108,15 @@ class Brocade extends Switch {
      * be copied from the TFTP server
      */
     async tftp(target, serverIP, filename) {
-
+        await this.write(`copy tftp ${target} ${serverIP} ${filename}`);
+        await this.addListener(">");
     }
 
     /**
      * Copy the primary flash to the secondary flash location
      */
     async copyFlashToSec() {
-
+        await this.write("copy flash flash sec");
     }
 
     /**
@@ -124,6 +138,32 @@ class Brocade extends Switch {
         await this.write("enable");
     }
 
+    /**
+     * Upload the default 
+     * @param {string} codeVer - The version of code for uploading
+     * @param {string} template - Relative path to the startup template
+     * from the user's tftp directory
+     */
+    async uploadDefaults(codeVer, template) {
+        // Get TFTP settings
+        let tftp = await GetTFTPSettings();
+
+
+        // Get code version filenames 
+        let codes = await CheckCodeExists(tftp.dir, this.model, codeVer);
+
+        // TFTP Boot, Flash, Startup template
+        await this.tftp("boot", tftp.serverIP, codes.boot);
+        await this.tftp("flash", tftp.serverIP, codes.flash);
+        await this.copyFlashToSec();
+        await this.tftp("startup-config", tftp.serverIP, template);
+
+        // TFTP PoE Firmware if applicable
+        if(codes.poe) {
+            await this.inlinePower(tftp.serverIP, codes.poe);
+        }
+
+    }
 }
 
 exports.Brocade = Brocade;

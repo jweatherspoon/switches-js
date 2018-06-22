@@ -132,7 +132,8 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
  * @param {string} modelDirectory - The path to the model folder in the TFTP directory
  * @param {string} versionDirectory - Path to the version directory in the model directory
  * @param {string} childDirectory - The path to the child folder in the version directory
- * @returns {Promise<boolean>} Resolves if a given code version is found in the folder.
+ * @returns {Promise<any>} Resolves to the first found
+ * filename if a given code version is found in the folder.
  * Rejects if it is not found.
  */
 exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
@@ -144,11 +145,11 @@ exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
                 return;
             }
             // Find a file that matches the version number
-            let found = files.find(file => file.includes(".bin"));
-            if (!found) {
+            let filename = files.find(file => file.includes(".bin"));
+            if (!filename) {
                 reject(false);
             } else {
-                resolve(true);
+                resolve(filename);
             }
         })
     })
@@ -160,8 +161,9 @@ exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
  * @param {string} tftpDirectory - Path to the TFTP directory on the system
  * @param {string} model - The model name of the switch
  * @param {string} version - The code version to match against
- * @returns {boolean} Resolves if boot and flash code exist. Rejects if 
- * one or both do not exist.
+ * @returns {any} Resolves to a dictionary containing the 
+ * filenames for boot, flash, and poe if boot and flash
+ * code exist. Rejects if one or both do not exist.
  */
 exports.CheckCodeExists = async (tftpDirectory, model, version) => {
     let modelDir = path.join(tftpDirectory, model);
@@ -170,7 +172,16 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
         let bootCheck = await CheckFolder(modelDir, version, "Boot");
         let flashCheck = await CheckFolder(modelDir, version, "Flash");
 
-        return bootCheck && flashCheck;
+        if(bootCheck && flashCheck) {
+            let poeCheck = await CheckFolder(modelDir, version, "Firmware");
+            return {
+                boot: bootCheck,
+                flash: flashCheck,
+                poe: poeCheck,
+            }
+        } else {
+            return false;
+        }
     } catch(err) { 
         throw new Error(false);
     }
