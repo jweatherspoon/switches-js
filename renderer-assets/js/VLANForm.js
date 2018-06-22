@@ -34,7 +34,8 @@ function CVLANAgainst(vlannum) {
     }
 }
 
-// Error checker to make sure VLAN is in desired range
+/* Error checker to make sure VLAN is in desired range.
+   Is used in onkeyup functions in VLAN inputs to change background to red.*/
 function VLANCheck(i) {
     x = i.value;
     if (x < 0 || x > 4096) {
@@ -47,7 +48,10 @@ function VLANCheck(i) {
 // Tracker for max amount of Custom Vlans
 customvlancount = 4;
 
-// Creates VLAN fields
+/* Creates Custom VLAN fields 
+   First if statement checks if there are any more custom available vlans.
+   If there are, makes a new one, if there is only one left it creates the new one then hides the button.
+   Uses customtxtincr variable to make unique IDs in VLANCreator*/
 $('#btnCustomVLAN').click(function(){
     if (customvlancount > 1) {
         cvlan = VLANCreator(customtxtincr);
@@ -137,7 +141,9 @@ $('#btnVLANSubmit').click(function(){
 // Global variable vlandict is the VLAN dictionary that gets passed to the main process to be stored
 vlandict = [];
 
-// Dictionary creator for prefilled in VLANS
+/* Dictionary creator for prefilled in VLANS 
+   Finds each input, checks to see if it isn't empty.
+   If it isn't empty it adds it to the global dictionary.*/
 function vlandictionary() {
     vlandict = [];
     captioncounter = 0;
