@@ -105,10 +105,13 @@ class Brocade extends Switch {
      * @param {string} target - The target location for the file
      * @param {string} serverIP - The IP of the TFTP server
      * @param {string} filename - The name of the file that will 
-     * be copied from the TFTP server
+     * be copied from the TFTP server. This must be a relative path 
+     * from the root of the user's TFTP directory
+     * @param {string} flashTarget - (optional) The target for copying flash 
+     * code. Can be primary, secondary, or bootrom.
      */
     async tftp(target, serverIP, filename) {
-        await this.write(`copy tftp ${target} ${serverIP} ${filename}`);
+        await this.write(`copy tftp ${target} ${serverIP} ${filename} ${flashTarget}`);
         await this.addListener(">");
     }
 
@@ -148,13 +151,14 @@ class Brocade extends Switch {
         // Get TFTP settings
         let tftp = await GetTFTPSettings();
 
-
         // Get code version filenames 
         let codes = await CheckCodeExists(tftp.dir, this.model, codeVer);
 
+        await this.enterConfigureTerminal();
+
         // TFTP Boot, Flash, Startup template
-        await this.tftp("boot", tftp.serverIP, codes.boot);
-        await this.tftp("flash", tftp.serverIP, codes.flash);
+        await this.tftp("flash", tftp.serverIP, codes.boot, "bootrom");
+        await this.tftp("flash", tftp.serverIP, codes.flash, "primary");
         await this.copyFlashToSec();
         await this.tftp("startup-config", tftp.serverIP, template);
 
@@ -162,7 +166,33 @@ class Brocade extends Switch {
         if(codes.poe) {
             await this.inlinePower(tftp.serverIP, codes.poe);
         }
+    }
 
+    /**
+     * Install PoE firmware on the machine
+     * @param {string} serverIP - The IP of the TFTP server
+     * @param {string} poeFilename - The filename for the POE firmware 
+     * relative to the user's configured TFTP directory
+     */
+    async inlinePower(serverIP, poeFilename) {
+        await this.write(`inline power install-firmware all tftp ${serverIP} ${poeFilename}`);
+        await this.addListener(">");
+    }
+
+    /**
+     * Enable stacking on a switch
+     * @param {number} priority - The priority for the switch in 
+     * the stack. (Acceptable values: 0 - 255)
+     */
+    async enableStacking(priority) {
+        if(priority < 0) priority = 0;
+        else if(priority > 255) priority = 255;
+
+        await this.enterConfigureTerminal();
+        await this.write("stack enable");
+        await this.write(`stack unit 1 priority ${priority}`);
+        await this.write('exit');
+        await this.write('hitless-failover enable');
     }
 }
 

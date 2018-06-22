@@ -325,7 +325,7 @@ logging received serial data</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line118">line 118</a>
+        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -411,7 +411,143 @@ logging received serial data</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line137">line 137</a>
+        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="enableStacking"><span class="type-signature">(async) </span>enableStacking<span class="signature">(priority)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Enable stacking on a switch
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>priority</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The priority for the switch in 
+the stack. (Acceptable values: 0 - 255)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line187">line 187</a>
     </li></ul></dd>
     
 
@@ -497,7 +633,7 @@ logging received serial data</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line126">line 126</a>
+        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line129">line 129</a>
     </li></ul></dd>
     
 
@@ -650,6 +786,165 @@ logging received serial data</td>
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="inlinePower"><span class="type-signature">(async) </span>inlinePower<span class="signature">(serverIP, poeFilename)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Install PoE firmware on the machine
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serverIP</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The IP of the TFTP server</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>poeFilename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The filename for the POE firmware 
+relative to the user's configured TFTP directory</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line177">line 177</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -905,7 +1200,7 @@ logging received serial data</td>
     
 
     
-    <h4 class="name" id="tftp"><span class="type-signature">(async) </span>tftp<span class="signature">(target, serverIP, filename)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="tftp"><span class="type-signature">(async) </span>tftp<span class="signature">(target, serverIP, filename, flashTarget)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1012,7 +1307,32 @@ logging received serial data</td>
             
 
             <td class="description last">The name of the file that will 
-be copied from the TFTP server</td>
+be copied from the TFTP server. This must be a relative path 
+from the root of the user's TFTP directory</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>flashTarget</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">(optional) The target for copying flash 
+code. Can be primary, secondary, or bootrom.</td>
         </tr>
 
     
@@ -1053,7 +1373,7 @@ be copied from the TFTP server</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line110">line 110</a>
+        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line113">line 113</a>
     </li></ul></dd>
     
 
@@ -1212,7 +1532,7 @@ from the user's tftp directory</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line147">line 147</a>
+        <a href="models_switches_Brocade.js.html">models/switches/Brocade.js</a>, <a href="models_switches_Brocade.js.html#line150">line 150</a>
     </li></ul></dd>
     
 
@@ -1348,7 +1668,7 @@ from the user's tftp directory</td>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 15:32:26 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 16:53:03 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

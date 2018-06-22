@@ -21,8 +21,11 @@ const {
     URLS,
 } = require('./helpers/serial');
 const { GenerateTemplate } = require('./helpers/menu-template');
+
 const { ConfigurationWindow } = require('./models/ConfigurationMenu');
 const { WipingModeWindow } = require('./models/WipingModeWindow');
+
+const { Brocade } = require('./models/switches/Brocade');
 
 const path = require('path');
 
@@ -31,6 +34,8 @@ let win, config, browser;
 let switchConfigSettings = {
 
 };
+
+let switchObject;
 
 /**
  * Create a GUI window and store its handle
@@ -109,6 +114,60 @@ ipcMain.on('serial:getports', (event, arg) => {
  */
 ipcMain.on("configmenu:show", (event, arg) => {
     ConfigurationWindow.openWindow();
+});
+
+/**
+ * Connect to a switch given some arguments
+ */
+ipcMain.on("serial:connect", (event, arg) => {
+    if(switchObject) {
+        switchObject = null;
+    }
+    switchObject = new Brocade(arg.portName, arg.baudRate, arg.model, console.log);
+    event.returnValue = true;
+});
+
+/**
+ * Disconnect from a switch
+ */
+ipcMain.on("serial:disconnect", (event, arg) => {
+    if(switchObject) {
+        switchObject.disconnect();
+        switchObject = null;
+    }
+})
+
+/**
+ * Upload default configuration and updated code versions (including
+ * PoE firmware if applicable). Also enable stacking on the device 
+ * with a supplied priority value.
+ */
+ipcMain.on("stack:begin", async (event, arg) => {
+    let returnValue = {
+        id: arg.id,
+        success: true,
+    }
+    if(switchObject) {
+        try {
+            // Handle the password bypass 
+            await switchObject.passwordBypass();
+            // Send off an event to allow the progress bar to 
+            // begin moving and continue on the process 
+            event.sender.send("switch:response", returnValue);
+
+            await switchObject.uploadDefaults(arg.codeVer, arg.template);
+            await switchObject.enableStacking(arg.priority);
+
+            // Fire off the "finished" event
+            event.sender.send("stack:fin", returnValue);
+        } catch(err) {
+            returnValue.success = false;
+            event.sender.send("stack:response", returnValue);
+        }
+    } else {
+        returnValue.success = false;
+        event.sender.send("stack:response", returnValue);
+    }
 });
 
 // Add to switchConfigSettings object here
