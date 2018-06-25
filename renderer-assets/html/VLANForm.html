@@ -1,44 +1,72 @@
 <html>
     <head>
             <link rel="stylesheet" type="text/css" href="../css/flex.css" />
+
+
+            <style>
+                .stupidbutton {
+                    height: 10px;
+                    width: 10px;
+                }
+
+                label {
+                    display: inline-block;
+                    width: 156;
+                    text-align: right;
+                }
+
+                input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+}
+            </style>
+
     </head>
     <body class="switchback flex-container flex-align-center">
         <div class="flex-container flex-align-center" style="flex-flow: column" id="VLANFlexContainer">
                 <div class="flex flex-justify-center"><h1>What are your VLANS?</h1></div>
                 <div class="flex flex-justify-center"><p>Feel free to fill out as many as needed.</p></div>
-                <div class="flex flex-justify-center" style="padding-bottom: 10pt"><input type="checkbox" id="dualmodedcheck" value="dualmoded" checked>Dualmoded?</div>
-                <div id="divVLANForm" class="flex flex-justify-center flex-align-end" style="flex-flow: column; width: fit-content; outline: 2px solid black; padding: 10;">
-                    <div id="divtest" style="padding: 10">
-                        <label for="VOIPVLAN" style="padding-right: 10;">VOIP VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="VOIPVLAN" name="VOIPVLAN" style="margin-left: 10" placeholder="VOIP">
+                <div class="flex flex-justify-center" style="padding-bottom: 10pt"><input type="checkbox" id="dualmodedcheck" value="dualmoded" checked onclick='DualModeCheckieBoi(this)'>Dualmoded?</div>
+                <div id="divVLANForm" class="flex flex-justify-center flex-align-start" style="flex-flow: column; width: fit-content; outline: 2px solid black; padding: 10;">
+                    <div id="divtest" style="padding: 10" class="flex-align-start">
+                        <label for="VOIPVLAN">VOIP VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="VOIPVLAN" name="VOIPVLAN" min="0" step="1" placeholder="0-4096">
+                        <input type="radio" id="DualModeVLANVOIP" value="DualModeVLAN" class='DualModeVLANCheck' inputid='VOIPVLAN' checked disabled>Dualmode
                     </div>
                     <div style="padding: 10">
-                        <label for="UserVLAN" style="padding-right: 10;">User VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="UserVLAN" name="UserVLAN" style="margin-left: 10" placeholder="User">
+                        <label for="UserVLAN">User VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="UserVLAN" name="UserVLAN" placeholder="0-4096">
+                        <input type="radio" name="dualmoderadio" id="DualModeVLANUser" inputid='UserVLAN' value="DualModeVLAN" class='DualModeVLANCheck' checked onclick="dualmodevlanshifter(this)">Dualmode
                     </div>
                     <div style="padding: 10">
-                        <label for="DMZVLAN" style="padding-right: 10;">DMZ VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="DMZVLAN" name="DMZVLAN" style="margin-left: 10" placeholder="DMZ">
+                        <label for="DMZVLAN">DMZ VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="DMZVLAN" name="DMZVLAN" placeholder="0-4096">
+                        <input type="radio" name="dualmoderadio" id="DualModeVLANDMZ" inputid='DMZVLAN' value="DualModeVLAN" class='DualModeVLANCheck' onclick="dualmodevlanshifter(this)">Dualmode
                     </div>
                     <div style="padding: 10">
-                        <label for="WAPVLAN" style="padding-right: 10;">WAP VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="WAPVLAN" name="WAPVLAN" style="margin-left: 10" placeholder="WAP">
+                        <label for="WAPVLAN">WAP VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="WAPVLAN" name="WAPVLAN" placeholder="0-4096">
+                        <input type="radio" name="dualmoderadio" id="DualModeVLANWAP" inputid='WAPVLAN' value="DualModeVLAN" class='DualModeVLANCheck' onclick="dualmodevlanshifter(this)">Dualmode
                     </div>
                     <div style="padding: 10">
-                        <label for="PCIVLAN" style="padding-right: 10;">PCI VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="PCIVLAN" name="PCIVLAN" style="margin-left: 10" placeholder="PCI">
+                        <label for="PCIVLAN">PCI VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="PCIVLAN" name="PCIVLAN" placeholder="0-4096">
+                        <input type="radio" name="dualmoderadio" id="DualModeVLANPCI" inputid='PCIVLAN' value="DualModeVLAN" class='DualModeVLANCheck' onclick="dualmodevlanshifter(this)">Dualmode
                     </div>
                     <div style="padding: 10">
-                        <label for="HVACVLAN" style="padding-right: 10;">HVAC VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="HVACVLAN" name="HVACVLAN" style="margin-left: 10" placeholder="HVAC">
+                        <label for="HVACVLAN">HVAC VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="HVACVLAN" name="HVACVLAN" placeholder="0-4096">
+                        <input type="radio" name="dualmoderadio" id="DualModeVLANHVAC" inputid='HVACVLAN' value="DualModeVLAN" class='DualModeVLANCheck' onclick="dualmodevlanshifter(this)">Dualmode
                     </div>
                     <div style="padding: 10">
-                        <label for="DCVLAN" style="padding-right: 10;">Door Controller VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="DCVLAN" name="DCVLAN" style="margin-left: 10" placeholder="Door Controller">
+                        <label for="DCVLAN">Door Controller VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="DCVLAN" name="DCVLAN" placeholder="0-4096">
+                        <input type="radio" name="dualmoderadio" id="DualModeVLANDC" inputid='DCVLAN' value="DualModeVLAN" class='DualModeVLANCheck' onclick="dualmodevlanshifter(this)">Dualmode
                     </div>
                     <div style="padding: 10">
-                        <label for="DVRVLAN" style="padding-right: 10;">DVR VLAN:</label>
-                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="DVRVLAN" name="DVRVLAN" style="margin-left: 10" placeholder="DVR">
+                        <label for="DVRVLAN">DVR VLAN:</label>
+                        <input class="vlaninput OCVLAN" onkeyup='VLANCheck(this)' type="number" id="DVRVLAN" name="DVRVLAN" placeholder="0-4096">
+                        <input type="radio" name="dualmoderadio" id="DualModeVLANDVR" inputid='DVRVLAN' value="DualModeVLAN" class='DualModeVLANCheck' onclick="dualmodevlanshifter(this)">Dualmode
                     </div>
                     <div id="divbtnCustomVLAN" class="flex-align-center" style="padding: 10; width: 100%; align-self: end">
                         <button type="button" id="btnCustomVLAN">Add Custom VLAN (4)</button>
