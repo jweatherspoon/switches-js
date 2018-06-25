@@ -1,8 +1,8 @@
-if(!$) {
+if (!$) {
     const $ = require('jquery');
 }
 
-if(!ipcRenderer) {
+if (!ipcRenderer) {
     const { ipcRenderer } = require("electron");
 }
 
@@ -13,7 +13,7 @@ var switchmodel;
 ipcRenderer.send('switchConfig:get', 'SwitchSelect');
 
 //Recieve function to retrieve switch model and quantity from SwitchSelect
-ipcRenderer.on('config:get:return', (event,args) => {
+ipcRenderer.on('config:get:return', (event, args) => {
     switchquantity = args.quantity;
     switchmodel = args.model;
     for (let i = 1; i < switchquantity; i++) {
@@ -44,8 +44,8 @@ function progressbartofifty(numby) {
             progressbarfinish(numby, currentprogress)
             clearInterval(progressticktofifty);
         } else {
-            currentprogress ++;
-            $(`#progress${numby}`).css({width:`${currentprogress}%`})
+            currentprogress++;
+            $(`#progress${numby}`).css({ width: `${currentprogress}%` })
         }
     }, 50)
 }
@@ -54,7 +54,7 @@ function progressbartofifty(numby) {
 Enables the next button. */
 function progressbarfinish(numby, currentprogress) {
     let progresswidth = currentprogress;
-    let progresstick = setInterval(function() {
+    let progresstick = setInterval(function () {
         if (progresswidth >= 100) {
             if (numby === (switchquantity - 1)) {
                 $('#btnSwitchStackSubmit').attr('disabled', false);
@@ -68,14 +68,14 @@ function progressbarfinish(numby, currentprogress) {
                 clearInterval(progresstick);
             }
         } else {
-            progresswidth ++;
-            $(`#progress${numby}`).css({width:`${progresswidth}%`})
+            progresswidth++;
+            $(`#progress${numby}`).css({ width: `${progresswidth}%` })
         }
     }, 25)
 }
 
 // For enabling buttons.
-function enableordisable (numby) {
+function enableordisable(numby) {
     button = $(`#switch${numby}okay`)
     buttonstatus = button[0].disabled
     if (buttonstatus == true) {
@@ -88,7 +88,7 @@ function enableordisable (numby) {
 
 // Enables next button when status is finished.
 function enablethenext(numby) {
-    numby ++;
+    numby++;
     enableordisable(numby);
 }
 
@@ -96,11 +96,51 @@ $('#btnSwitchStackSubmit').click(function () {
     EventListenerRemoval();
     $("#innerdiv").fadeOut();
     $("#innerdiv").html(memedream);
-    setTimeout(function() {$(document.body).load('./VLANForm.html')},500);
+    setTimeout(function () { $(document.body).load('./VLANForm.html') }, 500);
 })
 
 var memedream = `<p style='font-size: 30;'>Stacker Boy</p>`
 
-function EventListenerRemoval () {
+function EventListenerRemoval() {
     ipcRenderer.removeAllListeners('config:get:return');
-  }
+}
+
+// Jonboi's Main process black magic store
+// Please come in we're open for business :)
+
+/**
+ * Begin the configuration process for a given switch
+ * @param {string} switchID - The HTML ID for the switch     
+ * @param {*} switchCount - The total quantity of the switches
+ */
+const BeginConfiguration = (switchID, switchCount) => {
+    ipcRenderer.send("stack:begin", {
+        id: switchID,
+        count: switchCount
+    });
+}
+
+/**
+ * Event received when the main process is ready for 
+ * password bypass  
+ */
+ipcRenderer.on("stack:ready", (event, arg) => {
+
+});
+
+/**
+ * Event received when the main process has cleared
+ * the password on the current switch
+ */
+ipcRenderer.on("stack:response", (event, arg) => {
+
+});
+
+/**
+ * Event received when the main process has finished
+ * uploading the new code and stacking if applicable
+ */
+ipcRenderer.on("stack:fin", (event, arg) => {
+
+});
+

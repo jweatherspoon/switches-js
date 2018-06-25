@@ -15,9 +15,9 @@ const { CreateDirectory } = require('./filesys');
 
 const { CodeVersionUrl } = require('../models/CodeVersionUrl');
 
-const { dialog } = require('electron').remote;
-const { ConfigurationWindow } = require('electron').remote.require('./models/ConfigurationMenu');
-const { CodeVersionBrowser } = require('electron').remote.require('./models/CodeVersionBrowser');
+const { dialog } = require('electron');
+const { ConfigurationWindow } = require('../models/ConfigurationMenu');
+const { CodeVersionBrowser } = require('../models/CodeVersionBrowser');
 
 exports.supportSites = {
     ruckus: new CodeVersionUrl('https://support.ruckuswireless.com', 'product_families/21-ruckus-icx-switches'),

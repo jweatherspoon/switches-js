@@ -7,7 +7,6 @@ const path = require('path');
 const storage = require('electron-json-storage');
 
 const { 
-    settingKeys,
     GetTFTPSettings,
 } = require('../../helpers/user-settings');
 const { CheckCodeExists } = require('../../helpers/code-version');
