@@ -21,18 +21,10 @@ ipcRenderer.on('config:get:return', (event,args) => {
     }
 }); */
 
-// Global array declaration to create each switch to hold their respective ports
-FullSwitch = [];
-
 // Creation of each switch based upon the switchquantity
 for (let numberofswitchiebois = 0; numberofswitchiebois < switchquantity; numberofswitchiebois++) {
     FullSwitch[numberofswitchiebois] = new Array();
 }
-
-// Global object declaration to set each port on a switch
-SwitchVLANPort = {
-    
-};
 
 // Creates the port objects that are held within each fullswitch
 function PortMaker (portnumber,tagged,vlan) {

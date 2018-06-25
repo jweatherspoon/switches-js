@@ -7,10 +7,9 @@ if(!ipcRenderer) {
 }
 
 $("#switchsubmit").click(function(){
-    x = $('#NumberofSwitches').val();
-    y = $('#switchselector').val();
-    if (y != null && x != '' && x > 0 && x < 11) {
-        SwitchSelectConfig(y,x);
+    switchquantity = $('#NumberofSwitches').val();
+    switchmodel = $('#switchselector').val();
+    if (switchmodel != null && switchquantity != '' && switchquantity > 0 && switchquantity < 11) {
         $(".innerdiv").fadeOut();
         $(".innerdiv").text('Good Job');
         setTimeout(function() {$(document.body).load('./SwitchStack.html')},500);

@@ -6,10 +6,10 @@ if (!ipcRenderer) {
     const { ipcRenderer } = require("electron");
 }
 
-// Send function to retrive switch model and quantity from SwitchSelect
-ipcRenderer.send('switchConfig:get', 'SwitchSelect');
+/* Send function to retrive switch model and quantity from SwitchSelect
+ipcRenderer.send('switchConfig:get', 'SwitchSelect'); */
 
-//Recieve function to retrieve switch model and quantity from SwitchSelect
+/* Recieve function to retrieve switch model and quantity from SwitchSelect
 ipcRenderer.on('config:get:return', (event, args) => {
     switchquantity = args.quantity;
     switchmodel = args.model;
@@ -17,7 +17,12 @@ ipcRenderer.on('config:get:return', (event, args) => {
         newswitchdiv = divswitchcreator(i);
         $(newswitchdiv).insertBefore('#enddiv');
     }
-});
+}); */
+
+for (let i = 1; i < switchquantity; i++) {
+    newswitchdiv = divswitchcreator(i);
+    $(newswitchdiv).insertBefore('#enddiv');
+}
 
 // Creates divs with info from reciever function
 function divswitchcreator(num) {

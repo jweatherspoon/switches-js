@@ -5,18 +5,26 @@ const $ = require('jquery');
 
 // ** Global Variables **
 
-// Number for unique IDs in VLANCreator
-let customtxtincr = 0;
-
-// Holds the VLAN inputs for the dual mode radio buttons
-let dualmodevlanarray = [];
-
-// Global variable vlandict is the VLAN dictionary that gets passed to the main process to be stored
-let vlandict = [];
-
 // Global variables for Switch Stack
 let switchquantity;
 let switchmodel;
+
+// Number for unique IDs in VLANCreator for VLANForm
+let customtxtincr = 0;
+
+// Holds the VLAN inputs for the dual mode radio buttons for VLANForm
+let dualmodevlanarray = [];
+
+// Global variable vlandict is the VLAN dictionary that gets passed to the main process to be stored for VLANForm
+let vlandict = [];
+
+// Global array declaration to create each switch to hold their respective ports for PortPicker
+let FullSwitch = [];
+
+// Global object declaration to set each port on a switch for PortPicker
+let SwitchVLANPort = {
+    
+};
 
 // ** End of Global Variables **
 
