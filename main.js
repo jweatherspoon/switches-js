@@ -149,6 +149,7 @@ ipcMain.on("stack:begin", async (event, arg) => {
     }
     if(switchObject) {
         try {
+            event.returnValue = true;
             // Handle the password bypass 
             await switchObject.passwordBypass();
             // Send off an event to allow the progress bar to 
@@ -165,8 +166,7 @@ ipcMain.on("stack:begin", async (event, arg) => {
             event.sender.send("stack:response", returnValue);
         }
     } else {
-        returnValue.success = false;
-        event.sender.send("stack:response", returnValue);
+        event.returnValue = false;
     }
 });
 
