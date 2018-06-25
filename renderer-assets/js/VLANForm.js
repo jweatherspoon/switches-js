@@ -219,7 +219,7 @@ function portpickerhtml() {
 }
 var memeteam = `<p style='font-size: 30;'>Wowzers</p>`
 
-// Send info to main process to be stored for later
+/* Send info to main process to be stored for later
 function VLANSwitchConfig () { 
     ipcRenderer.send('switchConfig:set', {
         page: 'VLANForm',
@@ -228,7 +228,7 @@ function VLANSwitchConfig () {
             page: 'VLANForm',
             dualmodevlans: dualmodevlanarray
         }});
- }
+ } */
 
  // Removes and inserts the inputid of the radio button into the dualmode array
  function dualmodevlanshifter (myradioboi) {
