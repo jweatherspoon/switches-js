@@ -6,21 +6,23 @@ const {
     dialog
 } = require('electron').remote
 
-// Number for unique IDs in VLANCreator
-customtxtincr = 0;
-
-
-// Creates VLAN fields for CustomVLAN button
+/* Creates VLAN fields for CustomVLAN button.
+   I would advise not touching this. It will blow up the page layout.*/
 function VLANCreator (vlannumber) {
-    var newvlan = `<div style="padding: 10" class='divCustomVLAN' id="divCustomVLAN${vlannumber}" onkeyup="CVLANAgainst(${vlannumber})">
-<input type="text" id="txtCustomVLAN${vlannumber}" class="CVSelector1" name="txtCustomVLAN" placeholder="Name of VLAN" style="margin-right: 10; width: 150;">
-<input class="vlaninput CVSelector2" type="number" id="txtVLAN${vlannumber}" onkeyup='VLANCheck(this)' name="txtVLAN" style="margin-left: 10; width: 98" placeholder="VLAN">
-<button type="button" onclick="deletieboi('divCustomVLAN${vlannumber}')" id="btnVLANDelete${vlannumber}">&times;</button>
+    var newvlan = `<div style="padding-left: 10; width: 420;" class='divCustomVLAN flex flex-align-center' id="divCustomVLAN${vlannumber}" onkeyup="CVLANAgainst(${vlannumber})">
+<div>
+<input type="text" id="txtCustomVLAN${vlannumber}" class="CVSelector1" name="txtCustomVLAN" placeholder="Name of VLAN" style="width: 156;">
+<input class="vlaninput CVSelector2" type="number" id="txtVLAN${vlannumber}" onkeyup='VLANCheck(this)' name="txtVLAN" style="width: 125" placeholder="VLAN">
+<input type="radio" name='dualmoderadio' id="DualModeVLAN${vlannumber}" inputid='txtVLAN${vlannumber}' class='DualModeVLANCheck' value="DualModeVLAN" onclick="dualmodevlanshifter(this)">DualMode
+</div>
+<div onclick="deletieboi('divCustomVLAN${vlannumber}','${vlannumber}')" id="btnVLANDelete${vlannumber}" style="padding: 9; cursor: pointer">&times;</div>
 </div>`
     return newvlan;
 }
 
-// Error checker to make sure if one custom input has characters the other custom input also has characters.
+/* This function checks to make sure if one custom input is not null the other one isn't either.
+   First grabs the label and input and store them as variables.
+   Then it checks to see if either of them are not null.*/
 function CVLANAgainst(vlannum) {
     tvlanname = $(`#txtCustomVLAN${vlannum}`);
     tvlannum = $(`#txtVLAN${vlannum}`);
@@ -37,6 +39,7 @@ function CVLANAgainst(vlannum) {
 /* Error checker to make sure VLAN is in desired range.
    Is used in onkeyup functions in VLAN inputs to change background to red.*/
 function VLANCheck(i) {
+    i.value = parseInt(i.value)
     x = i.value;
     if (x < 0 || x > 4096) {
         i.style.backgroundColor = 'red';
@@ -65,8 +68,14 @@ $('#btnCustomVLAN').click(function(){
     customtxtincr ++;
 })
 
-// Deletes custom VLAN
-function deletieboi(divid) {
+/* This function is for the div that deletes the custom VLANs
+   First it checks to see whether the radio button is checked,
+   if it is, it will shift UserVLAN into the dualmode array.
+   Then it will continue on to calculate remaining custom divs.*/
+function deletieboi(divid, radionumber) {
+    if ($(`#DualModeVLAN${radionumber}`).is(':checked') == true) {
+        $('#DualModeVLANUser').click();
+    }
     if ($('#btnCustomVLAN').css('display') == 'none') {
         $(`#${divid}`).remove();
         $('#btnCustomVLAN').show();
@@ -81,43 +90,34 @@ function deletieboi(divid) {
 $('#btnVLANSubmit').click(function(){
     flaggy = true;
     nothingcount = 0;
-    inputcount = $('#divVLANForm').find('input').length;
-    $('#divVLANForm').find('input').each(function (){
+    inputcount = $('#divVLANForm').find('.vlaninput').length;
+    $('#divVLANForm').find('.vlaninput').each(function (){
         
         /* Checks validity based on VLANCheck function
            Ends findeach loop if any boxes are red
-           ** Change this later to check for correct input and not background color** */
+           ** Change this later to check for correct input and background color** */
         if (this.style.backgroundColor == 'red') {
             alert("Please check any red input boxes for errors.");
             flaggy = false;
             return false;
-
-        /* Checks to see if dualmoded is checked and if it is, if a VOIP VLAN is entered.
-           Ends findeach loop if VLAN is not entered and dualmoded is checked.*/
-        } else {
-            if ($('#dualmodedcheck').is(':checked') && $('#VOIPVLAN').val() == '') {
-                alert('Please enter a VOIP VLAN or uncheck the dualmoded checkbox.');
-                flaggy = false;
-                return false;
-            }
         }
-
-        // Counter to check against blank form and to check if two VLANs are included for dualmoded
+        
+        // Counter to check against blank form
         if (this.value === '') {
             nothingcount ++
         }
     })
 
+    // Checks to see if the selected dualmoded VLANs are filled out
+    if ($('#dualmodedcheck').is(':checked') && (dualmodevlanarray[0].val() == '' || dualmodevlanarray[1].val() == '')) {
+        alert(`You have dualmoded checked, and one or more of your dualmoded VLANs are not filled out. \n Fill them out or uncheck dualmoded.`)
+        flaggy = false;
+    }
+
     /* Checks against counter to make sure form isn't blank
        flaggy is a flag that stops the submit button from continuing further.*/
     if (nothingcount === inputcount) {
         alert(`What are you doing? Don't you want at least one VLAN?`);
-        flaggy = false;
-
-    /* Checks against nothingcount counter to see if more than one input is filled out.
-       If only one input is filled out but dualmoded is checked flaggy is set to false.*/
-    } else if (nothingcount === (inputcount - 1) && $('#VOIPVLAN').val() != '' && $('#dualmodedcheck').is(':checked')) {
-        alert('Need at least two VLANs for dualmoded.');
         flaggy = false;
     }
 
@@ -133,45 +133,47 @@ $('#btnVLANSubmit').click(function(){
             vlandictionary();
             CVLANDictionary();
         }
-        alert(JSON.stringify(vlandict));
-        VLANDialog();
+        if (flaggy == true) {
+            alert(JSON.stringify(vlandict));
+            VLANDialog();
+        }
     }
 })
-
-// Global variable vlandict is the VLAN dictionary that gets passed to the main process to be stored
-vlandict = [];
 
 /* Dictionary creator for prefilled in VLANS 
    Finds each input, checks to see if it isn't empty.
    If it isn't empty it adds it to the global dictionary.*/
 function vlandictionary() {
     vlandict = [];
-    captioncounter = 0;
     $('#divVLANForm').find('.OCVLAN').each(function() {
         if (this.value != '') {
-            inputkey = $(`#divVLANForm input:eq(${captioncounter})`).attr('id');
+            inputkey = $(this).attr('id');
             vlandict.push({
-                key: inputkey,
-                value: this.value
+                VLANName: inputkey,
+                VLANNumber: this.value
             })
         };
-        captioncounter ++;
     });
 }
 
-// Dictionary creator for custom VLANs
+// Dictionary creator for custom VLANs. Similar to vlandictionary function.
 function CVLANDictionary() {
     $('#divVLANForm').find('.divCustomVLAN').each(function() {
-        tempkey = $(this).find('.CVSelector1').val();
-        tempval = $(this).find('.CVSelector2').val();
-        if (tempkey != '' && tempval != '') {
+        VLANInputName = $(this).find('.CVSelector1').val();
+        VLANInput = $(this).find('.CVSelector2').val();
+        if (VLANInputName != '' && VLANInput != '') {
             vlandict.push({
-                key: tempkey,
-                value: tempval
+                VLANName: VLANInputName,
+                VLANNumber: VLANInput
             });
         } else {
-            if (tempkey == '') {
-                $(this).find('CVSelector1')
+            if (VLANInputName != '' && VLANInput == '') {
+                vlanalertname = $(this).find('CVSelector1').val();
+                alert(`Please input a VLAN for ${vlanalertname} or remove the name.`)
+                flaggy = false;
+            } else if (VLANInputName == '' && VLANInput != '') {
+                alert('It looks like you have a custom VLAN with no name \nPlease name the VLAN.')
+                flaggy = false;
             }
         }
     });
@@ -180,12 +182,16 @@ function CVLANDictionary() {
 
 // Creates VLANDialog so the user can confirm the VLANs
 function VLANDialog () {
+
+    // Grabs the keys and values from the vlandict and stores them in variables. Then stores them in a string
     var VLANString = '';
     vlandict.forEach((K, index) => {
-        vkey = JSON.stringify(K.key)
-        vval = JSON.stringify(K.value)
+        vkey = JSON.stringify(K.VLANName)
+        vval = JSON.stringify(K.VLANNumber)
         VLANString += vkey + ': ' + vval + '\n' ;
     });
+
+    // Creates a dialog for the user to check their inputs one more time before moving on.
     dialog.showMessageBox(
         options = {
         type: 'info',
@@ -209,14 +215,41 @@ function portpickerhtml() {
         $("#VLANFlexContainer").html(memeteam);
         setTimeout(function () { $(document.body).load('./PortPicker.html') }, 500);
 }
-
 var memeteam = `<p style='font-size: 30;'>Wowzers</p>`
 
+// Send info to main process to be stored for later
 function VLANSwitchConfig () { 
     ipcRenderer.send('switchConfig:set', {
         page: 'VLANForm',
         data : {
             VLANDictionary: vlandict,
-            page: 'VLANForm'
+            page: 'VLANForm',
+            dualmodevlans: dualmodevlanarray
         }});
+ }
+
+ // Removes and inserts the inputid of the radio button into the dualmode array
+ function dualmodevlanshifter (myradioboi) {
+     x = myradioboi.getAttribute('inputid')
+     dualmodevlanarray.shift();
+     dualmodevlanarray.unshift($(`#${x}`));
+ }
+
+/* For the checkbox at the top of the page. 
+   Checks if it is checked now or not
+   Disables or enables the radio buttons for dual mode vlans*/
+ function DualModeCheckieBoi (mybox) {
+    if (mybox.checked == true) {
+        $('#divVLANForm').find('input[type=radio]').each( function() {
+            $(this).attr('disabled', false);
+        })
+        $('#DualModeVLANVOIP').attr('disabled', true);
+        $('#DualModeVLANVOIP').attr('checked', true);
+        $('#DualModeVLANUser').attr('checked', true);
+    } else {
+        $('#divVLANForm').find('input[type=radio]').each( function() {
+            $(this).attr('checked', false);
+            $(this).attr('disabled', true);
+        })
+    }
  }
