@@ -113,13 +113,19 @@ function EventListenerRemoval() {
 /**
  * Begin the configuration process for a given switch
  * @param {string} switchID - The HTML ID for the switch     
- * @param {*} switchCount - The total quantity of the switches
+ * @param {number} switchCount - The total quantity of the switches
  */
 const BeginConfiguration = (switchID, switchCount) => {
-    ipcRenderer.send("stack:begin", {
+    let res = ipcRenderer.send("stack:begin", {
         id: switchID,
         count: switchCount
     });
+
+    if(!res) {
+
+    }
+
+
 }
 
 /**
