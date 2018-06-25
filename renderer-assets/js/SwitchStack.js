@@ -6,9 +6,6 @@ if (!ipcRenderer) {
     const { ipcRenderer } = require("electron");
 }
 
-var switchquantity;
-var switchmodel;
-
 // Send function to retrive switch model and quantity from SwitchSelect
 ipcRenderer.send('switchConfig:get', 'SwitchSelect');
 

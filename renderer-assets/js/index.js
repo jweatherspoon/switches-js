@@ -12,7 +12,10 @@ let customtxtincr = 0;
 let dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
 
 // Global variable vlandict is the VLAN dictionary that gets passed to the main process to be stored
-vlandict = [];
+let vlandict = [];
+
+let switchquantity;
+let switchmodel;
 
 // ** End of Global Variables **
 
