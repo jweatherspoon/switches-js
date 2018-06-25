@@ -6,6 +6,8 @@ const {
     dialog
 } = require('electron').remote
 
+dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
+
 /* Creates VLAN fields for CustomVLAN button.
    I would advise not touching this. It will blow up the page layout.*/
 function VLANCreator (vlannumber) {

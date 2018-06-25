@@ -9,11 +9,12 @@ const $ = require('jquery');
 let customtxtincr = 0;
 
 // Holds the VLAN inputs for the dual mode radio buttons
-let dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
+let dualmodevlanarray = [];
 
 // Global variable vlandict is the VLAN dictionary that gets passed to the main process to be stored
 let vlandict = [];
 
+// Global variables for Switch Stack
 let switchquantity;
 let switchmodel;
 
