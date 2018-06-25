@@ -18,6 +18,7 @@ $("#switchsubmit").click(function(){
 });
 
 function SwitchSelectEC(i) {
+    i.value = parseInt(i.value);
     x = i.value;
     if (x < 1 || x > 10) {
         i.style.backgroundColor = 'red';
@@ -26,11 +27,11 @@ function SwitchSelectEC(i) {
     }
 }
 
-function SwitchSelectConfig(model, quantity) {
+/* function SwitchSelectConfig(model, quantity) {
     ipcRenderer.send('switchConfig:set', {
         page: 'SwitchSelect',
         data : {
             page: 'SwitchSelect',
             model: model,
             quantity: quantity}});
-}
+} */
