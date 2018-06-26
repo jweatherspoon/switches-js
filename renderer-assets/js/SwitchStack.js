@@ -38,6 +38,27 @@ function divswitchcreator(num) {
     return newswitchdiv;
 }
 
+/**
+ * Slow ticking progress bar function
+ * @param {number} numby - The ID number for the target progress bar
+ * @param {number} tick - The interval tick time (default: 200)
+ * @param {number} start - The start percentage for the progress bar (default: 10)
+ * @param {number} end - The end percentage for the progress bar (default: 10)
+ */
+const ProgressBar = (numby, tick=200, start=0, end=10) => {
+    currentprogress = start;
+    let interval = setInterval(() => {
+        if(currentprogress >= end) {
+            clearInterval(interval);
+        } else {
+            currentprogress++;
+            $(`#progress${numby}`).css({
+                width: `${currentprogress}%`
+            });
+        }
+    }, tick)
+}
+
 /* Slow ticking progress bar function. 
 Says to fifty but should actually be set to 75. 
 And interval should be set to 500.
@@ -198,8 +219,8 @@ const BeginConfiguration = (switchID) => {
  * password bypass  
  */
 ipcRenderer.on("stack:ready", (event, id) => {
-    console.log("recv ready", id);
     enableordisable(id);
+    ProgressBar(id);
     $("#instructions").text("Power the switch on. I'll start when it's booted up.");
 });
 
@@ -210,8 +231,7 @@ ipcRenderer.on("stack:ready", (event, id) => {
 ipcRenderer.on("stack:response", (event, arg) => {
     console.log("recv response", arg);
     $("#instructions").text("Please wait while I update the switch for you...");
-    progressbartofifty(arg.id);
-    enableordisable(arg.id);
+    ProgressBar(arg.id, 200, currentprogress, 50);
 });
 
 /**
@@ -219,8 +239,8 @@ ipcRenderer.on("stack:response", (event, arg) => {
  * uploading the new code and stacking if applicable
  */
 ipcRenderer.on("stack:fin", (event, arg) => {
-    console.log("recv fin", arg);
-    progressbarfinish(arg.id, currentprogress);
+    // progressbarfinish(arg.id, currentprogress);
+    progressbarfinish(arg.id);
 });
 
 $(document).ready(() => {
