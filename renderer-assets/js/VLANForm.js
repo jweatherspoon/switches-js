@@ -212,7 +212,7 @@ function VLANDialog () {
 
 // Next page
 function portpickerhtml() {
-        VLANSwitchConfig();
+        //VLANSwitchConfig();
         $("#VLANFlexContainer").fadeOut();
         $("#VLANFlexContainer").html(memeteam);
         setTimeout(function () { $(document.body).load('./PortPicker.html') }, 500);
