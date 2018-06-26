@@ -248,10 +248,12 @@ function VLANSwitchConfig () {
         $('#DualModeVLANVOIP').attr('disabled', true);
         $('#DualModeVLANVOIP').attr('checked', true);
         $('#DualModeVLANUser').attr('checked', true);
+        dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
     } else {
         $('#divVLANForm').find('input[type=radio]').each( function() {
             $(this).attr('checked', false);
             $(this).attr('disabled', true);
+            dualmodevlanarray = [];
         })
     }
  }
