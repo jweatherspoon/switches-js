@@ -2,6 +2,7 @@
 const { ipcRenderer } = require("electron");
 const storage = require('electron-json-storage');
 const $ = require('jquery');
+const { wait } = require('../../helpers/timing');
 
 // ** Global Variables **
 

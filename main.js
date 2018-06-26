@@ -13,12 +13,7 @@ const {
 } = require('electron');
 
 const {
-    port,
     GetPorts,
-    OpenPort,
-    GetRecommendedCodeVersion,
-    CheckTFTPDirForCodeVersion,
-    URLS,
 } = require('./helpers/serial');
 const { GenerateTemplate } = require('./helpers/menu-template');
 
@@ -29,7 +24,7 @@ const { Brocade } = require('./models/switches/Brocade');
 
 const path = require('path');
 
-let win, config, browser;
+let win;
 
 let switchConfigSettings = {
 
@@ -121,10 +116,15 @@ ipcMain.on("configmenu:show", (event, arg) => {
  */
 ipcMain.on("serial:connect", (event, arg) => {
     if(switchObject) {
+        switchObject.disconnect();
         switchObject = null;
     }
-    switchObject = new Brocade(arg.portName, arg.baudRate, arg.model, console.log);
-    event.returnValue = true;
+    try {
+        switchObject = new Brocade(arg.portName, arg.baudRate, arg.model, console.log);
+        event.sender.send("serial:connected", true);
+    } catch(err) {
+        event.sender.send("serial:connected", false);
+    }
 });
 
 /**
@@ -149,24 +149,28 @@ ipcMain.on("stack:begin", async (event, arg) => {
     }
     if(switchObject) {
         try {
-            event.returnValue = true;
+            event.sender.send("stack:ready", arg.id);
+            console.log("send ready");
             // Handle the password bypass 
             await switchObject.passwordBypass();
             // Send off an event to allow the progress bar to 
             // begin moving and continue on the process 
             event.sender.send("switch:response", returnValue);
+            console.log("send response");
 
             await switchObject.uploadDefaults(arg.codeVer, arg.template);
             await switchObject.enableStacking(arg.priority);
 
             // Fire off the "finished" event
             event.sender.send("stack:fin", returnValue);
+            console.log("send fin");
         } catch(err) {
             returnValue.success = false;
             event.sender.send("stack:response", returnValue);
         }
     } else {
-        event.returnValue = false;
+        returnValue.success = false;
+        event.sender.send("stack:response", returnValue);
     }
 });
 

@@ -1,27 +1,54 @@
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="../css/flex.css" />
-    </head>
-    <body class="switchback flex-container flex-align-center">
-        <div class="flex-container flex-align-center" id="innerdiv" style="flex-flow: column; flex-direction: column">
-            <div class="flex flex-align-center" style="flex-flow: column; width: fit-content">
-                <div class="flex flex-justify-center" style="width: fit-content"><h1>It's stacking time.</h1></div>
-                <div class="flex flex-justify-center" style="width: fit-content"><h2 id="switchidentifier">Plug in your master switch.</h2></div>
-                <div class="flex flex-justify-center" style="width: fit-content"><h2 id="instructions">Press okay when you've plugged it in.</h2></div>
-                <div class="flex flex-align-center" style="flex-flow: column; width: fit-content;" id="SwitchStatus">
-                    <div id="switch0" class='flex flex-justify-center' style="padding-top: 15">
-                        <label for="switch0okay" style="padding-right: 10">Switch 1</label>
-                        <button type="button" id="switch0okay" style="margin-left: 10" onclick="progressbartofifty(0); enableordisable(0)">Okay</button>
-                        <div id="progressbar0" style="width: 200; height: 18; margin-left: 10;margin-top: 2; outline: 2px solid black"><div id="progress0" style="background-color: green; width: 0; height: 18"></div></div>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/flex.css" />
+</head>
+
+<body class="switchback flex-container flex-align-center">
+    <div class="flex-container flex-align-center" id="innerdiv" style="flex-flow: column; flex-direction: column">
+        <div class="flex flex-justify-center flex-column" style="width:fit-content" id="connect-container">
+            <h1>
+                Let's Connect to the Switch
+            </h1>
+            <div class="flex flex-justify-space-around" style="padding:10px;">
+                <label for="ports-list">Serial Ports:</label>
+                <select id="ports-list">
+                    <option>Please Connect a Switch</option>
+                </select>
+            </div>
+            <button id="connect-btn" onclick="TryConnect()" disabled>Connect</button>
+        </div>
+        <div class="flex flex-align-center" style="flex-flow: column; width: fit-content; display: none;" id="config-container">
+            <div class="flex flex-justify-center" style="width: fit-content">
+                <h1>It's stacking time.</h1>
+            </div>
+            <div class="flex flex-justify-center" style="width: fit-content">
+                <h2 id="switchidentifier">Attach the console cable to your master switch.</h2>
+            </div>
+            <div class="flex flex-justify-center" style="width: fit-content">
+                <h2 id="instructions">
+                    Don't power it on.
+                    Press okay when you've attached the cable.
+                </h2>
+            </div>
+            <div class="flex flex-align-center" style="flex-flow: column; width: fit-content;" id="SwitchStatus">
+                <div id="switch0" class='flex flex-justify-center' style="padding-top: 15">
+                    <label for="switch0okay" style="padding-right: 10">Switch 1</label>
+                    <button type="button" id="switch0okay" style="margin-left: 10" onclick="BeginConfiguration(0)">Okay</button>
+                    <div id="progressbar0" style="width: 200; height: 18; margin-left: 10;margin-top: 2; outline: 2px solid black">
+                        <div id="progress0" style="background-color: green; width: 0; height: 18"></div>
                     </div>
-                    <div id="enddiv">
-                        <button type="button" id="btnSwitchStackSubmit" style="margin-top: 10">Stacked</button>
-                    </div>
+                </div>
+                <div id="enddiv">
+                    <button type="button" id="btnSwitchStackSubmit" disabled style="margin-top: 10">Stacked</button>
                 </div>
             </div>
         </div>
-    </body>
-    <footer>
-        <script src="../js/SwitchStack.js"></script>
-    </footer>
+    </div>
+    <button id="next-page" style="position:absolute; top:0; right: 0;">Next Page</button>
+</body>
+<footer>
+    <script src="../js/SwitchStack.js"></script>
+</footer>
+
 </html>
