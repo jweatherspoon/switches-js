@@ -41,11 +41,11 @@ function divswitchcreator(num) {
 /**
  * Slow ticking progress bar function
  * @param {number} numby - The ID number for the target progress bar
- * @param {number} tick - The interval tick time (default: 200)
+ * @param {number} tick - The interval tick time (default: 500)
  * @param {number} start - The start percentage for the progress bar (default: 10)
- * @param {number} end - The end percentage for the progress bar (default: 10)
+ * @param {number} end - The end percentage for the progress bar (default: 15)
  */
-const ProgressBar = (numby, tick=200, start=0, end=10) => {
+const ProgressBar = (numby, tick=500, start=0, end=15) => {
     currentprogress = start;
     let interval = setInterval(() => {
         if(currentprogress >= end) {
@@ -63,18 +63,18 @@ const ProgressBar = (numby, tick=200, start=0, end=10) => {
 Says to fifty but should actually be set to 75. 
 And interval should be set to 500.
 It's triggered when the user presses okay */
-function progressbartofifty(numby) {
-    currentprogress = 0;
-    let progressticktofifty = setInterval(function () {
-        if (currentprogress >= 50) {
-            // progressbarfinish(numby, currentprogress)
-            clearInterval(progressticktofifty);
-        } else {
-            currentprogress++;
-            $(`#progress${numby}`).css({ width: `${currentprogress}%` })
-        }
-    }, 50)
-}
+// function progressbartofifty(numby) {
+//     currentprogress = 0;
+//     let progressticktofifty = setInterval(function () {
+//         if (currentprogress >= 50) {
+//             // progressbarfinish(numby, currentprogress)
+//             clearInterval(progressticktofifty);
+//         } else {
+//             currentprogress++;
+//             $(`#progress${numby}`).css({ width: `${currentprogress}%` })
+//         }
+//     }, 50)
+// }
 
 /* This function finishes out the progress bar when it is signaled by the main process.
 Enables the next button. */
@@ -90,7 +90,7 @@ function progressbarfinish(numby, currentprogress) {
             } else {
                 identifier = numby + 2
                 enablethenext(numby);
-                $('#switchidentifier').text(`Attach the console cable to Switch number ${identifier}`);
+                $('#switchidentifier').text(`Attach the console and ethernet cables to Switch number ${identifier}`);
                 $("#instructions").text("Don't power it on. Press okay when you've attached the cable.");
                 clearInterval(progresstick);
             }

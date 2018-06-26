@@ -9,6 +9,7 @@ exports.settingKeys = {
     tftpIp: 'tftp-ip',
     tftpNetmask: 'tftp-netmask',
     managementVlan: 'management-vlan',
+    firstStart: 'first-start',
 };
 
 /**

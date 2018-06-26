@@ -3,6 +3,7 @@ const { ipcRenderer } = require("electron");
 const storage = require('electron-json-storage');
 const $ = require('jquery');
 const { wait } = require('../../helpers/timing');
+const { settingKeys } = require('../../helpers/user-settings');
 
 // ** Global Variables **
 
@@ -36,9 +37,10 @@ $("#fader").click(function () {
 });
 
 $(document).ready(() => {
-    storage.has('first-start', (err, hasKey) => {
+    storage.has(settingKeys.firstStart, (err, hasKey) => {
         if(err || !hasKey) {
-            storage.set('first-start', 'false');
+            storage.set(settingKeys.firstStart, 'false');
+            storage.set(settingKeys.managementVlan, '400');
             ipcRenderer.send("configmenu:show");
         }
     });
