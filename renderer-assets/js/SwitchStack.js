@@ -199,7 +199,8 @@ const BeginConfiguration = (switchID) => {
  */
 ipcRenderer.on("stack:ready", (event, id) => {
     console.log("recv ready", id);
-    $("#instructions").text("Power the switch on");
+    enableordisable(id);
+    $("#instructions").text("Power the switch on. I'll start when it's booted up.");
 });
 
 /**

@@ -150,20 +150,18 @@ ipcMain.on("stack:begin", async (event, arg) => {
     if(switchObject) {
         try {
             event.sender.send("stack:ready", arg.id);
-            console.log("send ready");
-            // Handle the password bypass 
-            await switchObject.passwordBypass();
+            // Handle the boot process
+            await switchObject.handleBoot();
             // Send off an event to allow the progress bar to 
             // begin moving and continue on the process 
             event.sender.send("switch:response", returnValue);
-            console.log("send response");
 
+            await switchObject.setIP("192.168.1.1", "255.255.255.0");
             await switchObject.uploadDefaults(arg.codeVer, arg.template);
             await switchObject.enableStacking(arg.priority);
 
             // Fire off the "finished" event
             event.sender.send("stack:fin", returnValue);
-            console.log("send fin");
         } catch(err) {
             returnValue.success = false;
             event.sender.send("stack:response", returnValue);
