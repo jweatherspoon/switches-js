@@ -201,7 +201,9 @@ ipcMain.on('switchConfig:get', (event, page) => {
  */
 ipcMain.on("code:update", (event, arg) => {
     SwitchDefaultConfig(arg.model, "ruckus").then(res => {
-        event.sender.send("code:updated");
+        if(res) {
+            event.sender.send("code:updated");
+        }
     })
 });
 
