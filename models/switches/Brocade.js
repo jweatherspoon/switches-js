@@ -2,10 +2,6 @@
  * @file Model for Brocade / Ruckus switch operations
  * @author Jonathan Weatherspoon
  */
-
-const path = require('path');
-const storage = require('electron-json-storage');
-
 const { 
     GetTFTPSettings,
 } = require('../../helpers/user-settings');
@@ -71,7 +67,6 @@ class Brocade extends Switch {
     async passwordBypass() {
         await this.write('b', false);
         await this.addListener('>');
-        await this.enter(2);
         await this.wait(1000);
         await this.write("no password");
         await this.wait(1000);
@@ -109,7 +104,7 @@ class Brocade extends Switch {
      * @param {string} flashTarget - (optional) The target for copying flash 
      * code. Can be primary, secondary, or bootrom.
      */
-    async tftp(target, serverIP, filename) {
+    async tftp(target, serverIP, filename, flashTarget='') {
         await this.write(`copy tftp ${target} ${serverIP} ${filename} ${flashTarget}`);
         await this.addListener(">");
     }
@@ -148,22 +143,26 @@ class Brocade extends Switch {
      */
     async uploadDefaults(codeVer, template) {
         // Get TFTP settings
-        let tftp = await GetTFTPSettings();
-
-        // Get code version filenames 
-        let codes = await CheckCodeExists(tftp.dir, this.model, codeVer);
-
-        await this.enterConfigureTerminal();
-
-        // TFTP Boot, Flash, Startup template
-        await this.tftp("flash", tftp.serverIP, codes.boot, "bootrom");
-        await this.tftp("flash", tftp.serverIP, codes.flash, "primary");
-        await this.copyFlashToSec();
-        await this.tftp("startup-config", tftp.serverIP, template);
-
-        // TFTP PoE Firmware if applicable
-        if(codes.poe) {
-            await this.inlinePower(tftp.serverIP, codes.poe);
+        try {
+            let tftp = await GetTFTPSettings();
+            console.log(JSON.stringify(tftp));
+            // Get code version filenames 
+            let codes = await CheckCodeExists(tftp.directory, this.model, codeVer);
+            console.log(JSON.stringify(codes));
+            await this.enterConfigureTerminal();
+    
+            // TFTP Boot, Flash, Startup template
+            await this.tftp("startup-config", tftp.serverIP, template);
+            await this.tftp("flash", tftp.serverIP, codes.boot, "bootrom");
+            await this.tftp("flash", tftp.serverIP, codes.flash, "primary");
+            await this.copyFlashToSec();
+    
+            // TFTP PoE Firmware if applicable
+            if(codes.poe) {
+                await this.inlinePower(tftp.serverIP, codes.poe);
+            }
+        } catch(err) {
+            console.log(err);
         }
     }
 
@@ -189,7 +188,8 @@ class Brocade extends Switch {
 
         await this.enterConfigureTerminal();
         await this.write("stack enable");
-        await this.write(`stack unit 1 priority ${priority}`);
+        await this.write(`stack unit 1`);
+        await this.write(`priority ${priority}`);
         await this.write('exit');
         await this.write('hitless-failover enable');
     }

@@ -22,7 +22,7 @@ const {
     SwitchDefaultConfig,
 } = require('../../helpers/code-version');
 
-const model = "ICX 7150";
+const model = "FCX";
 const tftpDir = "/home/jon/tftptest";
 const modelDir = path.join(tftpDir, model);
 const version = "08061b";
@@ -189,6 +189,12 @@ const TestUpdateCodeVersion = async (model, supportSiteKey) => {
 const TestSwitchDefaultConfig = async (model, supportSiteKey) => {
     SwitchDefaultConfig(model, supportSiteKey);
 }
+
+const TestTFTPSettings = () => {
+    ipcRenderer.send("tftp:get");
+}
+
+ipcRenderer.on("tftp:send", (event, arg) => console.log(arg));
 //#endregion
 
 function MakeButton(funcName, args) {
@@ -198,12 +204,19 @@ function MakeButton(funcName, args) {
     return html;
 }
 
+
 $(document).ready(() => {
     functionTests.forEach(test => {
         let html = MakeButton(test.name, test.args);
         document.body.innerHTML += html;
     });
-
+    
+    
+    $("#switch-command")[0].onkeypress = e => {
+        if(e.key === "Enter") {
+            ipcRenderer.send("command", "write", $("#switch-command").val());
+        }
+    }
     // Open developer tools 
     remote.getCurrentWebContents().openDevTools();
 })

@@ -4,7 +4,9 @@
  * @module user-settings
  */
 
-exports.settingKeys = {
+ const storage = require('electron-json-storage');
+
+const settingKeys = {
     tftp: 'tftp-directory',
     tftpIp: 'tftp-ip',
     tftpNetmask: 'tftp-netmask',
@@ -25,7 +27,7 @@ const IsEmpty = (val) => {
  * @returns {Promise<any>} Resolves to the path of the TFTP directory if 
  * found, or rejects with a message if not.
  */
-exports.GetTFTPDir = () => {
+const GetTFTPDir = () => {
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftp, (err, tftp) => {
             if(err || IsEmpty(tftp)) {
@@ -41,7 +43,7 @@ exports.GetTFTPDir = () => {
  * @returns {Promise<any>} Resolves to the server's IP address if found,
  * or rejects with a reason if it wasn't.
  */
-exports.GetTFTPServerIP = () => {
+const GetTFTPServerIP = () => {
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftpIp, (err, serverIP) => {
             if(err || IsEmpty(serverIP)) {
@@ -57,7 +59,7 @@ exports.GetTFTPServerIP = () => {
  * @returns {Promise<any>} Resolves to the server's subnet mask if found, or
  * rejects with a reason if not found.
  */
-exports.GetTFTPNetmask = () => {
+const GetTFTPNetmask = () => {
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftpNetmask, (err, netmask) => {
             if(err || IsEmpty(netmask)) {
@@ -75,7 +77,7 @@ exports.GetTFTPNetmask = () => {
  * @returns {object} Contains the TFTP directory, server ip, and 
  * server subnet mask
  */
-exports.GetTFTPSettings = async () => {
+const GetTFTPSettings = async () => {
     let dir = await GetTFTPDir();
     let ip = await GetTFTPServerIP();
     let mask = await GetTFTPNetmask();
@@ -92,7 +94,7 @@ exports.GetTFTPSettings = async () => {
  * @returns {Promise<any>} Resolves to the configured VLAN if found
  * or rejects with a message if not.
  */
-exports.GetManagementVLAN = () => {
+const GetManagementVLAN = () => {
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.managementVlan, (err, vlan) => {
             if(err || IsEmpty(vlan)) {
@@ -102,3 +104,7 @@ exports.GetManagementVLAN = () => {
         })
     })
 }
+
+exports.settingKeys = settingKeys;
+exports.GetManagementVLAN = GetManagementVLAN;
+exports.GetTFTPSettings = GetTFTPSettings;

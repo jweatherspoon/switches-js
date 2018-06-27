@@ -6,6 +6,7 @@
  */
 
 const fetch = require('node-fetch');
+const path = require('path');
 const fs = require('fs');
 const storage = require('electron-json-storage');
 const cheerio = require('cheerio');
@@ -19,7 +20,7 @@ const { dialog } = require('electron');
 const { ConfigurationWindow } = require('../models/ConfigurationMenu');
 const { CodeVersionBrowser } = require('../models/CodeVersionBrowser');
 
-exports.supportSites = {
+const supportSites = {
     ruckus: new CodeVersionUrl('https://support.ruckuswireless.com', 'product_families/21-ruckus-icx-switches'),
 };
 
@@ -28,7 +29,7 @@ exports.supportSites = {
  * @returns {Promise<boolean>} Resolves once the user has closed 
  * the configuration menu
  */
-exports.ConfigureTFTPDirectory = () => {
+const ConfigureTFTPDirectory = () => {
     return new Promise((resolve, reject) => {
         // Tell the user they need to configure TFTP
         dialog.showMessageBox({
@@ -55,7 +56,7 @@ exports.ConfigureTFTPDirectory = () => {
  * @param {string} url - The URL to fetch HTML from 
  * @returns {Cheerio} A cheerio parser with the HTML loaded
  */
-exports.FetchHtmlAndLoad = async (url) => {
+const FetchHtmlAndLoad = async (url) => {
     let html = await fetch(url).then(resp => resp.text());
     return cheerio.load(html);
 }
@@ -68,7 +69,7 @@ exports.FetchHtmlAndLoad = async (url) => {
  * @returns {string[]} A list of elements that matched the 
  * given parameters
  */
-exports.FindElementsByText = ($, tag, text) => {
+const FindElementsByText = ($, tag, text) => {
     let elements = $(tag).filter(function (index) {
         if ($(this).text() === text) {
             return text;
@@ -87,7 +88,7 @@ exports.FindElementsByText = ($, tag, text) => {
  * @returns {object} - An object containing the recommended
  * code version and a link to the file 
  */
-exports.GetRecommendedCodeVersion = async (model, url) => {
+const GetRecommendedCodeVersion = async (model, url) => {
     let $ = await FetchHtmlAndLoad(url);
 
     // Search for the model name 
@@ -132,22 +133,23 @@ exports.GetRecommendedCodeVersion = async (model, url) => {
  * @param {string} modelDirectory - The path to the model folder in the TFTP directory
  * @param {string} versionDirectory - Path to the version directory in the model directory
  * @param {string} childDirectory - The path to the child folder in the version directory
+ * @param {string} ext - The extension to search for in the directory (default: .bin)
  * @returns {Promise<any>} Resolves to the first found
  * filename if a given code version is found in the folder.
  * Rejects if it is not found.
  */
-exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
+const CheckFolder = (modelDirectory, versionDirectory, childDirectory, ext=".bin") => {
     return new Promise((resolve, reject) => {
         // Find a binary file inside the Flash directory
         fs.readdir(path.join(modelDirectory, versionDirectory, childDirectory), (err, files) => {
-            if (err || !files || files.length === 0) {
+            if (err || !files) {
                 reject(err);
                 return;
             }
             // Find a file that matches the version number
-            let filename = files.find(file => file.includes(".bin"));
+            let filename = files.find(file => file.includes(ext));
             if (!filename) {
-                reject(false);
+                resolve(false);
             } else {
                 resolve(filename);
             }
@@ -165,7 +167,7 @@ exports.CheckFolder = (modelDirectory, versionDirectory, childDirectory) => {
  * filenames for boot, flash, and poe if boot and flash
  * code exist. Rejects if one or both do not exist.
  */
-exports.CheckCodeExists = async (tftpDirectory, model, version) => {
+const CheckCodeExists = async (tftpDirectory, model, version) => {
     let modelDir = path.join(tftpDirectory, model);
     
     try {
@@ -173,7 +175,7 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
         let flashCheck = await CheckFolder(modelDir, version, "Flash");
 
         if(bootCheck && flashCheck) {
-            let poeCheck = await CheckFolder(modelDir, version, "Firmware");
+            let poeCheck = await CheckFolder(modelDir, version, "Firmware", ".fw");
             return {
                 boot: bootCheck,
                 flash: flashCheck,
@@ -183,7 +185,7 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
             return false;
         }
     } catch(err) { 
-        throw new Error(false);
+        throw new Error(err);
     }
 }
 
@@ -196,7 +198,7 @@ exports.CheckCodeExists = async (tftpDirectory, model, version) => {
  * @returns {any} Resolves if all directories are created /
  * if they exist. Rejects if it cannot make any of the directories.
  */
-exports.CreateTFTPStructure = async (tftpDirectory, model, ver) => {
+const CreateTFTPStructure = async (tftpDirectory, model, ver) => {
         let modelPath = path.join(tftpDirectory, model);
         let versionPath = path.join(modelPath, version);
         let bootPath = path.join(versionPath, "Boot");
@@ -217,7 +219,7 @@ exports.CreateTFTPStructure = async (tftpDirectory, model, ver) => {
  * @param {string} codeURL - The URL for the download link of the new code
  * @returns {Promise<boolean>} Resolves when the browser is closed.
  */
-exports.GetNewCode = (codeURL, model, ver) => {
+const GetNewCode = (codeURL, model, ver) => {
     return new Promise((resolve, reject) => {
         dialog.showMessageBox({
             title: "Switch Code not Found",
@@ -252,7 +254,7 @@ exports.GetNewCode = (codeURL, model, ver) => {
  * @returns {Promise<any>} Resolves to true when the code is ready to be uploaded.
  * Resolves to false if a step fails. Rejects if a crash occurs.
  */
-exports.UpdateCodeVersion = async (model, supportSiteKey) => {
+const UpdateCodeVersion = async (model, supportSiteKey) => {
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftp, async (err, tftpDir) => {
             if (err || Object.keys(tftpDir).length === 0) {
@@ -295,15 +297,27 @@ exports.UpdateCodeVersion = async (model, supportSiteKey) => {
  * @param {string} model - The model name of the switch
  * @param {string} supportSiteKey - The key for the support site dictionary
  */
-exports.SwitchDefaultConfig = async (model, supportSiteKey) => {
+const SwitchDefaultConfig = async (model, supportSiteKey) => {
     try {
         let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
         if (codeUpdated) {
-            // await UploadDefaultConfig(model);
+            return true;
         } else {
             SwitchDefaultConfig(model, supportSiteKey);
         }
     } catch(err) {
+        throw new Error("Failed to update code");
     }
 }
 
+exports.supportSites = supportSites;
+exports.ConfigureTFTPDirectory = ConfigureTFTPDirectory;
+exports.FetchHtmlAndLoad = FetchHtmlAndLoad;
+exports.FindElementsByText = FindElementsByText;
+exports.GetRecommendedCodeVersion = GetRecommendedCodeVersion;
+exports.CheckFolder = CheckFolder;
+exports.CheckCodeExists = CheckCodeExists;
+exports.CreateTFTPStructure = CreateTFTPStructure;
+exports.GetNewCode = GetNewCode;
+exports.UpdateCodeVersion = UpdateCodeVersion;
+exports.SwitchDefaultConfig = SwitchDefaultConfig;

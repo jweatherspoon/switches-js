@@ -164,6 +164,7 @@ ipcMain.on("stack:begin", async (event, arg) => {
             event.sender.send("stack:fin", returnValue);
         } catch(err) {
             returnValue.success = false;
+            returnValue.error = err;
             event.sender.send("stack:response", returnValue);
         }
     } else {
@@ -187,3 +188,16 @@ ipcMain.on('switchConfig:set', (event, arg) => {
 ipcMain.on('switchConfig:get', (event, page) => {
     event.sender.send('config:get:return', switchConfigSettings[page])
 });
+
+ipcMain.on('tftp:get', e => {
+    GetTFTPSettings().then(data => {
+        e.sender.send("tftp:send", data);
+    })
+})
+
+// ONLY FOR TESTING REMOVE IN PRODUCTION BUILD
+ipcMain.on("command", (event, cmd, ...args) => {
+    if(switchObject) {
+        switchObject[cmd](...args);
+    }
+})
