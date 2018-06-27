@@ -74,16 +74,40 @@ function PortMaker (portnumber,dualmoded,vlan1name,vlan1,vlan2name,vlan2) {
    The PortMaker function needs the arguments: portindex, dualmoded boolean, vlan(s)*/
 for (let switchnumber = 0; switchnumber < switchquantity; switchnumber++) {
     for (let portindex = 1; portindex < 49; portindex++) {
-        if (dualmodevlanarray != null) {
+        if (dualmodevlanarray.length != 0) {
             v2n = dualmodevlanarray[0].attr('id');
             v2 = dualmodevlanarray[0].val();
             v1n = dualmodevlanarray[1].attr('id');
             v1 = dualmodevlanarray[1].val();
             CurrentPort = PortMaker(portindex, true,v1n,v1,v2n,v2);
             FullSwitch[switchnumber].push(CurrentPort);
+        } else {
+            v1n = vlandict[0].VLANName;
+            v1 = vlandict[0].VLANNumber;
+            CurrentPort = PortMaker(portindex, false, v1n, v1);
+            FullSwitch[switchnumber].push(CurrentPort);
         }
         //CurrentPort = PortMaker(portindex,true,301);
         //FullSwitch[switchnumber].push(CurrentPort);
     }
 
+}
+
+for (let portdiv = 0; portdiv <= 47; portdiv++) {
+    if (dualmodevlanarray.length != 0) {
+        x = FullSwitch[0][portdiv].vlan1name;
+        y = FullSwitch[0][portdiv].vlan2name;
+        divnumber = portdiv + 1;
+        portviewdiv = portview(divnumber,x,y);
+        $(`#port${divnumber}`).html(portviewdiv);
+    }
+    //x = FullSwitch[0][portdiv].vlan1name;
+    //$(`#port${portdiv}`).text(x);
+    
+}
+
+function portview(portnum, vlan1name, vlan2name) {
+    x = `<div>${portnum}</div>
+     <div>${vlan1name} \n ${vlan2name}</div>`
+     return x;
 }
