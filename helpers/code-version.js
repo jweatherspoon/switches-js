@@ -195,10 +195,11 @@ const CheckCodeExists = async (tftpDirectory, model, version) => {
  * @async
  * @param {string} tftpDirectory - The path to the configured TFTP directory
  * @param {string} model - The model name of the switch
+ * @param {string} version - The version of code
  * @returns {any} Resolves if all directories are created /
  * if they exist. Rejects if it cannot make any of the directories.
  */
-const CreateTFTPStructure = async (tftpDirectory, model, ver) => {
+const CreateTFTPStructure = async (tftpDirectory, model, version) => {
         let modelPath = path.join(tftpDirectory, model);
         let versionPath = path.join(modelPath, version);
         let bootPath = path.join(versionPath, "Boot");
@@ -255,6 +256,8 @@ const GetNewCode = (codeURL, model, ver) => {
  * Resolves to false if a step fails. Rejects if a crash occurs.
  */
 const UpdateCodeVersion = async (model, supportSiteKey) => {
+    let versionData;
+    
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftp, async (err, tftpDir) => {
             if (err || Object.keys(tftpDir).length === 0) {
@@ -276,7 +279,7 @@ const UpdateCodeVersion = async (model, supportSiteKey) => {
                     let codeInTFTP = await CheckCodeExists(tftpDir, model, versionData.version);
                     return resolve(true);
                 } catch (err) {
-                    CreateTFTPStructure(tftpDir, model).then(() => {
+                    CreateTFTPStructure(tftpDir, model, versionData.version).then(() => {
                         GetNewCode(supportSites[supportSiteKey].url, model, versionData.version).then(() => {
                             return resolve(false)
                         }).catch(() => {
@@ -306,7 +309,7 @@ const SwitchDefaultConfig = async (model, supportSiteKey) => {
             SwitchDefaultConfig(model, supportSiteKey);
         }
     } catch(err) {
-        throw new Error("Failed to update code");
+        throw new Error(err);
     }
 }
 

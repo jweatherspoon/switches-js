@@ -12,10 +12,9 @@ const {
     Menu,
 } = require('electron');
 
-const {
-    GetPorts,
-} = require('./helpers/serial');
+const { GetPorts } = require('./helpers/serial');
 const { GenerateTemplate } = require('./helpers/menu-template');
+const { SwitchDefaultConfig } = require('./helpers/code-version');
 
 const { ConfigurationWindow } = require('./models/ConfigurationMenu');
 const { WipingModeWindow } = require('./models/WipingModeWindow');
@@ -196,11 +195,15 @@ ipcMain.on('switchConfig:get', (event, page) => {
     event.sender.send('config:get:return', switchConfigSettings[page])
 });
 
-ipcMain.on('tftp:get', e => {
-    GetTFTPSettings().then(data => {
-        e.sender.send("tftp:send", data);
+/**
+ * Force the user to update the code on their system by
+ * guiding them through the process.
+ */
+ipcMain.on("code:update", (event, arg) => {
+    SwitchDefaultConfig(arg.model, "ruckus").then(res => {
+        event.sender.send("code:updated");
     })
-})
+});
 
 // ONLY FOR TESTING REMOVE IN PRODUCTION BUILD
 ipcMain.on("command", (event, cmd, ...args) => {

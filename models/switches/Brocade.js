@@ -127,8 +127,8 @@ class Brocade extends Switch {
             relativePath = path.join(this.model, version, filename);
         }
 
-        await this.write(`copy tftp ${target} ${serverIP} ${relativePath} ${flashTarget}`);
-        await this.addListener("timed out");
+        await this.write(`copy tftp ${target} ${serverIP} "${relativePath}" ${flashTarget}`);
+        await this.addListener("done");
     }
 
     /**

@@ -1,0 +1,37 @@
+<html>
+
+<head>
+    <link href="../css/flex.css" rel="stylesheet" />
+</head>
+
+<body class="switchback">
+
+    <div class="flex-container flex-column flex-align-center flex-justify-center">
+        <div id="loading-container">
+            <h1>
+                Wait a moment while I check the code version on your system
+            </h1>
+            <h2>
+                <span id="dot-0">.</span>
+                <span id="dot-1">.</span>
+                <span id="dot-2">.</span>
+            </h2>
+        </div>
+
+        <div id="finished-container" style="display:none">
+            <h1>
+                You're all set!
+            </h1>
+        </div>
+    </div>
+
+    <button onclick="NextPage()" style="position:absolute; top:0; right:0;">
+        Next Page
+    </button>
+
+    <footer>
+        <script src="../js/get-updated-code.js"></script>
+    </footer>
+</body>
+
+</html>

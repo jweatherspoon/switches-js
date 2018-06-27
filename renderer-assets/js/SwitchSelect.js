@@ -12,7 +12,7 @@ $("#switchsubmit").click(function(){
     if (switchmodel != null && switchquantity != '' && switchquantity > 0 && switchquantity < 11) {
         $(".innerdiv").fadeOut();
         $(".innerdiv").text('Good Job');
-        setTimeout(function() {$(document.body).load('./SwitchStack.html')},500);
+        setTimeout(function() {$(document.body).load('./get-updated-code.html')},500);
     };
 });
 
