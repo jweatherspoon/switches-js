@@ -97,8 +97,9 @@ for (let portdiv = 0; portdiv <= 47; portdiv++) {
     if (dualmodevlanarray.length != 0) {
         x = FullSwitch[0][portdiv].vlan1name;
         y = FullSwitch[0][portdiv].vlan2name;
-        portviewdiv = portview(portdiv,x,y);
-        $(`#port${portdiv}`).html(portviewdiv);
+        divnumber = portdiv + 1;
+        portviewdiv = portview(divnumber,x,y);
+        $(`#port${divnumber}`).html(portviewdiv);
     }
     //x = FullSwitch[0][portdiv].vlan1name;
     //$(`#port${portdiv}`).text(x);
