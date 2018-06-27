@@ -75,10 +75,10 @@ function PortMaker (portnumber,dualmoded,vlan1name,vlan1,vlan2name,vlan2) {
 for (let switchnumber = 0; switchnumber < switchquantity; switchnumber++) {
     for (let portindex = 1; portindex < 49; portindex++) {
         if (dualmodevlanarray != null) {
-            v1n = dualmodevlanarray[0].attr('id');
-            v1 = dualmodevlanarray[0].val();
-            v2n = dualmodevlanarray[1].VLANName;
-            v2 = dualmodevlanarray[1].VLANNumber;
+            v2n = dualmodevlanarray[0].attr('id');
+            v2 = dualmodevlanarray[0].val();
+            v1n = dualmodevlanarray[1].attr('id');
+            v1 = dualmodevlanarray[1].val();
             CurrentPort = PortMaker(portindex, true,v1n,v1,v2n,v2);
             FullSwitch[switchnumber].push(CurrentPort);
         }
