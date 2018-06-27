@@ -2,6 +2,9 @@
  * @file Model for Brocade / Ruckus switch operations
  * @author Jonathan Weatherspoon
  */
+
+const path = require('path');
+
 const { 
     GetTFTPSettings,
 } = require('../../helpers/user-settings');
@@ -85,13 +88,23 @@ class Brocade extends Switch {
      * @param {string} netmask - The subnet mask to give to the switch
      */
     async setIP(ip, netmask) {
-        await this.enable();
-        await this.write("configure terminal");
+        await this.enterConfigureTerminal();
         await this.write("interface management 1");
         await this.write(`ip add ${ip} ${netmask}`);
         await this.write("quit");
 
         return true;
+    }
+
+    /**
+     * Unset the IP given to the switch
+     * @param {string} ip - The current ip address of the switch
+     */
+    async unsetIP(ip) {
+        await this.enterConfigureTerminal();
+        await this.write(`no ip address ${ip}`);
+        await this.write('ip dhcp-client enable');
+        await this.write('quit');
     }
 
     /**
@@ -101,12 +114,21 @@ class Brocade extends Switch {
      * @param {string} filename - The name of the file that will 
      * be copied from the TFTP server. This must be a relative path 
      * from the root of the user's TFTP directory
+     * @param {string} version - The code version used to generate the 
+     * relative path to the filename
      * @param {string} flashTarget - (optional) The target for copying flash 
      * code. Can be primary, secondary, or bootrom.
      */
-    async tftp(target, serverIP, filename, flashTarget='') {
-        await this.write(`copy tftp ${target} ${serverIP} ${filename} ${flashTarget}`);
-        await this.addListener(">");
+    async tftp(target, serverIP, filename, version, flashTarget = '') {
+        let relativePath = filename;
+
+        // Set the filename to a relative path if the template isn't being used
+        if(version) {
+            relativePath = path.join(this.model, version, filename);
+        }
+
+        await this.write(`copy tftp ${target} ${serverIP} ${relativePath} ${flashTarget}`);
+        await this.addListener("timed out");
     }
 
     /**
@@ -114,6 +136,7 @@ class Brocade extends Switch {
      */
     async copyFlashToSec() {
         await this.write("copy flash flash sec");
+        await this.addListener("Done");
     }
 
     /**
@@ -121,6 +144,7 @@ class Brocade extends Switch {
      * @returns {boolean} Resolves to true once completed.
      */
     async enterConfigureTerminal() {
+        await this.write('quit');
         await this.enable();
         await this.write("configure terminal");
         await this.addListener("#");
@@ -145,16 +169,14 @@ class Brocade extends Switch {
         // Get TFTP settings
         try {
             let tftp = await GetTFTPSettings();
-            console.log(JSON.stringify(tftp));
             // Get code version filenames 
             let codes = await CheckCodeExists(tftp.directory, this.model, codeVer);
-            console.log(JSON.stringify(codes));
-            await this.enterConfigureTerminal();
-    
+            
             // TFTP Boot, Flash, Startup template
+            await this.enable();
             await this.tftp("startup-config", tftp.serverIP, template);
-            await this.tftp("flash", tftp.serverIP, codes.boot, "bootrom");
-            await this.tftp("flash", tftp.serverIP, codes.flash, "primary");
+            await this.tftp("flash", tftp.serverIP, codes.boot, codeVer, "bootrom");
+            await this.tftp("flash", tftp.serverIP, codes.flash, codeVer, "primary");
             await this.copyFlashToSec();
     
             // TFTP PoE Firmware if applicable
@@ -192,6 +214,13 @@ class Brocade extends Switch {
         await this.write(`priority ${priority}`);
         await this.write('exit');
         await this.write('hitless-failover enable');
+    }
+
+    /**
+     * Save your changes to the startup configuration
+     */
+    async commit() {
+        await this.write("write memory");
     }
 }
 

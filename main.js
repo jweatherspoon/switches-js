@@ -154,11 +154,18 @@ ipcMain.on("stack:begin", async (event, arg) => {
             await switchObject.handleBoot();
             // Send off an event to allow the progress bar to 
             // begin moving and continue on the process 
-            event.sender.send("switch:response", returnValue);
+            event.sender.send("stack:response", returnValue);
 
-            await switchObject.setIP("192.168.1.1", "255.255.255.0");
+            let ip = "192.168.1.1";
+
+            await switchObject.setIP(ip, "255.255.255.0");
             await switchObject.uploadDefaults(arg.codeVer, arg.template);
-            await switchObject.enableStacking(arg.priority);
+            await switchObject.unsetIP(ip);
+
+            if(arg.switchCount > 1) {
+                await switchObject.enableStacking(arg.priority);
+                await switchObject.commit();
+            }
 
             // Fire off the "finished" event
             event.sender.send("stack:fin", returnValue);

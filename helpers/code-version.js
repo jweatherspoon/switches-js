@@ -136,7 +136,7 @@ const GetRecommendedCodeVersion = async (model, url) => {
  * @param {string} ext - The extension to search for in the directory (default: .bin)
  * @returns {Promise<any>} Resolves to the first found
  * filename if a given code version is found in the folder.
- * Rejects if it is not found.
+ * Resolves to false if it is not found. Rejects if there is an error.
  */
 const CheckFolder = (modelDirectory, versionDirectory, childDirectory, ext=".bin") => {
     return new Promise((resolve, reject) => {

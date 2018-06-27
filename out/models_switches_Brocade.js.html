@@ -32,10 +32,8 @@
  */
 
 const path = require('path');
-const storage = require('electron-json-storage');
 
 const { 
-    settingKeys,
     GetTFTPSettings,
 } = require('../../helpers/user-settings');
 const { CheckCodeExists } = require('../../helpers/code-version');
@@ -100,7 +98,6 @@ class Brocade extends Switch {
     async passwordBypass() {
         await this.write('b', false);
         await this.addListener('>');
-        await this.enter(2);
         await this.wait(1000);
         await this.write("no password");
         await this.wait(1000);
@@ -119,13 +116,23 @@ class Brocade extends Switch {
      * @param {string} netmask - The subnet mask to give to the switch
      */
     async setIP(ip, netmask) {
-        await this.enable();
-        await this.write("configure terminal");
+        await this.enterConfigureTerminal();
         await this.write("interface management 1");
         await this.write(`ip add ${ip} ${netmask}`);
         await this.write("quit");
 
         return true;
+    }
+
+    /**
+     * Unset the IP given to the switch
+     * @param {string} ip - The current ip address of the switch
+     */
+    async unsetIP(ip) {
+        await this.enterConfigureTerminal();
+        await this.write(`no ip address ${ip}`);
+        await this.write('ip dhcp-client enable');
+        await this.write('quit');
     }
 
     /**
@@ -135,12 +142,21 @@ class Brocade extends Switch {
      * @param {string} filename - The name of the file that will 
      * be copied from the TFTP server. This must be a relative path 
      * from the root of the user's TFTP directory
+     * @param {string} version - The code version used to generate the 
+     * relative path to the filename
      * @param {string} flashTarget - (optional) The target for copying flash 
      * code. Can be primary, secondary, or bootrom.
      */
-    async tftp(target, serverIP, filename) {
-        await this.write(`copy tftp ${target} ${serverIP} ${filename} ${flashTarget}`);
-        await this.addListener(">");
+    async tftp(target, serverIP, filename, version, flashTarget = '') {
+        let relativePath = filename;
+
+        // Set the filename to a relative path if the template isn't being used
+        if(version) {
+            relativePath = path.join(this.model, version, filename);
+        }
+
+        await this.write(`copy tftp ${target} ${serverIP} ${relativePath} ${flashTarget}`);
+        await this.addListener("timed out");
     }
 
     /**
@@ -148,6 +164,7 @@ class Brocade extends Switch {
      */
     async copyFlashToSec() {
         await this.write("copy flash flash sec");
+        await this.addListener("Done");
     }
 
     /**
@@ -155,6 +172,7 @@ class Brocade extends Switch {
      * @returns {boolean} Resolves to true once completed.
      */
     async enterConfigureTerminal() {
+        await this.write('quit');
         await this.enable();
         await this.write("configure terminal");
         await this.addListener("#");
@@ -177,22 +195,24 @@ class Brocade extends Switch {
      */
     async uploadDefaults(codeVer, template) {
         // Get TFTP settings
-        let tftp = await GetTFTPSettings();
-
-        // Get code version filenames 
-        let codes = await CheckCodeExists(tftp.dir, this.model, codeVer);
-
-        await this.enterConfigureTerminal();
-
-        // TFTP Boot, Flash, Startup template
-        await this.tftp("flash", tftp.serverIP, codes.boot, "bootrom");
-        await this.tftp("flash", tftp.serverIP, codes.flash, "primary");
-        await this.copyFlashToSec();
-        await this.tftp("startup-config", tftp.serverIP, template);
-
-        // TFTP PoE Firmware if applicable
-        if(codes.poe) {
-            await this.inlinePower(tftp.serverIP, codes.poe);
+        try {
+            let tftp = await GetTFTPSettings();
+            // Get code version filenames 
+            let codes = await CheckCodeExists(tftp.directory, this.model, codeVer);
+            
+            // TFTP Boot, Flash, Startup template
+            await this.enable();
+            await this.tftp("startup-config", tftp.serverIP, template);
+            await this.tftp("flash", tftp.serverIP, codes.boot, codeVer, "bootrom");
+            await this.tftp("flash", tftp.serverIP, codes.flash, codeVer, "primary");
+            await this.copyFlashToSec();
+    
+            // TFTP PoE Firmware if applicable
+            if(codes.poe) {
+                await this.inlinePower(tftp.serverIP, codes.poe);
+            }
+        } catch(err) {
+            console.log(err);
         }
     }
 
@@ -218,9 +238,17 @@ class Brocade extends Switch {
 
         await this.enterConfigureTerminal();
         await this.write("stack enable");
-        await this.write(`stack unit 1 priority ${priority}`);
+        await this.write(`stack unit 1`);
+        await this.write(`priority ${priority}`);
         await this.write('exit');
         await this.write('hitless-failover enable');
+    }
+
+    /**
+     * Save your changes to the startup configuration
+     */
+    async commit() {
+        await this.write("write memory");
     }
 }
 
@@ -235,13 +263,13 @@ exports.Ruckus = Brocade;</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-code-version.html">code-version</a></li><li><a href="module-filesys.html">filesys</a></li><li><a href="module-menu-template.html">menu-template</a></li><li><a href="module-serial.html">serial</a></li><li><a href="module-user-settings.html">user-settings</a></li></ul><h3>Classes</h3><ul><li><a href="Brocade.html">Brocade</a></li><li><a href="CodeVersionBrowser.html">CodeVersionBrowser</a></li><li><a href="CodeVersionUrl.html">CodeVersionUrl</a></li><li><a href="ConfigurationWindow.html">ConfigurationWindow</a></li><li><a href="Switch.html">Switch</a></li><li><a href="WipingModeWindow.html">WipingModeWindow</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateWindow">CreateWindow</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="helpers_timing.module_js.html">helpers/timing.js</a></li><li><a href="module-code-version.html">code-version</a></li><li><a href="module-filesys.html">filesys</a></li><li><a href="module-menu-template.html">menu-template</a></li><li><a href="module-serial.html">serial</a></li><li><a href="module-user-settings.html">user-settings</a></li></ul><h3>Classes</h3><ul><li><a href="Brocade.html">Brocade</a></li><li><a href="CodeVersionBrowser.html">CodeVersionBrowser</a></li><li><a href="CodeVersionUrl.html">CodeVersionUrl</a></li><li><a href="ConfigurationWindow.html">ConfigurationWindow</a></li><li><a href="Switch.html">Switch</a></li><li><a href="WipingModeWindow.html">WipingModeWindow</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateWindow">CreateWindow</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 16:53:03 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 27 2018 15:09:50 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

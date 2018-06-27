@@ -57,7 +57,7 @@ const ResetWipe = () => {
 $("#connect-btn").click(e => {
     if (!sw) {
         let port = $("#ports-list").val();
-        sw = new Brocade(port, 9600, LoggerCallback);
+        sw = new Brocade(port, 9600, "NULL", LoggerCallback);
         $("#connect-btn").text("Disconnect");
         $("#ports-list").attr('disabled', true);
         ResetWipe();

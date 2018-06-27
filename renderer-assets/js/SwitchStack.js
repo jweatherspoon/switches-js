@@ -208,6 +208,7 @@ ipcRenderer.on("serial:connected", async (event, status) => {
 const BeginConfiguration = (switchID) => {
     ipcRenderer.send("stack:begin", {
         id: switchID,
+        switchCount: switchquantity,
         codeVer: "08061b",
         template: "template.startup",
         priority: 250 - (switchID * 10),
@@ -217,6 +218,7 @@ const BeginConfiguration = (switchID) => {
 /**
  * Event received when the main process is ready for 
  * password bypass  
+ * Starts the progress bar and changes the instruction text
  */
 ipcRenderer.on("stack:ready", (event, id) => {
     enableordisable(id);
@@ -227,22 +229,25 @@ ipcRenderer.on("stack:ready", (event, id) => {
 /**
  * Event received when the main process has cleared
  * the password on the current switch
+ * Moves the progress bar to 50%.
  */
 ipcRenderer.on("stack:response", (event, arg) => {
-    console.log("recv response", arg);
     $("#instructions").text("Please wait while I update the switch for you...");
-    ProgressBar(arg.id, 200, currentprogress, 50);
+    ProgressBar(arg.id, 600, currentprogress, 50);
 });
 
 /**
  * Event received when the main process has finished
  * uploading the new code and stacking if applicable
+ * Finishes the progress bar loading for the given switch
  */
 ipcRenderer.on("stack:fin", (event, arg) => {
-    // progressbarfinish(arg.id, currentprogress);
-    progressbarfinish(arg.id);
+    progressbarfinish(arg.id, currentprogress);
 });
 
+/**
+ * Populate the port list every 2.5 seconds
+ */
 $(document).ready(() => {
     GetPortsList();
     connectionInterval = setInterval(() => {

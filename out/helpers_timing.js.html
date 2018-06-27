@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: models/WipingModeWindow.js</title>
+    <title>JSDoc: Source: helpers/timing.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: models/WipingModeWindow.js</h1>
+    <h1 class="page-title">Source: helpers/timing.js</h1>
 
     
 
@@ -27,49 +27,16 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @file Models the window for wiping Brocade switches
+ * @file Helper functions for timing in the renderer process
  * @author Jonathan Weatherspoon
+ * @module
  */
 
-const { BrowserWindow } = require('electron');
-
-/**
- * @class 
- * @classdesc Models the GUI for wiping switches
- */
-class WipingModeWindow {
-    /**
-     * Create a new Wiping Window 
-     * @constructor
-     */
-    constructor() {
-        this.window = null;
-        this.windowGUI = `${__dirname}/../renderer-assets/html/wipe.html`;
-    }
-
-    /**
-     * Open or focus the wiping window
-     */
-    openWindow() {
-        if(!this.window) {
-            this.window = new BrowserWindow({
-                height: 600,
-                width: 600,
-                title: "Switch Wiping Menu",
-            });
-
-            this.window.loadFile(this.windowGUI);
-
-            this.window.on('closed', () => {
-                this.window = null;
-            })
-        } else {
-            this.window.focus();
-        }
-    }
-}
-
-exports.WipingModeWindow = new WipingModeWindow();</code></pre>
+ exports.wait = (ms) => {
+     return new Promise(resolve => {
+         setTimeout(() => resolve(), ms);
+     })
+ }</code></pre>
         </article>
     </section>
 
