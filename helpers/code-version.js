@@ -24,6 +24,8 @@ const supportSites = {
     ruckus: new CodeVersionUrl('https://support.ruckuswireless.com', 'product_families/21-ruckus-icx-switches'),
 };
 
+let codeVersionAPIs;
+
 /**
  * Guide the user through configuring a TFTP directory
  * @returns {Promise<boolean>} Resolves once the user has closed 
@@ -83,24 +85,23 @@ const FindElementsByText = ($, tag, text) => {
 /**
  * Get the recommended firmware version for a switch 
  * @async
- * @param {string} model - The model name of the switch 
  * @param {string} url - The url to search
  * @returns {object} - An object containing the recommended
  * code version and a link to the file 
  */
-const GetRecommendedCodeVersion = async (model, url) => {
-    let $ = await FetchHtmlAndLoad(url);
+const RuckusCodeVersionAPI = async (url) => {
+    // let $ = await FetchHtmlAndLoad(url);
 
-    // Search for the model name 
-    let link = FindElementsByText($, 'a', model);
+    // // Search for the model name 
+    // let link = FindElementsByText($, 'a', model);
 
-    // Make sure a link was retrieved. If not return null
-    if (link.length < 1) return null;
-    // Get the href from the parsed element
-    link = link[0].attribs.href;
+    // // Make sure a link was retrieved. If not return null
+    // if (link.length < 1) return null;
+    // // Get the href from the parsed element
+    // link = link[0].attribs.href;
 
     // Follow the parsed link and fetch the HTML
-    $ = await FetchHtmlAndLoad(link);
+    $ = await FetchHtmlAndLoad(url);
     link = FindElementsByText($, 'dt', 'Recommended Firmware:');
 
     // Make sure a link was retrieved 
@@ -257,6 +258,7 @@ const GetNewCode = (codeURL, model, ver) => {
  */
 const UpdateCodeVersion = async (model, supportSiteKey) => {
     let versionData;
+    let codeAPI = codeVersionAPIs[model];
     
     return new Promise((resolve, reject) => {
         storage.get(settingKeys.tftp, async (err, tftpDir) => {
@@ -269,18 +271,26 @@ const UpdateCodeVersion = async (model, supportSiteKey) => {
                 }
             } else {
                 try {
-                    versionData = await GetRecommendedCodeVersion(model, supportSites[supportSiteKey].url);
+                    versionData = await codeAPI.api(codeAPI.url.url);
                 } catch (err) {
-                    return reject(`Failed to fetch data from ${supportSites[supportSiteKey].url}`);
+                    return reject(`Failed to fetch data from ${codeAPI.url.url}`);
                 }
 
                 try {
                     // Check if the updated code exists in the TFTP directory
                     let codeInTFTP = await CheckCodeExists(tftpDir, model, versionData.version);
-                    return resolve(true);
+                    
+                    if(!codeInTFTP) {
+                        throw new Error("Code doesn't exist")
+                    }
+
+                    return resolve(codeInTFTP);
+
                 } catch (err) {
+                    console.log(err);
                     CreateTFTPStructure(tftpDir, model, versionData.version).then(() => {
-                        GetNewCode(supportSites[supportSiteKey].url, model, versionData.version).then(() => {
+
+                        GetNewCode(codeAPI.url.url, model, versionData.version).then(() => {
                             return resolve(false)
                         }).catch(() => {
                             return reject("Failed to get new code")
@@ -300,27 +310,63 @@ const UpdateCodeVersion = async (model, supportSiteKey) => {
  * @param {string} model - The model name of the switch
  * @param {string} supportSiteKey - The key for the support site dictionary
  */
-const SwitchDefaultConfig = async (model, supportSiteKey) => {
+const ForceUpdateCode = async (model, supportSiteKey) => {
     try {
         let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
         if (codeUpdated) {
             return true;
         } else {
-            SwitchDefaultConfig(model, supportSiteKey);
+            return ForceUpdateCode(model, supportSiteKey);
         }
     } catch(err) {
         throw new Error(err);
     }
 }
 
+codeVersionAPIs = {
+    'ICX7150': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/108-brocade-icx-7150-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+    'ICX7250': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/105-brocade-icx-7250-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+    'ICX7450': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/106-brocade-icx-7450-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+    'ICX7650': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/145-ruckus-icx-7650-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+    'ICX7750': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/107-brocade-icx-7750-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+    'ICX6610': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/120-brocade-icx-6610-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+    'ICX6430': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/121-brocade-icx-6430-and-6450-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+    'ICX6450': {
+        url: new CodeVersionUrl('https://support.ruckuswireless.com', 'products/121-brocade-icx-6430-and-6450-campus-switches'),
+        api: RuckusCodeVersionAPI,
+    },
+}
+
 exports.supportSites = supportSites;
+exports.codeVersionAPIs = codeVersionAPIs;
 exports.ConfigureTFTPDirectory = ConfigureTFTPDirectory;
 exports.FetchHtmlAndLoad = FetchHtmlAndLoad;
 exports.FindElementsByText = FindElementsByText;
-exports.GetRecommendedCodeVersion = GetRecommendedCodeVersion;
+exports.RuckusCodeVersionAPI = RuckusCodeVersionAPI;
 exports.CheckFolder = CheckFolder;
 exports.CheckCodeExists = CheckCodeExists;
 exports.CreateTFTPStructure = CreateTFTPStructure;
 exports.GetNewCode = GetNewCode;
 exports.UpdateCodeVersion = UpdateCodeVersion;
-exports.SwitchDefaultConfig = SwitchDefaultConfig;
+exports.ForceUpdateCode = ForceUpdateCode;

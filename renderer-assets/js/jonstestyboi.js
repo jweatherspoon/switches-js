@@ -22,8 +22,8 @@ const {
     SwitchDefaultConfig,
 } = require('../../helpers/code-version');
 
-const model = "FCX";
-const tftpDir = "/home/jon/tftptest";
+const model = "ICX6450";
+const tftpDir = "/tftpboot";
 const modelDir = path.join(tftpDir, model);
 const version = "08061b";
 

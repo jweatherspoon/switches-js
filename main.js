@@ -14,7 +14,7 @@ const {
 
 const { GetPorts } = require('./helpers/serial');
 const { GenerateTemplate } = require('./helpers/menu-template');
-const { SwitchDefaultConfig } = require('./helpers/code-version');
+const { ForceUpdateCode, codeVersionAPIs } = require('./helpers/code-version');
 
 const { ConfigurationWindow } = require('./models/ConfigurationMenu');
 const { WipingModeWindow } = require('./models/WipingModeWindow');
@@ -200,7 +200,8 @@ ipcMain.on('switchConfig:get', (event, page) => {
  * guiding them through the process.
  */
 ipcMain.on("code:update", (event, arg) => {
-    SwitchDefaultConfig(arg.model, "ruckus").then(res => {
+    // let codeAPI = codeVersionAPIs[arg.model]
+    ForceUpdateCode(arg.model, "ruckus").then(res => {
         if(res) {
             event.sender.send("code:updated");
         }
