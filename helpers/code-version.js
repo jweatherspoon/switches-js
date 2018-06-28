@@ -90,15 +90,6 @@ const FindElementsByText = ($, tag, text) => {
  * code version and a link to the file 
  */
 const RuckusCodeVersionAPI = async (url) => {
-    // let $ = await FetchHtmlAndLoad(url);
-
-    // // Search for the model name 
-    // let link = FindElementsByText($, 'a', model);
-
-    // // Make sure a link was retrieved. If not return null
-    // if (link.length < 1) return null;
-    // // Get the href from the parsed element
-    // link = link[0].attribs.href;
 
     // Follow the parsed link and fetch the HTML
     $ = await FetchHtmlAndLoad(url);

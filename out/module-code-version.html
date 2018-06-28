@@ -297,7 +297,7 @@ machine is correct and up to date.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line170">line 170</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line162">line 162</a>
     </li></ul></dd>
     
 
@@ -545,7 +545,7 @@ code exist. Rejects if one or both do not exist.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line141">line 141</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line133">line 133</a>
     </li></ul></dd>
     
 
@@ -655,7 +655,7 @@ Resolves to false if it is not found. Rejects if there is an error.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line32">line 32</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -712,7 +712,7 @@ the configuration menu
     
 
     
-    <h4 class="name" id="~CreateTFTPStructure"><span class="type-signature">(async, inner) </span>CreateTFTPStructure<span class="signature">(tftpDirectory, model)</span><span class="type-signature"> &rarr; {any}</span></h4>
+    <h4 class="name" id="~CreateTFTPStructure"><span class="type-signature">(async, inner) </span>CreateTFTPStructure<span class="signature">(tftpDirectory, model, version)</span><span class="type-signature"> &rarr; {any}</span></h4>
     
 
     
@@ -799,6 +799,29 @@ the configuration menu
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>version</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The version of code</td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -836,7 +859,7 @@ the configuration menu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line201">line 201</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line194">line 194</a>
     </li></ul></dd>
     
 
@@ -994,7 +1017,7 @@ if they exist. Rejects if it cannot make any of the directories.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line59">line 59</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line61">line 61</a>
     </li></ul></dd>
     
 
@@ -1197,7 +1220,7 @@ if they exist. Rejects if it cannot make any of the directories.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line72">line 72</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line74">line 74</a>
     </li></ul></dd>
     
 
@@ -1254,346 +1277,7 @@ given parameters
     
 
     
-    <h4 class="name" id="~GetNewCode"><span class="type-signature">(inner) </span>GetNewCode<span class="signature">(codeURL)</span><span class="type-signature"> &rarr; {Promise.&lt;boolean>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Guide the user through downloading the new code / adding it
-to their TFTP directory
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>codeURL</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The URL for the download link of the new code</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line222">line 222</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Resolves when the browser is closed.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;boolean></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~GetRecommendedCodeVersion"><span class="type-signature">(async, inner) </span>GetRecommendedCodeVersion<span class="signature">(model, url)</span><span class="type-signature"> &rarr; {object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get the recommended firmware version for a switch
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>model</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The model name of the switch</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>url</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The url to search</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line91">line 91</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - An object containing the recommended
-code version and a link to the file
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~SwitchDefaultConfig"><span class="type-signature">(async, inner) </span>SwitchDefaultConfig<span class="signature">(model, supportSiteKey)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~ForceUpdateCode"><span class="type-signature">(async, inner) </span>ForceUpdateCode<span class="signature">(model, supportSiteKey)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1717,7 +1401,7 @@ code version and a link to the file
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line300">line 300</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line304">line 304</a>
     </li></ul></dd>
     
 
@@ -1740,6 +1424,322 @@ code version and a link to the file
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~GetNewCode"><span class="type-signature">(inner) </span>GetNewCode<span class="signature">(codeURL)</span><span class="type-signature"> &rarr; {Promise.&lt;boolean>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Guide the user through downloading the new code / adding it
+to their TFTP directory
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>codeURL</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The URL for the download link of the new code</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line215">line 215</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resolves when the browser is closed.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;boolean></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~RuckusCodeVersionAPI"><span class="type-signature">(async, inner) </span>RuckusCodeVersionAPI<span class="signature">(url)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the recommended firmware version for a switch
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The url to search</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line92">line 92</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - An object containing the recommended
+code version and a link to the file
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1875,7 +1875,7 @@ code version and a link to the file
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line257">line 257</a>
+        <a href="helpers_code-version.js.html">helpers/code-version.js</a>, <a href="helpers_code-version.js.html#line250">line 250</a>
     </li></ul></dd>
     
 
@@ -1948,7 +1948,7 @@ Resolves to false if a step fails. Rejects if a crash occurs.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 27 2018 15:09:50 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jun 28 2018 11:15:21 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>
