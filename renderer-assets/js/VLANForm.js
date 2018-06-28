@@ -8,6 +8,8 @@ const {
 
 dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
 
+duplicatearray = [];
+
 /* Creates VLAN fields for CustomVLAN button.
    I would advise not touching this. It will blow up the page layout.*/
 function VLANCreator (vlannumber) {
@@ -90,6 +92,7 @@ function deletieboi(divid, radionumber) {
 
 // Submit button functions
 $('#btnVLANSubmit').click(function(){
+    duplicatearray = [];
     flaggy = true;
     nothingcount = 0;
     inputcount = $('#divVLANForm').find('.vlaninput').length;
@@ -107,6 +110,13 @@ $('#btnVLANSubmit').click(function(){
         // Counter to check against blank form
         if (this.value === '') {
             nothingcount ++
+        }
+
+        // Checks for duplicate inputs using duplicatevlanchecker
+        if (duplicatevlanchecker(this.value) != null) {
+            alert('Please do not enter duplicate VLAN values.')
+            flaggy = false;
+            return false;
         }
     })
 
@@ -256,4 +266,13 @@ function VLANSwitchConfig () {
             dualmodevlanarray = [];
         })
     }
+ }
+
+ // Checks inputs againsts themselves to check for duplicates
+ function duplicatevlanchecker(vlannumber) {
+    var checkie = duplicatearray.find( function (x) { return x == vlannumber; });   
+    if (checkie == null) {
+        duplicatearray.push(vlannumber);
+    }
+    return checkie;
  }
