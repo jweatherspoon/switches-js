@@ -271,7 +271,7 @@ function VLANSwitchConfig () {
  // Checks inputs againsts themselves to check for duplicates
  function duplicatevlanchecker(vlannumber) {
     var checkie = duplicatearray.find( function (x) { return x == vlannumber; });   
-    if (checkie == null) {
+    if (checkie == null && vlannumber != '') {
         duplicatearray.push(vlannumber);
     }
     return checkie;

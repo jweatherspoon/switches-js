@@ -28,8 +28,9 @@ let currentvlan2number;
 let currentdualmoded = false;
 let currentswitch = 0;
 let currentcolor = 'white';
-let currentdualmodecolor = 'purple'
-let colordictionary = ['white','green','blue','orange','red']
+let currentdualmodecolor = '#D7FDEC';
+let colordictionary = ['white','#A9FBD7','#6290C3','#B0C6CE','938BA1','#FFCAD4','#FFE5D9'];
+let lightshowbool = false;
 
 /* Creation of each switch array based upon the switchquantity
    ALso creates a button for each of the switch views*/
@@ -39,10 +40,31 @@ for (let numberofswitchiebois = 0; numberofswitchiebois < switchquantity; number
     $('#switchswitcher').append(switchview);
 }
 
+
+async function lightshow() {
+    i = 0;
+    lightshowinterval = setInterval( async() => {
+        $(`#switchview${i}`).trigger('click');
+        if (i <= switchquantity) {
+            i ++
+        } else {
+            i = 0
+        }
+        await wait (500)
+        lightshow()
+    }, 500)
+}
+
+function lightshowstop() {
+    for (var i = 0; i < (lightshowinterval * 2); i++) { 
+        clearInterval(i)
+    }
+}
+
 // Creates the button for switching switch views
 function switchviewbutton (switchnumber) {
     y = switchnumber + 1;
-    x = `<button id='switchview${switchnumber}' onclick="switchviewswitch(${switchnumber})">Switch: ${y}</button>`;
+    x = `<button id='switchview${switchnumber}' class='switchviewclass' onclick="switchviewswitch(${switchnumber})">Switch: ${y}</button>`;
     return x
 }
 
