@@ -26,10 +26,12 @@ let currentvlan1number;
 let currentvlan2name;
 let currentvlan2number;
 let currentdualmoded = false;
+let currentuplinkbool = false;
+let currentdownlinkbool = false;
 let currentswitch = 0;
 let currentcolor = 'white';
 let currentdualmodecolor = '#D7FDEC';
-let colordictionary = ['white','#A9FBD7','#6290C3','#B0C6CE','938BA1','#FFCAD4','#FFE5D9'];
+let colordictionary = ['white','#A9FBD7','#6290C3','#B0C6CE','938BA1','#FFCAD4','#FFE5D9','#ED6A5A','#67597A','#7189FF','#594E36','#C2A878'];
 let lightshowbool = false;
 
 /* Creation of each switch array based upon the switchquantity
@@ -91,36 +93,68 @@ function switchviewswitch(switchviewbuttonnum) {
 }
 
 vlandict.forEach((vlan,index) => {
-    VLANName = vlan.VLANName;
-    VLANNumber = vlan.VLANNumber;
-    $(`<button style="background-color: ${colordictionary[index]}" onclick="currentvlanchanger('${VLANName}',${VLANNumber},${index})">${VLANName}</br>VLAN:${VLANNumber}</button>`).insertBefore('#switchidentifier');
+    if (index < 7) {
+        VLANName = vlan.VLANName;
+        VLANNumber = vlan.VLANNumber;
+        $(`<button class="vlanbar" style="background-color: ${colordictionary[index]}" onclick="currentvlanchanger('${VLANName}',${VLANNumber},${index},false,false,this)">${VLANName}</br>VLAN:${VLANNumber}</button>`).insertBefore('#switchidentifier');
+    } else {
+        VLANName = vlan.VLANName;
+        VLANNumber = vlan.VLANNumber;
+        $(`<button class="vlanbar" style="background-color: ${colordictionary[index]}" onclick="currentvlanchanger('${VLANName}',${VLANNumber},${index},false,false,this)">${VLANName}</br>VLAN:${VLANNumber}</button>`).insertBefore('#vlanoverflow');
+    }
 });
 
-function currentvlanchanger(vlannam,vlannum,colorindex) {
-    currentvlan1name = vlannam;
-    currentvlan1number = vlannum;
-    currentcolor = colordictionary[colorindex];
+function currentvlanchanger(vlannam,vlannum,colorindex,currentuplink,currentdownlink,thebutton) {
+    if (currentuplink == true) {
+        currentuplinkbool = true;
+        currentdownlinkbool = false;
+    } else if (currentdownlink == true) {
+        currentdownlinkbool = true;
+        currentuplinkbool = false;
+    } else {
+        currentvlan1name = vlannam;
+        currentvlan1number = vlannum;
+        currentcolor = colordictionary[colorindex];
+        currentuplinkbool = false;
+        currentdownlinkbool = false;
+    }
+    $('.vlanbuttonbar').find('button').each(function (){
+        $(this).css('opacity', '.65')
+    })
+    thebutton.style.opacity = 1;
 }
 
 // Creates the port objects that are held within each fullswitch
-function PortMaker (portnumber,dualmoded,color,vlan1name,vlan1,vlan2name,vlan2) {
-    if (dualmoded === true) {
+function PortMaker (portnumber,dualmoded,color,uplink,downlink,vlan1name,vlan1,vlan2name,vlan2) {
+    if (uplink == true) {
         SwitchVLANPort[portnumber] = {
             portnumber: portnumber,
-            dualmoded: dualmoded,
-            color: color,
-            vlan1name: vlan1name,
-            vlan1: vlan1,
-            vlan2name: vlan2name,
-            vlan2: vlan2
-    }} else {
+            uplink: uplink
+        }
+    } else if (downlink == true) {
         SwitchVLANPort[portnumber] = {
             portnumber: portnumber,
-            dualmoded: dualmoded,
-            color: color,
-            vlan1name: vlan1name,
-            vlan1: vlan1,
-    }}
+            downlink: downlink
+        }
+    } else {
+        if (dualmoded === true) {
+            SwitchVLANPort[portnumber] = {
+                portnumber: portnumber,
+                dualmoded: dualmoded,
+                color: color,
+                vlan1name: vlan1name,
+                vlan1: vlan1,
+                vlan2name: vlan2name,
+                vlan2: vlan2
+        }} else {
+            SwitchVLANPort[portnumber] = {
+                portnumber: portnumber,
+                dualmoded: dualmoded,
+                color: color,
+                vlan1name: vlan1name,
+                vlan1: vlan1,
+        }}
+    }
     return SwitchVLANPort[portnumber];
 }
 
@@ -134,12 +168,12 @@ for (let switchnumber = 0; switchnumber < switchquantity; switchnumber++) {
             v2 = dualmodevlanarray[0].val();
             v1n = dualmodevlanarray[1].attr('id');
             v1 = dualmodevlanarray[1].val();
-            CurrentPort = PortMaker(portindex, true,currentdualmodecolor,v1n,v1,v2n,v2);
+            CurrentPort = PortMaker(portindex,true,currentdualmodecolor,false,false,v1n,v1,v2n,v2);
             FullSwitch[switchnumber].push(CurrentPort);
         } else {
             v1n = vlandict[0].VLANName;
             v1 = vlandict[0].VLANNumber;
-            CurrentPort = PortMaker(portindex, false, currentcolor, v1n, v1);
+            CurrentPort = PortMaker(portindex, false, currentcolor,false,false, v1n, v1);
             FullSwitch[switchnumber].push(CurrentPort);
         }
         //CurrentPort = PortMaker(portindex,true,301);
@@ -182,22 +216,37 @@ function portviewuntagged(portnum, vlan1name) {
 }
 
 function divclickportchanger(thisport) {
-    if (currentvlan1name != null) {
+    if (currentvlan1name != null || (currentdownlinkbool != false || currentuplinkbool != false)) {
         arrayindex = thisport - 1;
-        if (currentdualmoded  == true) {
-            newport = PortMaker(thisport,true,currentcolor,currentvlan1name,currentvlan1number,currentvlan2name,currentvlan2number);
+        if (currentuplinkbool == true) {
+            newport = PortMaker(thisport,false,'#00FF7F',currentuplinkbool,currentdownlinkbool);
             FullSwitch[currentswitch].splice(arrayindex,1,newport);
-            singleport = portviewuntagged(thisport,currentvlan1name);
+            singleport = portviewuntagged(thisport,'Uplink');
             $(`#port${thisport}`).html(singleport);
-            $(`#port${thisport}`).css('background-color',currentcolor)
+            $(`#port${thisport}`).css('background-color','#00FF7F');
+        } else if (currentdownlinkbool == true) {
+            newport = PortMaker(thisport,false,'#32CD32',currentuplinkbool,currentdownlinkbool);
+            FullSwitch[currentswitch].splice(arrayindex,1,newport);
+            singleport = portviewuntagged(thisport,'Downlink');
+            $(`#port${thisport}`).html(singleport);
+            $(`#port${thisport}`).css('background-color','#32CD32');
         } else {
-            newport = PortMaker(thisport,false,currentcolor ,currentvlan1name,currentvlan1number);
-            FullSwitch[currentswitch].splice(arrayindex,1,newport);
-            singleport = portviewuntagged(thisport,currentvlan1name);
-            $(`#port${thisport}`).html(singleport);
-            $(`#port${thisport}`).css('background-color',currentcolor)
+            if (currentdualmoded  == true) {
+                newport = PortMaker(thisport,true,currentcolor,false,false,currentvlan1name,currentvlan1number,currentvlan2name,currentvlan2number);
+                FullSwitch[currentswitch].splice(arrayindex,1,newport);
+                singleport = portviewuntagged(thisport,currentvlan1name);
+                $(`#port${thisport}`).html(singleport);
+                $(`#port${thisport}`).css('background-color',currentcolor)
+            } else {
+                newport = PortMaker(thisport,false,currentcolor,false,false,currentvlan1name,currentvlan1number);
+                FullSwitch[currentswitch].splice(arrayindex,1,newport);
+                singleport = portviewuntagged(thisport,currentvlan1name);
+                $(`#port${thisport}`).html(singleport);
+                $(`#port${thisport}`).css('background-color',currentcolor)
+            }
         }
     } else {
         alert('Select a VLAN to change the ports!')
     }
 }
+
