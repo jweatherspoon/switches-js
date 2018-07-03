@@ -93,15 +93,9 @@ function switchviewswitch(switchviewbuttonnum) {
 }
 
 vlandict.forEach((vlan,index) => {
-    if (index < 7) {
         VLANName = vlan.VLANName;
         VLANNumber = vlan.VLANNumber;
-        $(`<button class="vlanbar" style="background-color: ${colordictionary[index]}" onclick="currentvlanchanger('${VLANName}',${VLANNumber},${index},false,false,this)">${VLANName}</br>VLAN:${VLANNumber}</button>`).insertBefore('#switchidentifier');
-    } else {
-        VLANName = vlan.VLANName;
-        VLANNumber = vlan.VLANNumber;
-        $(`<button class="vlanbar" style="background-color: ${colordictionary[index]}" onclick="currentvlanchanger('${VLANName}',${VLANNumber},${index},false,false,this)">${VLANName}</br>VLAN:${VLANNumber}</button>`).insertBefore('#vlanoverflow');
-    }
+        $(`<div><button class="vlanbar" style="background-color: ${colordictionary[index]}; width: 90; margin-bottom: 5" onclick="currentvlanchanger('${VLANName}',${VLANNumber},${index},false,false,this)">${VLANName}</br>VLAN:${VLANNumber}</button></div>`).insertBefore('#switchidentifier');
 });
 
 function currentvlanchanger(vlannam,vlannum,colorindex,currentuplink,currentdownlink,thebutton) {

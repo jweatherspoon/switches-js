@@ -1,0 +1,134 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/IHATEJON.css" />
+
+    <style>
+        .vlanbar {
+            height: 40;
+            margin-left: 3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="left" class="column" style="width: 100">
+        <div class='top-left'>
+            <h2>VLANs</h2>
+        </div>
+        <div class="bottom">
+            <div class="vlanbuttonbar" style="width: fit-content">
+                <div>
+                    <button style="background-color: #00FF7F; width: 90; margin-bottom: 5" onclick="currentvlanchanger(null,null,null,true,false,this)"
+                        class="vlanbar">Uplink</button>
+                </div>
+                <div>
+                    <button style="background-color: #32CD32; width: 90; margin-bottom: 5" onclick="currentvlanchanger(null,null,null,false,true,this)"
+                        class="vlanbar">Downlink</button>
+                </div>
+                <span id="switchidentifier"></span>
+            </div>
+            <div class="vlanbuttonbar">
+                <span id="vlanoverflow"></span>
+            </div>
+        </div>
+    </div>
+    <div id="right" class="column">
+        <div class="flex">
+            <div class="top-right flex-justify-center" style="width: 100%">
+                <h2>Your Switch</h2>
+            </div>
+            <div class="top-right" style="width: fit-content;position: absolute;right: 59;outline: 1px solid black;padding-bottom: 2;padding-top: 3;padding-left: 5;padding-right: 5;flex-flow: column;">
+                <div>
+                        <button>Dualmode</button>
+                        <button>Mass VLAN Change</button>
+                </div>
+                <div>
+                    <span id="instructions">Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.</span>
+                </div>
+            </div>
+        </div>
+        <div class="bottom">
+            <div id="innerdiv">
+                <div style="width: fit-content">
+                    <div id="switchholder" style="width: fit-content;">
+                        <div id="switchswitcher" class="flex flex-align-front" style="margin-bottom: -2">
+                            <!-- <button onclick="lightshow()" id="lightshowbtn">Make your own lightshow</button> -->
+                            <!-- <button onclick="lightshowstop()" id="lightshowstopbtn">Stop</button> -->
+                        </div>
+                        <div class="flex flex-justify-center">
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin-left: 1; margin-top: 2; margin-right: 2; margin-bottom: 2"
+                                onclick="divclickportchanger(1)" id="port1"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(2)" id="port2"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(3)" id="port3"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(4)" id="port4"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(5)" id="port5"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(6)" id="port6"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(7)" id="port7"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(8)" id="port8"></div>
+                        </div>
+                        <div class="flex flex-justify-center">
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin-left: 1; margin-top: 2; margin-right: 2; margin-bottom: 2"
+                                onclick="divclickportchanger(9)" id="port9"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(10)" id="port10"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(11)" id="port11"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(12)" id="port12"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(13)" id="port13"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(14)" id="port14"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(15)" id="port15"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(16)" id="port16"></div>
+                        </div>
+                        <div class="flex flex-justify-center">
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin-left: 1; margin-top: 2; margin-right: 2; margin-bottom: 2"
+                                onclick="divclickportchanger(17)" id="port17"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(18)" id="port18"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(19)" id="port19"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(20)" id="port20"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(21)" id="port21"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(22)" id="port22"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(23)" id="port23"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(24)" id="port24"></div>
+                        </div>
+                        <div class="flex flex-justify-center">
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin-left: 1; margin-top: 2; margin-right: 2; margin-bottom: 2"
+                                onclick="divclickportchanger(25)" id="port25"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(26)" id="port26"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(27)" id="port27"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(28)" id="port28"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(29)" id="port29"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(30)" id="port30"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(31)" id="port31"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(32)" id="port32"></div>
+                        </div>
+                        <div class="flex flex-justify-center">
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin-left: 1; margin-top: 2; margin-right: 2; margin-bottom: 2"
+                                onclick="divclickportchanger(33)" id="port33"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(34)" id="port34"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(35)" id="port35"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(36)" id="port36"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(37)" id="port37"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(38)" id="port38"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(39)" id="port39"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(40)" id="port40"></div>
+                        </div>
+                        <div class="flex flex-justify-center">
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin-left: 1; margin-top: 2; margin-right: 2; margin-bottom: 2"
+                                onclick="divclickportchanger(41)" id="port41"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(42)" id="port42"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(43)" id="port43"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(44)" id="port44"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(45)" id="port45"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(46)" id="port46"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(47)" id="port47"></div>
+                            <div style="outline: 1px solid black; width: 100; height: 100; margin: 2" onclick="divclickportchanger(48)" id="port48"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+<footer>
+    <script src="../js/PortPicker.js"></script>
+</footer>
+
+</html>
