@@ -33,6 +33,8 @@ let currentcolor = 'white';
 let currentdualmodecolor = '#D7FDEC';
 let colordictionary = ['white','#A9FBD7','#6290C3','#B0C6CE','938BA1','#FFCAD4','#FFE5D9','#ED6A5A','#67597A','#7189FF','#594E36','#C2A878'];
 let lightshowbool = false;
+let dualmodebtnactive = false;
+let dualmodeactivecounter = 0;
 
 /* Creation of each switch array based upon the switchquantity
    ALso creates a button for each of the switch views*/
@@ -43,6 +45,7 @@ for (let numberofswitchiebois = 0; numberofswitchiebois < switchquantity; number
 }
 
 
+// Memes
 async function lightshow() {
     i = 0;
     lightshowinterval = setInterval( async() => {
@@ -57,6 +60,7 @@ async function lightshow() {
     }, 500)
 }
 
+// Memes continued
 function lightshowstop() {
     for (var i = 0; i < (lightshowinterval * 2); i++) { 
         clearInterval(i)
@@ -76,46 +80,89 @@ function switchviewbutton (switchnumber) {
 function switchviewswitch(switchviewbuttonnum) {
     FullSwitch[switchviewbuttonnum].forEach((i, indexie) => {
         divnumber = indexie + 1;
-        if (i.dualmoded == true) {
-            x = i.vlan1name;
-            y = i.vlan2name;
-            portviewdiv = portviewdualmode(divnumber,x,y);
-            $(`#port${divnumber}`).html(portviewdiv);
-            $(`#port${divnumber}`).css('background-color',i.color)
+        if (i.uplink == true) {
+            singleport = portviewuntagged(divnumber,'Uplink');
+            $(`#port${divnumber}`).html(singleport);
+            $(`#port${divnumber}`).css('background-color','#00FF7F');
+        } else if (i.downlink == true) {
+            singleport = portviewuntagged(divnumber,'Downlink');
+            $(`#port${divnumber}`).html(singleport);
+            $(`#port${divnumber}`).css('background-color','#32CD32');
         } else {
-            x = i.vlan1name;
-            portviewdiv = portviewuntagged(divnumber,x);
-            $(`#port${divnumber}`).html(portviewdiv);
-            $(`#port${divnumber}`).css('background-color',i.color)
-        }
+            if (i.dualmoded == true) {
+                x = i.vlan1name;
+                y = i.vlan2name;
+                portviewdiv = portviewdualmode(divnumber,x,y);
+                $(`#port${divnumber}`).html(portviewdiv);
+                $(`#port${divnumber}`).css('background-color',i.color)
+            } else {
+                x = i.vlan1name;
+                portviewdiv = portviewuntagged(divnumber,x);
+                $(`#port${divnumber}`).html(portviewdiv);
+                $(`#port${divnumber}`).css('background-color',i.color)
+            }
+        }     
         currentswitch = switchviewbuttonnum;
     });
 }
 
+// Creates the VLAN buttons as the page loads
 vlandict.forEach((vlan,index) => {
         VLANName = vlan.VLANName;
         VLANNumber = vlan.VLANNumber;
         $(`<div><button class="vlanbar" style="background-color: ${colordictionary[index]}; width: 90; margin-bottom: 5" onclick="currentvlanchanger('${VLANName}',${VLANNumber},${index},false,false,this)">${VLANName}</br>VLAN:${VLANNumber}</button></div>`).insertBefore('#switchidentifier');
 });
 
+/* Called by the onclick events on the vlan buttons. 
+   Changes the global variables depending on the vlan clicked.
+   The variables are used when the port divs are clicked.*/
 function currentvlanchanger(vlannam,vlannum,colorindex,currentuplink,currentdownlink,thebutton) {
-    if (currentuplink == true) {
-        currentuplinkbool = true;
-        currentdownlinkbool = false;
-    } else if (currentdownlink == true) {
-        currentdownlinkbool = true;
-        currentuplinkbool = false;
-    } else {
-        currentvlan1name = vlannam;
-        currentvlan1number = vlannum;
-        currentcolor = colordictionary[colorindex];
-        currentuplinkbool = false;
-        currentdownlinkbool = false;
+    if (dualmodebtnactive == true && currentdownlink == false && currentuplink == false) {
+        if (dualmodeactivecounter == 0) {
+            currentvlan1name = vlannam;
+            currentvlan1number = vlannum;
+            currentcolor = colordictionary[colorindex];
+            currentuplinkbool = false;
+            currentdownlinkbool = false;
+            dualmodeactivecounter ++;
+            $('#instructions').text(`VLAN1 is ${vlannam}. Select your second VLAN for dualmode.`)
+        } else if (dualmodeactivecounter == 1) {
+            currentvlan2name = vlannam;
+            currentvlan2number = vlannum;
+            currentcolor = currentdualmodecolor;
+            currentuplinkbool = false;
+            currentdownlinkbool = false;
+            dualmodeactivecounter ++;
+            $('#instructions').text(`Your dualmode VLANs are ${currentvlan1name} & ${currentvlan2name}.`);
+        } else if (dualmodeactivecounter == 2) {
+            currentvlan1name = vlannam;
+            currentvlan1number = vlannum;
+            currentcolor = colordictionary[colorindex];
+            currentuplinkbool = false;
+            currentdownlinkbool = false;
+            dualmodeclick();
+        }
+    } else if (dualmodebtnactive == true && (currentdownlink == true || currentuplink == true)) {
+        alert("As far as I know, you can't dualmode an uplink or downlink.")
+    } else if (dualmodebtnactive == false) {
+        if (currentuplink == true) {
+            currentuplinkbool = true;
+            currentdownlinkbool = false;
+        } else if (currentdownlink == true) {
+            currentdownlinkbool = true;
+            currentuplinkbool = false;
+        } else {
+            currentvlan1name = vlannam;
+            currentvlan1number = vlannum;
+            currentcolor = colordictionary[colorindex];
+            currentuplinkbool = false;
+            currentdownlinkbool = false;
+        }
+        $('.vlanbuttonbar').find('button').each(function (){
+            $(this).css('opacity', '.65')
+        })
+        thebutton.style.opacity = 1;
     }
-    $('.vlanbuttonbar').find('button').each(function (){
-        $(this).css('opacity', '.65')
-    })
-    thebutton.style.opacity = 1;
 }
 
 // Creates the port objects that are held within each fullswitch
@@ -123,12 +170,14 @@ function PortMaker (portnumber,dualmoded,color,uplink,downlink,vlan1name,vlan1,v
     if (uplink == true) {
         SwitchVLANPort[portnumber] = {
             portnumber: portnumber,
-            uplink: uplink
+            uplink: uplink,
+            color: color
         }
     } else if (downlink == true) {
         SwitchVLANPort[portnumber] = {
             portnumber: portnumber,
-            downlink: downlink
+            downlink: downlink,
+            color: color
         }
     } else {
         if (dualmoded === true) {
@@ -176,7 +225,7 @@ for (let switchnumber = 0; switchnumber < switchquantity; switchnumber++) {
 
 }
 
-// Fills the Port divs with the information from the FullSwitches that were created
+// Fills the Port divs with the information from the FullSwitches that were created as the page is loaded.
 for (let portdiv = 0; portdiv <= 47; portdiv++) {
     if (dualmodevlanarray.length != 0) {
         x = FullSwitch[0][portdiv].vlan1name;
@@ -209,6 +258,11 @@ function portviewuntagged(portnum, vlan1name) {
     return x;
 }
 
+/* This long function occurs when a div is clicked.
+   The div sends the port number as an onclick argument.
+   After checking for first conditions is creates a port with the portmaker function.
+   It then replaces its respective port in the corresponding siwtch with splice.
+   The three last lines change the html/css for the div.*/
 function divclickportchanger(thisport) {
     if (currentvlan1name != null || (currentdownlinkbool != false || currentuplinkbool != false)) {
         arrayindex = thisport - 1;
@@ -241,6 +295,18 @@ function divclickportchanger(thisport) {
         }
     } else {
         alert('Select a VLAN to change the ports!')
+    }
+}
+
+function dualmodeclick() { 
+    if (dualmodebtnactive == false) {
+        dualmodebtnactive = true;
+        dualmodeactivecounter = 0;
+        $('#instructions').text('Select your first VLAN for dualmode.')
+    } else {
+        dualmodebtnactive = false;
+        dualmodeactivecounter = 0;
+        $('#instructions').text('Select your first VLAN for dualmode.')
     }
 }
 
