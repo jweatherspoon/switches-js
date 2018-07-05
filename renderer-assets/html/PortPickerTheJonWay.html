@@ -19,10 +19,12 @@
         <div class="bottom">
             <div class="vlanbuttonbar" style="width: fit-content">
                 <div>
-                    <button style="background-color: #00FF7F; width: 90; margin-bottom: 5" onclick="currentvlanchanger(null,null,null,true,false,this)" class="vlanbar">Uplink</button>
+                    <button style="background-color: #00FF7F; width: 90; margin-bottom: 5" onclick="currentvlanchanger(null,null,null,true,false,this)"
+                        class="vlanbar">Uplink</button>
                 </div>
                 <div>
-                    <button style="background-color: #32CD32; width: 90; margin-bottom: 5" onclick="currentvlanchanger(null,null,null,false,true,this)" class="vlanbar">Downlink</button>
+                    <button style="background-color: #32CD32; width: 90; margin-bottom: 5" onclick="currentvlanchanger(null,null,null,false,true,this)"
+                        class="vlanbar">Downlink</button>
                 </div>
                 <span id="switchidentifier"></span>
             </div>
@@ -39,7 +41,7 @@
             <div class="top-right" style="width: fit-content;position: absolute;right: 59;outline: 1px solid black;padding-bottom: 2;padding-top: 3;padding-left: 5;padding-right: 5;flex-flow: column;">
                 <div>
                     <button onclick="dualmodeclick()">Dualmode</button>
-                    <button>Mass VLAN Change</button>
+                    <button onclick="massvlanchange()">Mass VLAN Change</button>
                 </div>
                 <div>
                     <span id="instructions">Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.</span>
