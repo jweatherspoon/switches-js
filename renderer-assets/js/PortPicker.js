@@ -378,8 +378,10 @@ function massvlanchange(mvcportnumber) {
             mvcarray.push(mvcportnumber);
             console.log(mvcarray);
             if (mvcarray[0] < mvcarray[1]) {
+                massvlanchanegbool = false;
                 mvcloop(mvcarray[0], mvcarray[1]);
             } else {
+                massvlanchanegbool = false;
                 mvcloop(mvcarray[1], mvcarray[0]);
             }
         }
