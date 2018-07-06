@@ -335,7 +335,8 @@ function divclickportchanger(thisport) {
                 }
             }
         } else {
-            alert('Select a VLAN to change the ports!')
+            alert('Select a VLAN to change the ports!');
+            $('#instructions').html('Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.');
         }
     }
 }
@@ -345,12 +346,14 @@ function dualmodeclick() {
     if (dualmodebtnactive == false) {
         dualmodebtnactive = true;
         dualmodeactivecounter = 0;
-        $('#instructions').text('Select your first VLAN for dualmode.')
+        $('#instructions').text('Select your first VLAN for dualmode.');
+        $('#dualmodebtn').css('outline', '1px solid yellow');
     } else {
         dualmodebtnactive = false;
         dualmodeactivecounter = 0;
         currentdualmoded = false;
-        $('#instructions').html(`Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.`)
+        $('#instructions').html(`Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.`);
+        $('#dualmodebtn').css('outline', '');
     }
 }
 
@@ -364,29 +367,39 @@ function massvlanchange(mvcportnumber) {
     if (massvlanchanegbool == false) {
         massvlanchanegbool = true;
         mvcarray = [];
+        $('#instructions').text('Choose your VLAN(s) then select two ports.')
     } else if (massvlanchanegbool == true && (mvcportnumber == '' || mvcportnumber == null)) {
         massvlanchanegbool = false;
         mvcarray = [];
+        $('#instructions').html('Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.')
+    } else if (currentvlan1name == null || currentvlan1name == '') {
+        alert('Please select a VLAN first.')
     } else if (mvcarray.length == 0) {
         mvcarray.push(mvcportnumber);
     } else if (mvcarray.length == 1) {
         if (mvcportnumber == mvcarray[0]) {
-            mvcarray = [];
-            massvlanchanegbool = false;
-            alert('Nope');
+            alert('Pick 2 DIFFERENT ports please.');
         } else {
             mvcarray.push(mvcportnumber);
             console.log(mvcarray);
             if (mvcarray[0] < mvcarray[1]) {
                 massvlanchanegbool = false;
                 mvcloop(mvcarray[0], mvcarray[1]);
+                $('#instructions').html('Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.');
             } else {
                 massvlanchanegbool = false;
                 mvcloop(mvcarray[1], mvcarray[0]);
+                $('#instructions').html('Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.');
             }
         }
     } else if (mvcarray.length == 2) {
         mvcarray = [];
+        $('#instructions').html('Use the dualmode button to set dualmode ports.</br>Use MVC to change many ports at once.');
+    }
+    if (massvlanchanegbool == true) {
+        $('#mvcbtn').css('outline', '1px solid yellow')
+    } else {
+        $('#mvcbtn').css('outline', '')
     }
 }
 
