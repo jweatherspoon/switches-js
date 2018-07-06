@@ -304,38 +304,39 @@ function portviewuntagged(portnum, vlan1name) {
 function divclickportchanger(thisport) {
     if (massvlanchanegbool == true) {
         massvlanchange(thisport);
-    }
-    if (currentvlan1name != null || (currentdownlinkbool != false || currentuplinkbool != false)) {
-        arrayindex = thisport - 1;
-        if (currentuplinkbool == true) {
-            newport = PortMaker(thisport, false, '#00FF7F', currentuplinkbool, currentdownlinkbool);
-            FullSwitch[currentswitch].splice(arrayindex, 1, newport);
-            singleport = portviewuntagged(thisport, 'Uplink');
-            $(`#port${thisport}`).html(singleport);
-            $(`#port${thisport}`).css('background', '#00FF7F');
-        } else if (currentdownlinkbool == true) {
-            newport = PortMaker(thisport, false, '#32CD32', currentuplinkbool, currentdownlinkbool);
-            FullSwitch[currentswitch].splice(arrayindex, 1, newport);
-            singleport = portviewuntagged(thisport, 'Downlink');
-            $(`#port${thisport}`).html(singleport);
-            $(`#port${thisport}`).css('background', '#32CD32');
-        } else {
-            if (currentdualmoded == true) {
-                newport = PortMaker(thisport, true, currentdualmodecolor, false, false, currentvlan1name, currentvlan1number, currentvlan2name, currentvlan2number);
-                FullSwitch[currentswitch].splice(arrayindex, 1, newport);
-                singleport = portviewdualmode(thisport, currentvlan1name, currentvlan2name);
-                $(`#port${thisport}`).html(singleport);
-                $(`#port${thisport}`).css('background', currentdualmodecolor)
-            } else {
-                newport = PortMaker(thisport, false, currentcolor, false, false, currentvlan1name, currentvlan1number);
-                FullSwitch[currentswitch].splice(arrayindex, 1, newport);
-                singleport = portviewuntagged(thisport, currentvlan1name);
-                $(`#port${thisport}`).html(singleport);
-                $(`#port${thisport}`).css('background', currentcolor)
-            }
-        }
     } else {
-        alert('Select a VLAN to change the ports!')
+        if (currentvlan1name != null || (currentdownlinkbool != false || currentuplinkbool != false)) {
+            arrayindex = thisport - 1;
+            if (currentuplinkbool == true) {
+                newport = PortMaker(thisport, false, '#00FF7F', currentuplinkbool, currentdownlinkbool);
+                FullSwitch[currentswitch].splice(arrayindex, 1, newport);
+                singleport = portviewuntagged(thisport, 'Uplink');
+                $(`#port${thisport}`).html(singleport);
+                $(`#port${thisport}`).css('background', '#00FF7F');
+            } else if (currentdownlinkbool == true) {
+                newport = PortMaker(thisport, false, '#32CD32', currentuplinkbool, currentdownlinkbool);
+                FullSwitch[currentswitch].splice(arrayindex, 1, newport);
+                singleport = portviewuntagged(thisport, 'Downlink');
+                $(`#port${thisport}`).html(singleport);
+                $(`#port${thisport}`).css('background', '#32CD32');
+            } else {
+                if (currentdualmoded == true) {
+                    newport = PortMaker(thisport, true, currentdualmodecolor, false, false, currentvlan1name, currentvlan1number, currentvlan2name, currentvlan2number);
+                    FullSwitch[currentswitch].splice(arrayindex, 1, newport);
+                    singleport = portviewdualmode(thisport, currentvlan1name, currentvlan2name);
+                    $(`#port${thisport}`).html(singleport);
+                    $(`#port${thisport}`).css('background', currentdualmodecolor)
+                } else {
+                    newport = PortMaker(thisport, false, currentcolor, false, false, currentvlan1name, currentvlan1number);
+                    FullSwitch[currentswitch].splice(arrayindex, 1, newport);
+                    singleport = portviewuntagged(thisport, currentvlan1name);
+                    $(`#port${thisport}`).html(singleport);
+                    $(`#port${thisport}`).css('background', currentcolor)
+                }
+            }
+        } else {
+            alert('Select a VLAN to change the ports!')
+        }
     }
 }
 
@@ -369,12 +370,13 @@ function massvlanchange(mvcportnumber) {
     } else if (mvcarray.length == 0) {
         mvcarray.push(mvcportnumber);
     } else if (mvcarray.length == 1) {
-        if (mvcportnumber = mvcarray[0]) {
+        if (mvcportnumber == mvcarray[0]) {
             mvcarray = [];
             massvlanchanegbool = false;
             alert('Nope');
         } else {
             mvcarray.push(mvcportnumber);
+            console.log(mvcarray);
             if (mvcarray[0] < mvcarray[1]) {
                 mvcloop(mvcarray[0], mvcarray[1]);
             } else {
@@ -387,7 +389,7 @@ function massvlanchange(mvcportnumber) {
 }
 
 function mvcloop(start, end) {
-    for (start; start <= end; start++) {
-        divclickportchanger(start);
+    for (i = start; i <= end; i++) {
+        divclickportchanger(i);
     }
 }
