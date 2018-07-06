@@ -1,4 +1,4 @@
-if(!$) {
+if (!$) {
     const $ = require('jquery');
 }
 
@@ -9,10 +9,11 @@ const {
 dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
 
 duplicatearray = [];
+duplicatenamearray = [];
 
 /* Creates VLAN fields for CustomVLAN button.
    I would advise not touching this. It will blow up the page layout.*/
-function VLANCreator (vlannumber) {
+function VLANCreator(vlannumber) {
     var newvlan = `<div style="padding-left: 10; width: 420;" class='divCustomVLAN flex flex-align-center' id="divCustomVLAN${vlannumber}" onkeyup="CVLANAgainst(${vlannumber})">
 <div>
 <input type="text" id="txtCustomVLAN${vlannumber}" class="CVSelector1" name="txtCustomVLAN" placeholder="Name of VLAN" style="width: 156;">
@@ -59,17 +60,17 @@ customvlancount = 4;
    First if statement checks if there are any more custom available vlans.
    If there are, makes a new one, if there is only one left it creates the new one then hides the button.
    Uses customtxtincr variable to make unique IDs in VLANCreator*/
-$('#btnCustomVLAN').click(function(){
+$('#btnCustomVLAN').click(function () {
     if (customvlancount > 1) {
         cvlan = VLANCreator(customtxtincr);
         $(cvlan).insertBefore('#divbtnCustomVLAN');
-        customvlancount --;
+        customvlancount--;
         $('#btnCustomVLAN').text('Add Custom VLAN (' + customvlancount + ')');
     } else {
         $(cvlan).insertBefore('#divbtnCustomVLAN');
         $('#btnCustomVLAN').hide();
     }
-    customtxtincr ++;
+    customtxtincr++;
 })
 
 /* This function is for the div that deletes the custom VLANs
@@ -85,19 +86,20 @@ function deletieboi(divid, radionumber) {
         $('#btnCustomVLAN').show();
     } else {
         $(`#${divid}`).remove();
-        customvlancount ++;
+        customvlancount++;
     }
     $('#btnCustomVLAN').text('Add Custom VLAN (' + customvlancount + ')');
 }
 
 // Submit button functions
-$('#btnVLANSubmit').click(function(){
+$('#btnVLANSubmit').click(function () {
     duplicatearray = [];
+    duplicatenamearray = [];
     flaggy = true;
     nothingcount = 0;
     inputcount = $('#divVLANForm').find('.vlaninput').length;
-    $('#divVLANForm').find('.vlaninput').each(function (){
-        
+    $('#divVLANForm').find('.vlaninput').each(function () {
+
         /* Checks validity based on VLANCheck function
            Ends findeach loop if any boxes are red
            ** Change this later to check for correct input and background color** */
@@ -106,10 +108,10 @@ $('#btnVLANSubmit').click(function(){
             flaggy = false;
             return false;
         }
-        
+
         // Counter to check against blank form
         if (this.value === '') {
-            nothingcount ++
+            nothingcount++
         }
 
         // Checks for duplicate inputs using duplicatevlanchecker
@@ -157,7 +159,7 @@ $('#btnVLANSubmit').click(function(){
    If it isn't empty it adds it to the global dictionary.*/
 function vlandictionary() {
     vlandict = [];
-    $('#divVLANForm').find('.OCVLAN').each(function() {
+    $('#divVLANForm').find('.OCVLAN').each(function () {
         if (this.value != '') {
             inputkey = $(this).attr('id');
             vlandict.push({
@@ -170,14 +172,19 @@ function vlandictionary() {
 
 // Dictionary creator for custom VLANs. Similar to vlandictionary function.
 function CVLANDictionary() {
-    $('#divVLANForm').find('.divCustomVLAN').each(function() {
+    $('#divVLANForm').find('.divCustomVLAN').each(function () {
         VLANInputName = $(this).find('.CVSelector1').val();
         VLANInput = $(this).find('.CVSelector2').val();
         if (VLANInputName != '' && VLANInput != '') {
-            vlandict.push({
-                VLANName: VLANInputName,
-                VLANNumber: VLANInput
-            });
+            if (duplicatevlannamechecker(VLANInputName) != null) {
+                alert('Please do not enter duplicate VLAN name values.')
+                flaggy = false;
+            } else {
+                vlandict.push({
+                    VLANName: VLANInputName,
+                    VLANNumber: VLANInput
+                });
+            }
         } else {
             if (VLANInputName != '' && VLANInput == '') {
                 vlanalertname = $(this).find('CVSelector1').val();
@@ -193,23 +200,23 @@ function CVLANDictionary() {
 
 
 // Creates VLANDialog so the user can confirm the VLANs
-function VLANDialog () {
+function VLANDialog() {
 
     // Grabs the keys and values from the vlandict and stores them in variables. Then stores them in a string
     var VLANString = '';
     vlandict.forEach((K, index) => {
         vkey = JSON.stringify(K.VLANName)
         vval = JSON.stringify(K.VLANNumber)
-        VLANString += vkey + ': ' + vval + '\n' ;
+        VLANString += vkey + ': ' + vval + '\n';
     });
 
     // Creates a dialog for the user to check their inputs one more time before moving on.
     dialog.showMessageBox(
         options = {
-        type: 'info',
-        title: 'Your VLANs',
-        buttons: ['Looks good!', 'Whoops I messed up.'],
-        message: VLANString,
+            type: 'info',
+            title: 'Your VLANs',
+            buttons: ['Looks good!', 'Whoops I messed up.'],
+            message: VLANString,
         }, (index) => {
             if (index == 0) {
                 portpickerhtml();
@@ -222,10 +229,12 @@ function VLANDialog () {
 
 // Next page
 function portpickerhtml() {
-        //VLANSwitchConfig();
-        $("#VLANFlexContainer").fadeOut();
-        $("#VLANFlexContainer").html(memeteam);
-        setTimeout(function () { $(document.body).load('./PortPickerTheJonWay.html') }, 500);
+    //VLANSwitchConfig();
+    $("#VLANFlexContainer").fadeOut();
+    $("#VLANFlexContainer").html(memeteam);
+    setTimeout(function () {
+        $(document.body).load('./PortPickerTheJonWay.html')
+    }, 500);
 }
 var memeteam = `<p style='font-size: 30;'>Wowzers</p>`
 
@@ -240,19 +249,19 @@ function VLANSwitchConfig () {
         }});
  } */
 
- // Removes and inserts the inputid of the radio button into the dualmode array
- function dualmodevlanshifter (myradioboi) {
-     x = myradioboi.getAttribute('inputid')
-     dualmodevlanarray.shift();
-     dualmodevlanarray.unshift($(`#${x}`));
- }
+// Removes and inserts the inputid of the radio button into the dualmode array
+function dualmodevlanshifter(myradioboi) {
+    x = myradioboi.getAttribute('inputid')
+    dualmodevlanarray.shift();
+    dualmodevlanarray.unshift($(`#${x}`));
+}
 
 /* For the checkbox at the top of the page. 
    Checks if it is checked now or not
    Disables or enables the radio buttons for dual mode vlans*/
- function DualModeCheckieBoi (mybox) {
+function DualModeCheckieBoi(mybox) {
     if (mybox.checked == true) {
-        $('#divVLANForm').find('input[type=radio]').each( function() {
+        $('#divVLANForm').find('input[type=radio]').each(function () {
             $(this).attr('disabled', false);
         })
         $('#DualModeVLANVOIP').attr('disabled', true);
@@ -260,19 +269,32 @@ function VLANSwitchConfig () {
         $('#DualModeVLANUser').attr('checked', true);
         dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
     } else {
-        $('#divVLANForm').find('input[type=radio]').each( function() {
+        $('#divVLANForm').find('input[type=radio]').each(function () {
             $(this).attr('checked', false);
             $(this).attr('disabled', true);
             dualmodevlanarray = [];
         })
     }
- }
+}
 
- // Checks inputs againsts themselves to check for duplicates
- function duplicatevlanchecker(vlannumber) {
-    var checkie = duplicatearray.find( function (x) { return x == vlannumber; });   
+// Checks inputs againsts themselves to check for duplicates
+function duplicatevlanchecker(vlannumber) {
+    var checkie = duplicatearray.find(function (x) {
+        return x == vlannumber;
+    });
     if (checkie == null && vlannumber != '') {
         duplicatearray.push(vlannumber);
     }
     return checkie;
- }
+}
+
+// Checks for duplicate custom vlan names
+function duplicatevlannamechecker(vlanname) {
+    var checkie = duplicatenamearray.find(function (x) {
+        return x.toLowerCase() == vlanname.toLowerCase();
+    });
+    if (checkie == null && vlanname != '') {
+        duplicatenamearray.push(vlanname)
+    }
+    return checkie;
+}
