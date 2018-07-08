@@ -39,6 +39,17 @@ function divswitchcreator(num) {
 }
 
 /**
+ * Navigate to the next page and clear pending intervals
+ */
+function NextPage() {
+    clearInterval(connectionInterval);
+    EventListenerRemoval();
+    $("#innerdiv").fadeOut();
+    $("#innerdiv").html(memedream);
+    setTimeout(function () { $(document.body).load('./VLANForm.html') }, 500);
+}
+
+/**
  * Slow ticking progress bar function
  * @param {number} numby - The ID number for the target progress bar
  * @param {number} tick - The interval tick time (default: 500)
@@ -57,6 +68,29 @@ const ProgressBar = (numby, tick=500, start=0, end=15) => {
             });
         }
     }, tick)
+}
+
+/**
+ * Alert the user to a failure when trying to update
+ * and stack a switch
+ * @param {number} numby - The ID number for the progress bar
+ * @param {any} err - The error message to display
+ */
+const StackFail = (numby, err) => {
+    // Turn the progress bar red and stop it at 50 
+    currentprogress = 49;
+    $(`#progress${numby}`).css({
+        backgroundColor: 'red',
+    });
+    // Alert the user to the error message
+    dialog.showMessageBox({
+        title: `Uh Oh! Spaghetti Code!`,
+        type: "error",
+        message: "Sorry, it looks like something broke when I was trying to update the switch :(",
+        buttons: [
+            'OK'
+        ]
+    })
 }
 
 /* Slow ticking progress bar function. 
@@ -120,10 +154,7 @@ function enablethenext(numby) {
 }
 
 $('#btnSwitchStackSubmit').click(function () {
-    EventListenerRemoval();
-    $("#innerdiv").fadeOut();
-    $("#innerdiv").html(memedream);
-    setTimeout(function () { $(document.body).load('./VLANForm.html') }, 500);
+    NextPage();
 })
 
 var memedream = `<p style='font-size: 30;'>Stacker Boy</p>`
@@ -232,8 +263,12 @@ ipcRenderer.on("stack:ready", (event, id) => {
  * Moves the progress bar to 50%.
  */
 ipcRenderer.on("stack:response", (event, arg) => {
-    $("#instructions").text("Please wait while I update the switch for you...");
-    ProgressBar(arg.id, 600, currentprogress, 50);
+    if(arg.success === true) {
+        $("#instructions").text("Please wait while I update the switch for you...");
+        ProgressBar(arg.id, 600, currentprogress, 50); 
+    } else {
+        StackFail(arg.id, arg.error);
+    }
 });
 
 /**
@@ -256,8 +291,5 @@ $(document).ready(() => {
 });
 
 $('#next-page').click(function () {
-    EventListenerRemoval();
-    $("#innerdiv").fadeOut();
-    $("#innerdiv").html(memedream);
-    setTimeout(function () { $(document.body).load('./VLANForm.html') }, 500);
+    NextPage();
 })

@@ -1,17 +1,9 @@
-if(!$) {
-    const $ = require('jquery');
-}
-
-if(!ipcRenderer) {
-    const { ipcRenderer } = require('electron');
-}
-
 let loadingInterval, loadingIndex;
 
 /**
  * Navigate to the next page in the application flow
  */
-const NextPage = () => {
+function NextPage() {
     $(document.body).load('./SwitchStack.html');
 }
 

@@ -2,10 +2,6 @@ if (!$) {
     const $ = require('jquery');
 }
 
-const {
-    dialog
-} = require('electron').remote
-
 dualmodevlanarray = [$('#UserVLAN'), $('#VOIPVLAN')];
 
 duplicatearray = [];

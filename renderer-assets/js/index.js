@@ -1,5 +1,6 @@
 'use strict';
 const { ipcRenderer } = require("electron");
+const { dialog } = require('electron').remote;
 const storage = require('electron-json-storage');
 const $ = require('jquery');
 const { wait } = require('../../helpers/timing');
@@ -27,6 +28,10 @@ let FullSwitch = [];
 let SwitchVLANPort = {
     
 };
+
+// Stores the recommended code version for the switch the 
+// user is trying to configure
+let codeVersion;
 
 // ** End of Global Variables **
 
