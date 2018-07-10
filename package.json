@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha \"./tests/*.test.js\"",
     "start": "electron .",
-    "docs": "jsdoc -r main.js ./helpers ./models"
+    "docs": "npm run docs_main && npm run docs_renderer",
+    "docs_main": "jsdoc -r main.js ./helpers ./models -d docs/main",
+    "docs_renderer": "jsdoc -r ./renderer-assets/js -d docs/renderer/"
   },
   "repository": {
     "type": "git",
