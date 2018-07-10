@@ -229,7 +229,8 @@ function portpickerhtml() {
     $("#VLANFlexContainer").fadeOut();
     $("#VLANFlexContainer").html(memeteam);
     setTimeout(function () {
-        $(document.body).load('./PortPickerTheJonWay.html')
+        // $(document.body).load('./PortPickerTheJonWay.html')
+        $(document.body).load('./ModulePicker.html')
     }, 500);
 }
 var memeteam = `<p style='font-size: 30;'>Wowzers</p>`

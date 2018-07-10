@@ -10,6 +10,9 @@ $("#switchsubmit").click(function(){
     switchquantity = $('#NumberofSwitches').val();
     switchmodel = $('#switchselector').val();
     if (switchmodel != null && switchquantity != '' && switchquantity > 0 && switchquantity < 11) {
+        
+        CreateStack(switchmodel, switchquantity);
+
         $(".innerdiv").fadeOut();
         $(".innerdiv").text('Good Job');
         setTimeout(function() {$(document.body).load('./get-updated-code.html')},500);

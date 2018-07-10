@@ -6,6 +6,8 @@ const $ = require('jquery');
 const { wait } = require('../../helpers/timing');
 const { settingKeys } = require('../../helpers/user-settings');
 
+const SwitchStack = require('../js/models/SwitchStack');
+
 // ** Global Variables **
 
 // Global variables for Switch Stack
@@ -33,7 +35,14 @@ let SwitchVLANPort = {
 // user is trying to configure
 let codeVersion;
 
+// Stores information about the stack a user is configuring
+let switchStack;
+
 // ** End of Global Variables **
+
+function CreateStack(model, quantity) {
+    switchStack = new SwitchStack(model, quantity);
+}
 
 $("#fader").click(function () {
     $(".innerdiv").fadeOut();
