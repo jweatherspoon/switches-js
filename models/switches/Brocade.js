@@ -69,7 +69,6 @@ class Brocade extends Switch {
      */
     async passwordBypass() {
         await this.write('b', false);
-        await this.addListener('>');
         await this.wait(1000);
         await this.write("no password");
         await this.wait(1000);
