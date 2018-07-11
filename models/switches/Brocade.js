@@ -43,7 +43,7 @@ class Brocade extends Switch {
         // bypass the password and begin booting
         await this.passwordBypass();
         // Wait for the system to finish booting 
-        await this.addListener("supply 1 detected");
+        await this.addListener("Switch>");
         return true;
     }
 
@@ -124,11 +124,11 @@ class Brocade extends Switch {
 
         // Set the filename to a relative path if the template isn't being used
         if(version) {
-            relativePath = path.join(this.model, version, filename);
+            relativePath = path.join("/", this.model, version, filename);
         }
 
         await this.write(`copy tftp ${target} ${serverIP} "${relativePath}" ${flashTarget}`);
-        await this.addListener("done");
+        await this.addListener("TFTP");
     }
 
     /**
@@ -175,13 +175,13 @@ class Brocade extends Switch {
             // TFTP Boot, Flash, Startup template
             await this.enable();
             await this.tftp("startup-config", tftp.serverIP, template);
-            await this.tftp("flash", tftp.serverIP, codes.boot, codeVer, "bootrom");
-            await this.tftp("flash", tftp.serverIP, codes.flash, codeVer, "primary");
+            await this.tftp("flash", tftp.serverIP, codes.boot, `Boot/${codeVer}`, "bootrom");
+            await this.tftp("flash", tftp.serverIP, codes.flash, `Flash/${codeVer}`, "primary");
             await this.copyFlashToSec();
     
             // TFTP PoE Firmware if applicable
             if(codes.poe) {
-                await this.inlinePower(tftp.serverIP, codes.poe);
+                await this.inlinePower(tftp.serverIP, codeVer, codes.poe);
             }
         } catch(err) {
             console.log(err);
@@ -191,12 +191,14 @@ class Brocade extends Switch {
     /**
      * Install PoE firmware on the machine
      * @param {string} serverIP - The IP of the TFTP server
+     * @param {string} codeVer - The code version of the upload
      * @param {string} poeFilename - The filename for the POE firmware 
      * relative to the user's configured TFTP directory
      */
-    async inlinePower(serverIP, poeFilename) {
-        await this.write(`inline power install-firmware all tftp ${serverIP} ${poeFilename}`);
-        await this.addListener(">");
+    async inlinePower(serverIP, codeVer, poeFilename) {
+        let relativePath = path.join('/', this.model, codeVer, poeFilename);
+        await this.write(`inline power install-firmware all tftp ${serverIP} ${relativePath}`);
+        await this.addListener("100 percent complete");
     }
 
     /**

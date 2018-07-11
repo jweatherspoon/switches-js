@@ -99,6 +99,7 @@ app.on('ready', () => {
  */
 ipcMain.on('serial:getports', (event, arg) => {
     GetPorts().then(data => {
+        console.log(JSON.stringify(data));
         event.sender.send('serial:getports:reply', data);
     })
 });
@@ -156,8 +157,6 @@ ipcMain.on("stack:begin", async (event, arg) => {
             event.sender.send("stack:response", returnValue);
 
             let ip = "192.168.1.1";
-
-            throw new Error("hey we broke it for testing");
 
             await switchObject.setIP(ip, "255.255.255.0");
             await switchObject.uploadDefaults(arg.codeVer, arg.template);

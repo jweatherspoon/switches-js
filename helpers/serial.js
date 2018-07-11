@@ -15,7 +15,10 @@ const ReadLine = SerialPort.parsers.Readline;
  */
 exports.GetPorts = async () => {
     let ports = await SerialPort.list();
-    ports = ports.filter(port => port.pnpId);
+    ports = ports.filter(port => {
+        if(process.platform === 'darwin') return port.locationId;
+        else return port.pnpId;
+    });
     return ports;
 };
 
