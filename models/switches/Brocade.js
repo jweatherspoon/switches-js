@@ -175,8 +175,8 @@ class Brocade extends Switch {
             // TFTP Boot, Flash, Startup template
             await this.enable();
             await this.tftp("startup-config", tftp.serverIP, template);
-            await this.tftp("flash", tftp.serverIP, codes.boot, `Boot/${codeVer}`, "bootrom");
-            await this.tftp("flash", tftp.serverIP, codes.flash, `Flash/${codeVer}`, "primary");
+            await this.tftp("flash", tftp.serverIP, `Boot/${codes.boot}`, codeVer, "bootrom");
+            await this.tftp("flash", tftp.serverIP, `Flash/${codes.flash}`, codeVer, "primary");
             await this.copyFlashToSec();
     
             // TFTP PoE Firmware if applicable
