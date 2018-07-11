@@ -196,7 +196,7 @@ class Brocade extends Switch {
      * relative to the user's configured TFTP directory
      */
     async inlinePower(serverIP, codeVer, poeFilename) {
-        let relativePath = path.join('/', this.model, codeVer, poeFilename);
+        let relativePath = path.join('/', this.model, codeVer, "Firmware", poeFilename);
         await this.write(`inline power install-firmware all tftp ${serverIP} ${relativePath}`);
         await this.addListener("100 percent complete");
     }
