@@ -6,7 +6,8 @@
 const { ICX6450, ICX7150 } = require('./Switches');
 
 const SWITCH_MAP = {
-    "ICX6450": ICX6450
+    ICX6450: ICX6450,
+    ICX7150: ICX7150
 }
  
 /**
