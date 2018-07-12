@@ -205,8 +205,8 @@ ipcMain.on('switchConfig:get', (event, page) => {
 ipcMain.on("code:update", (event, arg) => {
     // let codeAPI = codeVersionAPIs[arg.model]
     ForceUpdateCode(arg.model, "ruckus").then(res => {
-        if(res) {
-            event.sender.send("code:updated");
+        if(res.success) {
+            event.sender.send("code:updated", res.version);
         }
     })
 });

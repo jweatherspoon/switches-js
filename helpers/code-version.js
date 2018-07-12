@@ -275,7 +275,10 @@ const UpdateCodeVersion = async (model, supportSiteKey) => {
                         throw new Error("Code doesn't exist")
                     }
 
-                    return resolve(codeInTFTP);
+                    return resolve({
+                        success: codeInTFTP,
+                        version: versionData.version
+                    });
 
                 } catch (err) {
                     console.log(err);
@@ -304,8 +307,8 @@ const UpdateCodeVersion = async (model, supportSiteKey) => {
 const ForceUpdateCode = async (model, supportSiteKey) => {
     try {
         let codeUpdated = await UpdateCodeVersion(model, supportSiteKey);
-        if (codeUpdated) {
-            return true;
+        if (codeUpdated.success) {
+            return codeUpdated
         } else {
             return ForceUpdateCode(model, supportSiteKey);
         }

@@ -240,7 +240,7 @@ const BeginConfiguration = (switchID) => {
     ipcRenderer.send("stack:begin", {
         id: switchID,
         switchCount: switchquantity,
-        codeVer: "08061b",
+        codeVer: codeVer,
         template: "template.startup",
         priority: 250 - (switchID * 10),
     });

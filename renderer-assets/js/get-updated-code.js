@@ -49,7 +49,8 @@ $(document).ready(e => {
  * Display a success message to the user and navigate to 
  * the next page in the application flow
  */
-ipcRenderer.on("code:updated", async (event, arg) => {
+ipcRenderer.on("code:updated", async (event, version) => {
+    codeVer = version
     $("#loading-container").fadeOut(100);
     await wait(100);
     $("#finished-container").fadeIn(100);
