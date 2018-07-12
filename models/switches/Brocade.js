@@ -218,9 +218,28 @@ class Brocade extends Switch {
     }
 
     /**
+     * Add the motd banner to a switch without committing it
+     * to the startup configuration
+     */
+    async addBanner() {
+        let bannerText = "/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\n\n\n\nThis system is for the use of authorized users only.\n\n\n\n\n\nIndividuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.In the course f monitoring individuals improperly using this system, or in the course of system maintenance, the activities of authorized users may also be monitored.Anyone using this system expressly consents to such monitoring and is advised that f such monitoring reveals possible criminal activity, system personnel may provide the evidence of such monitoring to law enforcement officials.See UNR Security Awareness and Acceptable Use Policy for full terms of use.\n\n\n\n\n\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////";
+        await this.write('quit');
+        await this.enterConfigureTerminal();
+        await this.wait(500);
+        await this.write("banner motd ^");
+        await this.wait(500);
+        await this.write(bannerText);
+        await this.wait(2000);
+        await this.write("^");
+        await this.wait(500);
+    }
+
+    /**
      * Save your changes to the startup configuration
      */
     async commit() {
+        await this.write('quit');
+        await this.enterConfigureTerminal();
         await this.write("write memory");
     }
 }
